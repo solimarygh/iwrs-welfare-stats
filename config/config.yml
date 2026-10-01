@@ -8,7 +8,9 @@ project:
 
 openalex:
   base_url: "https://api.openalex.org"
-  mailto: "CHANGE_ME@example.org"   # OpenAlex "polite pool": put a real contact address
+  # Contact address for the OpenAlex "polite pool". Preferably NOT here: set the
+  # environment variable OPENALEX_MAILTO in ~/.Renviron (see README).
+  mailto: "CHANGE_ME@example.org"
   # Proxy for "peer-reviewed publication": journal articles and reviews published
   # in a journal-type source. Preprints in repositories, editorials and letters are excluded.
   work_types: ["article", "review"]

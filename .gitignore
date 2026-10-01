@@ -19,3 +19,6 @@ data/raw/
 
 # OS
 .DS_Store
+
+# Local credentials/contact settings
+.Renviron

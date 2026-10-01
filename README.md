@@ -48,6 +48,17 @@ a journal-type source. The current calendar year is partial and is flagged as su
 R >= 4.3 with `yaml`, `httr2`, `dplyr`, `tidyr`, `readr`, `jsonlite`, `ggplot2`.
 `renv` lock file to be added once the pipeline is validated against the live API.
 
+## Contact email for OpenAlex
+
+OpenAlex gives faster, more reliable access to requests that identify a contact
+address. The pipeline reads it from the environment variable `OPENALEX_MAILTO`, so
+no personal address is committed. In R:
+
+```r
+usethis::edit_r_environ()   # opens ~/.Renviron; add the line below, save, restart R
+# OPENALEX_MAILTO=you@example.org
+```
+
 ## Status
 
 Under development. See the commit history for what has been validated.

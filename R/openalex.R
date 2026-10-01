@@ -9,13 +9,25 @@ default_fetch <- function(url, query, mailto) {
   httr2::resp_body_json(httr2::req_perform(req))
 }
 
+# Contact address for the OpenAlex "polite pool". Read from the environment
+# variable OPENALEX_MAILTO so a personal address never has to be committed;
+# config/config.yml is only a fallback.
+oa_mailto <- function(cfg) {
+  m <- Sys.getenv("OPENALEX_MAILTO", unset = "")
+  if (!nzchar(m)) m <- cfg$openalex$mailto
+  if (is.null(m) || !nzchar(m) || grepl("CHANGE_ME", m, fixed = TRUE))
+    stop("Set your contact email: add OPENALEX_MAILTO=you@example.org to ~/.Renviron ",
+         "(then restart R), or edit openalex.mailto in config/config.yml.", call. = FALSE)
+  m
+}
+
 # Works matching `filter`, counted per publication year (one API call).
 # Returns a data.frame(year, n); years with no works are absent from the API
 # answer and are filled with 0 so every series has the same rows.
 oa_counts_by_year <- function(cfg, filter, fetch = default_fetch) {
   res <- fetch(paste0(cfg$openalex$base_url, "/works"),
                list(filter = filter, group_by = "publication_year"),
-               cfg$openalex$mailto)
+               oa_mailto(cfg))
   groups <- res$group_by
   got <- if (length(groups) == 0) {
     data.frame(year = integer(), n = integer())
