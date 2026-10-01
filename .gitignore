@@ -1,0 +1,21 @@
+# R
+.Rproj.user/
+.Rhistory
+.RData
+.Rapp.history
+*.Rproj
+.Ruserdata
+renv/library/
+renv/staging/
+
+# Quarto / knitr
+/.quarto/
+*_files/
+*_cache/
+reports/*.html
+
+# Raw API responses (large, re-downloadable); processed counts and snapshots ARE tracked
+data/raw/
+
+# OS
+.DS_Store

@@ -1,0 +1,88 @@
+# ---------------------------------------------------------------------------
+# Central configuration. Everything that defines "what we count" lives here,
+# so the yearly update only needs to touch this file (usually just `years`).
+# ---------------------------------------------------------------------------
+
+project:
+  years: [2016, 2026]        # inclusive; the current calendar year is flagged as partial
+
+openalex:
+  base_url: "https://api.openalex.org"
+  mailto: "CHANGE_ME@example.org"   # OpenAlex "polite pool": put a real contact address
+  # Proxy for "peer-reviewed publication": journal articles and reviews published
+  # in a journal-type source. Preprints in repositories, editorials and letters are excluded.
+  work_types: ["article", "review"]
+  source_type: "journal"
+
+search:
+  # Terms listed under `noisy` have frequent non-biological meanings (a cricket
+  # match, a computer bug, a tick in a form). They are excluded by default and
+  # can be switched on for a sensitivity analysis.
+  include_noisy: false
+
+# ---------------------------------------------------------------------------
+# Taxon groups. `arthropod: true` tags a group as Arthropoda; the pipeline
+# also reports the union of all arthropod groups (ALL_ARTHROPODS) and of all
+# groups (ALL_INVERTEBRATES).
+#
+# Syntax (OpenAlex search): `*` is a wildcard; quoted phrases disable
+# stemming, so inflected forms are listed explicitly inside phrases.
+# Papers matched only through generic words ("invertebrate*") cannot be
+# assigned to arthropods and fall in `invertebrates_general`.
+# ---------------------------------------------------------------------------
+taxa:
+  insects:
+    arthropod: true
+    terms: ["insect*", "honey bee", "honey bees", "honeybee*", "bumble bee", "bumble bees",
+            "bumblebee*", "bee", "Drosophila", "black soldier fly", "black soldier flies",
+            "mealworm*", "Tenebrio", "Hermetia", "locust*", "cockroach*", "butterfl*",
+            "beetle*", "Apis mellifera", "Bombus"]
+    noisy: ["cricket*", "ant", "ants", "moth*", "bug*"]
+  crustaceans:
+    arthropod: true
+    terms: ["crustacean*", "decapod*", "crab*", "lobster*", "shrimp*", "crayfish",
+            "prawn*", "isopod*", "amphipod*"]
+    noisy: []
+  other_arthropods:
+    arthropod: true
+    terms: ["arachnid*", "spider*", "scorpion*", "mite*", "horseshoe crab", "horseshoe crabs",
+            "myriapod*", "centipede*", "millipede*"]
+    noisy: ["tick", "ticks"]
+  arthropods_general:
+    arthropod: true
+    terms: ["arthropod*"]
+    noisy: []
+  cephalopods:
+    arthropod: false
+    terms: ["cephalopod*", "octopus*", "octopod*", "squid*", "cuttlefish*", "nautilus"]
+    noisy: []
+  other_molluscs:
+    arthropod: false
+    terms: ["mollus*", "gastropod*", "snail*", "bivalve*", "oyster*", "mussel*", "Aplysia"]
+    noisy: ["slug*"]
+  other_invertebrates:
+    arthropod: false
+    terms: ["annelid*", "leech*", "earthworm*", "nematode*", "Caenorhabditis", "planarian*",
+            "cnidarian*"]
+    noisy: ["sponge*"]
+  invertebrates_general:
+    arthropod: false
+    terms: ["invertebrate*"]
+    noisy: []
+
+# ---------------------------------------------------------------------------
+# State blocks. "affect" alone is deliberately NOT a term: as a verb it is noise.
+# Wildcards are avoided on "pain" (pain* would match "painted", "painting").
+# ---------------------------------------------------------------------------
+states:
+  sentience:
+    terms: ["sentien*"]
+  affect_emotion:
+    terms: ["affective state", "affective states", "affect-like", "emotion*", "emotion-like",
+            "emotional state", "emotional states", "cognitive bias", "cognitive biases"]
+  consciousness:
+    terms: ["conscious*", "subjective experience", "subjective experiences"]
+  welfare:
+    terms: ["welfare", "well-being", "wellbeing", "suffering"]
+  nociception_pain:
+    terms: ["nocicept*", "pain", "painful", "noxious stimulus", "noxious stimuli", "analges*"]
