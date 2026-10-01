@@ -3,7 +3,6 @@
 .Rhistory
 .RData
 .Rapp.history
-*.Rproj
 .Ruserdata
 renv/library/
 renv/staging/
