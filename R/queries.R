@@ -57,6 +57,6 @@ build_filter <- function(cfg, search = NULL) {
     paste0("type:", paste(unlist(cfg$openalex$work_types), collapse = "|")),
     paste0("primary_location.source.type:", cfg$openalex$source_type)
   )
-  if (!is.null(search)) parts <- c(parts, paste0("title_and_abstract.search:", search))
+  if (!is.null(search)) parts <- c(parts, paste0(cfg$openalex$search_field, ":", search))
   paste(parts, collapse = ",")
 }

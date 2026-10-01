@@ -35,7 +35,9 @@ next to the counts.
 
 Taxon terms (insect*, arthropod*, crustacean*, cephalopod*, invertebrate*, honey bee,
 Drosophila, ...) are combined with state terms (sentien*, affective state, emotion*,
-conscious*, welfare, nociception, pain), searched in title and abstract. "affect" alone
+conscious*, welfare, nociception, pain), searched in title and abstract with the
+exact (non-stemmed) OpenAlex field, the only one that accepts wildcards; plurals are
+therefore listed explicitly. "affect" alone
 is not used, because as a verb it is noise. Terms with frequent non-biological
 meanings (cricket*, ant, tick, ...) are excluded by default and can be switched on for
 a sensitivity analysis (`search.include_noisy`).

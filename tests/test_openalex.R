@@ -4,10 +4,16 @@ source("R/queries.R"); source("R/openalex.R")
 cfg <- read_config(); cfg$project$years <- c(2020, 2023)
 
 # The placeholder address must be rejected; the env var must win over the config
+# (the original value is restored so sourcing this test never changes the session)
+old_mailto <- Sys.getenv("OPENALEX_MAILTO", unset = NA)
+restore_mailto <- function() {
+  if (is.na(old_mailto)) Sys.unsetenv("OPENALEX_MAILTO") else Sys.setenv(OPENALEX_MAILTO = old_mailto)
+}
 Sys.setenv(OPENALEX_MAILTO = "")
 stopifnot(inherits(try(oa_mailto(cfg), silent = TRUE), "try-error"))
 Sys.setenv(OPENALEX_MAILTO = "test@example.org")
 stopifnot(oa_mailto(cfg) == "test@example.org")
+restore_mailto()
 
 mock <- function(url, query, mailto) {
   stopifnot(grepl("/works$", url), query$group_by == "publication_year")

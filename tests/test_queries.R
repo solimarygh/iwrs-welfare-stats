@@ -29,9 +29,12 @@ stopifnot(!"affect" %in% all_state_terms(cfg), !"affect*" %in% all_state_terms(c
 # No commas inside terms (a comma would split the OpenAlex filter)
 stopifnot(!any(grepl(",", c(all_terms, all_state_terms(cfg)))))
 
+# Plurals the exact (non-stemmed) field needs
+stopifnot(all(c("bee", "bees") %in% taxon_terms(cfg, "insects")))
+
 # Filter string
 f <- build_filter(cfg, build_search("x", "y"))
 stopifnot(grepl("from_publication_date:2016-01-01", f), grepl("type:article\\|review", f),
-          grepl("title_and_abstract.search:\\(x\\) AND \\(y\\)$", f))
+          grepl("title_and_abstract.search.exact:\\(x\\) AND \\(y\\)$", f))
 
 cat("test_queries.R: all checks passed\n")

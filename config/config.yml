@@ -15,6 +15,9 @@ openalex:
   # in a journal-type source. Preprints in repositories, editorials and letters are excluded.
   work_types: ["article", "review"]
   source_type: "journal"
+  # Wildcards (*) are only accepted by the exact (non-stemmed) field. That field does
+  # no stemming, so plurals and other inflections must be listed explicitly.
+  search_field: "title_and_abstract.search.exact"
 
 search:
   # Terms listed under `noisy` have frequent non-biological meanings (a cricket
@@ -27,8 +30,8 @@ search:
 # also reports the union of all arthropod groups (ALL_ARTHROPODS) and of all
 # groups (ALL_INVERTEBRATES).
 #
-# Syntax (OpenAlex search): `*` is a wildcard; quoted phrases disable
-# stemming, so inflected forms are listed explicitly inside phrases.
+# Syntax (OpenAlex exact search, no stemming): `*` is a wildcard; every inflected
+# form that matters (bee / bees) is listed explicitly.
 # Papers matched only through generic words ("invertebrate*") cannot be
 # assigned to arthropods and fall in `invertebrates_general`.
 # ---------------------------------------------------------------------------
@@ -36,7 +39,7 @@ taxa:
   insects:
     arthropod: true
     terms: ["insect*", "honey bee", "honey bees", "honeybee*", "bumble bee", "bumble bees",
-            "bumblebee*", "bee", "Drosophila", "black soldier fly", "black soldier flies",
+            "bumblebee*", "bee", "bees", "Drosophila", "black soldier fly", "black soldier flies",
             "mealworm*", "Tenebrio", "Hermetia", "locust*", "cockroach*", "butterfl*",
             "beetle*", "Apis mellifera", "Bombus"]
     noisy: ["cricket*", "ant", "ants", "moth*", "bug*"]
