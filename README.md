@@ -50,6 +50,20 @@ a journal-type source. The current calendar year is partial and is flagged as su
 R >= 4.3 with `yaml`, `httr2`, `dplyr`, `tidyr`, `readr`, `jsonlite`, `ggplot2`.
 `renv` lock file to be added once the pipeline is validated against the live API.
 
+## Pipeline steps
+
+| Script | What it does | Output |
+|--------|--------------|--------|
+| `scripts/00_check_api.R` | Probes the query pieces against the live API (diagnostic) | console |
+| `scripts/01_publication_counts.R` | Counts per year, taxon group x state block (+ denominators) | `data/processed/counts_by_year.csv` |
+| `scripts/02_fetch_records.R` | Downloads every matching record with its abstract and tags taxon groups and state blocks | `data/processed/records_meta.csv`, `tagging_fidelity.csv`; abstracts in `data/raw/` (not tracked) |
+| `scripts/03_make_validation_sample.R` | Stratified sample for manual relevance labelling | `data/raw/validation_sample.csv` (not tracked), `data/validation/sample_ids.csv` |
+
+The search is deliberately broad (high recall). Keyword matches are not the same as
+relevance: "welfare" also finds human economic welfare, "pain" finds venom pharmacology,
+"emotion*" finds arachnophobia. Step 3 draws a sample to measure that precision;
+labelling rules are in `docs/labeling_guide.md`.
+
 ## Contact email for OpenAlex
 
 OpenAlex gives faster, more reliable access to requests that identify a contact
