@@ -59,11 +59,25 @@ R >= 4.3 with `yaml`, `httr2`, `dplyr`, `tidyr`, `readr`, `jsonlite`, `ggplot2`.
 | `scripts/02_fetch_records.R` | Downloads every matching record with its abstract and tags taxon groups and state blocks | `data/processed/records_meta.csv`, `tagging_fidelity.csv`; abstracts in `data/raw/` (not tracked) |
 | `scripts/02b_recover_abstracts.R` | OpenAlex searches abstracts it does not return (~11% of records); recovers them by DOI from Crossref and Europe PMC, re-tags, rewrites the tables | `data/raw/` (not tracked), `data/processed/records_meta.csv`, `tagging_fidelity.csv` |
 | `scripts/03_make_validation_sample.R` | Stratified sample for manual relevance labelling | `data/raw/validation_sample.csv` (not tracked), `data/validation/sample_ids.csv` |
+| `scripts/05_build_site_data.R` | Exports the counts to `site/data.js`, the file the static site reads | `site/data.js` |
 
 The search is deliberately broad (high recall). Keyword matches are not the same as
 relevance: "welfare" also finds human economic welfare, "pain" finds venom pharmacology,
 "emotion*" finds arachnophobia. Step 3 draws a sample to measure that precision;
 labelling rules are in `docs/labeling_guide.md`.
+
+## The site
+
+`site/` is a static site (plain HTML, CSS and JavaScript, no build step and no
+dependencies): headline figures, a trend chart, a chart by theme, ranked taxon groups,
+a table view under every chart, light and dark themes, and filters that are saved in
+the link. To preview it, run `scripts/05_build_site_data.R` and open `site/index.html`
+in a browser (double-click works). To publish it, upload the `site/` folder to any
+static host (GitHub Pages, Netlify, an institutional server).
+
+Every number on the page comes from `site/data.js`, which is generated from
+`data/processed/counts_by_year.csv`; nothing is typed by hand. The page says it is
+preliminary until the validation sample is labelled.
 
 ## Contact email for OpenAlex
 

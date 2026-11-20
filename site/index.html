@@ -1,0 +1,130 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Invertebrate Welfare Research Tracker</title>
+<meta name="description" content="Annual statistics on research about invertebrate sentience and welfare, 2016 onward.">
+<link rel="stylesheet" href="assets/style.css">
+</head>
+<body>
+<a class="skip" href="#main">Skip to content</a>
+
+<header class="top">
+  <div class="wrap top-inner">
+    <div class="brand">
+      <span class="brand-mark" aria-hidden="true"></span>
+      <span class="brand-text">Invertebrate Welfare Research Tracker</span>
+    </div>
+    <button id="theme" class="btn ghost" type="button" aria-label="Change colour theme">
+      <svg viewBox="0 0 24 24" width="18" height="18" aria-hidden="true"><path d="M12 3a9 9 0 1 0 9 9c0-.5-.05-1-.14-1.47A6 6 0 0 1 12.47 3.14 9.2 9.2 0 0 0 12 3Z" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round"/></svg>
+      <span id="theme-label">Auto</span>
+    </button>
+  </div>
+</header>
+
+<section class="intro wrap">
+  <p class="eyebrow">Prepared for the Insect Welfare Research Society's annual report</p>
+  <h1>Invertebrate sentience and welfare in the scientific literature</h1>
+  <p class="lede" id="lede">Papers per year that study, or mention together, invertebrates and sentience, emotion, consciousness, welfare or pain, and how that compares with all research on the same animals. Counts come from OpenAlex and are updated each year by rerunning the code.</p>
+  <div class="notice" role="note">
+    <svg viewBox="0 0 24 24" width="18" height="18" aria-hidden="true"><circle cx="12" cy="12" r="9" fill="none" stroke="currentColor" stroke-width="1.6"/><path d="M12 7.5v5.5M12 16.5v.01" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg>
+    <p><strong>Preliminary.</strong> These are keyword matches in titles and abstracts. Some matches are not about the animals' welfare (for example human well-being or venom pharmacology). A manual validation will estimate the on-topic share; until then, read each number as an upper bound.</p>
+  </div>
+</section>
+
+<div class="filters" role="region" aria-label="Filters">
+  <div class="wrap filters-inner">
+    <label class="field">
+      <span class="field-label">Taxon group</span>
+      <select id="taxon"></select>
+    </label>
+    <div class="field">
+      <span class="field-label" id="range-label">Years</span>
+      <div class="seg" id="range" role="radiogroup" aria-labelledby="range-label"></div>
+    </div>
+    <p class="scope" id="scope" aria-live="polite"></p>
+  </div>
+</div>
+
+<main id="main" class="wrap">
+
+  <section class="hero-row" aria-label="Headline figures">
+    <div class="card hero">
+      <p class="hero-label" id="hero-label"></p>
+      <p class="hero-value" id="hero-value">0</p>
+      <p class="hero-delta" id="hero-delta"></p>
+    </div>
+    <div class="tiles" id="tiles"></div>
+  </section>
+
+  <section class="card chart-card" aria-labelledby="t-trend">
+    <header class="card-head">
+      <div>
+        <h2 id="t-trend">Papers matching the search, per year</h2>
+        <p class="sub" id="s-trend"></p>
+      </div>
+    </header>
+    <div class="chart" id="chart-trend"></div>
+    <details class="table-view"><summary>View as table</summary><div id="table-trend"></div></details>
+  </section>
+
+  <section class="card chart-card" aria-labelledby="t-themes">
+    <header class="card-head">
+      <div>
+        <h2 id="t-themes">By theme</h2>
+        <p class="sub" id="s-themes"></p>
+      </div>
+      <div class="seg small" id="metric" role="radiogroup" aria-label="Scale"></div>
+    </header>
+    <ul class="legend" id="legend-themes"></ul>
+    <div class="chart" id="chart-themes"></div>
+    <p class="note" id="note-themes"></p>
+    <details class="table-view"><summary>View as table</summary><div id="table-themes"></div></details>
+  </section>
+
+  <section class="card chart-card" aria-labelledby="t-groups">
+    <header class="card-head">
+      <div>
+        <h2 id="t-groups">Which groups of animals</h2>
+        <p class="sub" id="s-groups"></p>
+      </div>
+    </header>
+    <ul class="legend" id="legend-groups"></ul>
+    <div class="chart" id="chart-groups"></div>
+    <p class="note">A paper can mention several groups, so the bars add up to more than the total.</p>
+    <details class="table-view"><summary>View as table</summary><div id="table-groups"></div></details>
+  </section>
+
+  <section class="coming" aria-labelledby="t-next">
+    <h2 id="t-next">Still to come</h2>
+    <div class="coming-grid">
+      <article class="card soft"><span class="chip">In progress</span><h3>On-topic share</h3><p>A labelled sample of papers will give the share that is really about invertebrate welfare, so the counts above can be read as estimates and not as upper bounds.</p></article>
+      <article class="card soft"><span class="chip">Planned</span><h3>Study type</h3><p>Ratio of conceptual, theoretical, methodological and perspective papers to empirical ones.</p></article>
+      <article class="card soft"><span class="chip">Planned</span><h3>Journals</h3><p>Where the papers appear: animal welfare, entomology and high-impact multidisciplinary journals.</p></article>
+      <article class="card soft"><span class="chip">Planned</span><h3>Events and theses</h3><p>Talks, symposia and workshops at major conferences, and PhD and Master's theses.</p></article>
+    </div>
+  </section>
+
+  <section class="card method" aria-labelledby="t-method">
+    <h2 id="t-method">How the numbers are made</h2>
+    <ul>
+      <li><strong>Source.</strong> OpenAlex, queried on <span id="m-date"></span>. Journal articles and reviews, from <span id="m-first"></span> onward.</li>
+      <li><strong>Search.</strong> A taxon term (insect, crustacean, cephalopod, invertebrate and others) together with a state term (sentience, affective state, emotion, consciousness, welfare, nociception, pain) in the title or abstract. The terms are listed in <code>config/config.yml</code>.</li>
+      <li><strong>Matches, not verdicts.</strong> A paper counts when both kinds of term appear anywhere in its title or abstract. Papers that merely mention both are included.</li>
+      <li><strong>Share of the literature.</strong> Matching papers divided by all papers in the same taxon group in the same year, which corrects for the overall growth of publishing.</li>
+      <li id="m-partial"></li>
+    </ul>
+  </section>
+
+</main>
+
+<footer class="foot wrap">
+  <p>Data: OpenAlex. Code and search terms: <a href="https://github.com/solimarygh/iwrs-welfare-stats">github.com/solimarygh/iwrs-welfare-stats</a>. Rebuild the data with <code>scripts/05_build_site_data.R</code>.</p>
+</footer>
+
+<noscript><p class="wrap">This page needs JavaScript to draw its charts. The numbers are in <code>data/processed/counts_by_year.csv</code>.</p></noscript>
+<script src="data.js"></script>
+<script src="assets/app.js"></script>
+</body>
+</html>
