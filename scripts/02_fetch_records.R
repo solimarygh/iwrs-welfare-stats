@@ -2,12 +2,17 @@
 # (title, abstract, journal, year, ...) and tag it with taxon groups and state
 # blocks. Run from the repository root:
 #   source("scripts/02_fetch_records.R")
-# Needs OPENALEX_MAILTO and network access; ~16,000 records take a few minutes.
+# Needs OPENALEX_MAILTO, OPENALEX_API_KEY and network access; ~16,000 records take a few minutes.
 #
 # Abstract text is publisher content: it goes to data/raw/ (not tracked by git).
 # What is tracked is data/processed/records_meta.csv (no title, no abstract).
 source("R/queries.R"); source("R/openalex.R"); source("R/records.R"); source("R/tagging.R")
 cfg <- read_config()
+
+# OpenAlex requires a free API key to page past the first page of results.
+if (!nzchar(oa_api_key()))
+  stop("Set OPENALEX_API_KEY (free key: https://openalex.org/settings/api). ",
+       "Add OPENALEX_API_KEY=your-key to ~/.Renviron and restart R.", call. = FALSE)
 
 search <- build_search(union_terms(cfg, names(cfg$taxa)), all_state_terms(cfg))
 rec <- fetch_records(cfg, build_filter(cfg, search))

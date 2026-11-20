@@ -1,9 +1,21 @@
 # Minimal OpenAlex client. The HTTP call is injectable (`fetch`) so the logic
 # can be tested offline with a mock.
 
+# Optional API key. OpenAlex needs a free key to page past the first page of
+# results (cursor paging, used by scripts/02). Kept in the environment variable
+# OPENALEX_API_KEY so it is never committed.
+oa_api_key <- function() Sys.getenv("OPENALEX_API_KEY", unset = "")
+
+# Query parameters sent with every request (pure, so it can be tested offline).
+oa_query_params <- function(query, mailto, api_key = "") {
+  p <- c(query, list(mailto = mailto))
+  if (nzchar(api_key)) p$api_key <- api_key
+  p
+}
+
 default_fetch <- function(url, query, mailto) {
   req <- httr2::request(url)
-  req <- httr2::req_url_query(req, !!!query, mailto = mailto)
+  req <- httr2::req_url_query(req, !!!oa_query_params(query, mailto, oa_api_key()))
   req <- httr2::req_user_agent(req, "iwrs-welfare-stats (https://github.com/solimarygh/iwrs-welfare-stats)")
   req <- httr2::req_retry(req, max_tries = 5, backoff = function(i) 2^i)
   httr2::resp_body_json(httr2::req_perform(req))

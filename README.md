@@ -75,6 +75,19 @@ usethis::edit_r_environ()   # opens ~/.Renviron; add the line below, save, resta
 # OPENALEX_MAILTO=you@example.org
 ```
 
+## API key for OpenAlex
+
+Downloading records (step 2) pages through ~17,000 results, and OpenAlex asks for a
+free API key to page past the first page. Get one at https://openalex.org/settings/api
+and add it next to the email in `~/.Renviron`:
+
+```
+OPENALEX_API_KEY=your-key
+```
+
+Restart R afterwards. The key is read from the environment and never committed; do not
+paste request URLs in public, since they carry it.
+
 ## Status
 
 Under development. See the commit history for what has been validated.

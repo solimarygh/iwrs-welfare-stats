@@ -25,4 +25,11 @@ stopifnot(identical(d$year, 2020:2023), identical(d$n, c(0L, 5L, 0L, 9L)))
 
 empty <- function(...) list(group_by = list())
 stopifnot(all(oa_counts_by_year(cfg, "x", fetch = empty)$n == 0L))
+# --- query parameters: the key is sent only when set ------------------------------
+q <- list(filter = "f", cursor = "*")
+p0 <- oa_query_params(q, "a@b.org")
+stopifnot(identical(names(p0), c("filter", "cursor", "mailto")), is.null(p0$api_key))
+p1 <- oa_query_params(q, "a@b.org", api_key = "K")
+stopifnot(p1$api_key == "K", p1$mailto == "a@b.org", p1$cursor == "*")
+
 cat("test_openalex.R: all checks passed\n")
