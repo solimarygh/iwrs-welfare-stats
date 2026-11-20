@@ -24,7 +24,8 @@ utils::write.csv(ids, "data/validation/sample_ids.csv", row.names = FALSE)
 
 lab <- data.frame(
   row = seq_len(nrow(smp)), openalex_id = smp$openalex_id, year = smp$year,
-  journal = smp$source_name, title = smp$title, abstract = smp$abstract,
+  doi = smp$doi, journal = smp$source_name, title = smp$title,
+  abstract = smp$abstract, abstract_source = smp$abstract_source,
   matched_state = smp$primary_state, matched_taxon = smp$primary_taxon,
   relevance = "", reason_if_0 = "", notes = "", stringsAsFactors = FALSE)
 utils::write.csv(lab, "data/raw/validation_sample.csv", row.names = FALSE, na = "", fileEncoding = "UTF-8")

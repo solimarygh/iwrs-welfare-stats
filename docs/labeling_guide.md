@@ -15,6 +15,10 @@ Read the title and the abstract. Judge the paper's **main subject**, not whether
 keyword appears. Do not label by the column `matched_state`; it only says why the
 search found the record.
 
+Some rows have an empty `abstract` (`matched_state` is then only indicative). Judge those
+from the title and open the `doi` link if the title is not enough; use `?` when you cannot
+tell. They are sampled separately so that their precision is reported on its own.
+
 ## `relevance`
 
 | Code | Meaning | Examples |

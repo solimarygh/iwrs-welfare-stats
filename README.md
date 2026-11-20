@@ -57,6 +57,7 @@ R >= 4.3 with `yaml`, `httr2`, `dplyr`, `tidyr`, `readr`, `jsonlite`, `ggplot2`.
 | `scripts/00_check_api.R` | Probes the query pieces against the live API (diagnostic) | console |
 | `scripts/01_publication_counts.R` | Counts per year, taxon group x state block (+ denominators) | `data/processed/counts_by_year.csv` |
 | `scripts/02_fetch_records.R` | Downloads every matching record with its abstract and tags taxon groups and state blocks | `data/processed/records_meta.csv`, `tagging_fidelity.csv`; abstracts in `data/raw/` (not tracked) |
+| `scripts/02b_recover_abstracts.R` | OpenAlex searches abstracts it does not return (~11% of records); recovers them by DOI from Crossref and Europe PMC, re-tags, rewrites the tables | `data/raw/` (not tracked), `data/processed/records_meta.csv`, `tagging_fidelity.csv` |
 | `scripts/03_make_validation_sample.R` | Stratified sample for manual relevance labelling | `data/raw/validation_sample.csv` (not tracked), `data/validation/sample_ids.csv` |
 
 The search is deliberately broad (high recall). Keyword matches are not the same as

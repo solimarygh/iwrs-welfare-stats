@@ -59,6 +59,7 @@ stopifnot(sum(round_robin_allocate(c(a = 2L, b = 3L), 100)) == 5)    # capped at
 set.seed(1); n <- 900
 sim <- data.frame(openalex_id = paste0("W", seq_len(n)), title = "t", abstract = "a",
                   year = 2020L, source_name = "j", stringsAsFactors = FALSE)
+sim$abstract[sample(n, 120)] <- NA
 for (g in names(cfg$taxa))   sim[[paste0("taxon_", g)]] <- runif(n) < 0.12
 for (b in names(cfg$states)) sim[[paste0("state_", b)]] <- runif(n) < 0.25
 s1 <- make_validation_sample(sim, cfg); s2 <- make_validation_sample(sim, cfg)
@@ -73,10 +74,14 @@ mat <- function(pref, nm) setNames(sim[paste0(pref, names(nm))], names(nm))
 prim_st <- first_true(as.matrix(mat("state_", cfg$states)), cfg$sampling$state_priority)
 prim_tx <- first_true(as.matrix(mat("taxon_", cfg$taxa)), cfg$sampling$taxon_priority)
 for (b in cfg$sampling$state_priority) {
-  pop <- sum(prim_st == b & !is.na(prim_tx), na.rm = TRUE)
+  pop <- sum(prim_st == b & !is.na(prim_tx) & !is.na(sim$abstract), na.rm = TRUE)
   got <- sum(st$stratum_N[st$stratum_block == b])
   stopifnot(pop == got)
 }
-stopifnot(sum(st$stratum_N[st$stratum_block == "untagged"]) == sum(is.na(prim_st) | is.na(prim_tx)))
+stopifnot(sum(st$stratum_N[st$stratum_block == "untagged"]) ==
+          sum(!is.na(sim$abstract) & (is.na(prim_st) | is.na(prim_tx))))
+stopifnot(sum(st$stratum_N[st$stratum_block == "no_abstract"]) == sum(is.na(sim$abstract)))
+stopifnot(all(is.na(s1$abstract[s1$stratum_block == "no_abstract"])),
+          all(s1$primary_taxon[s1$stratum_block == "no_abstract"] == "none"))
 
 cat("test_records.R: all checks passed\n")

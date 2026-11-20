@@ -101,7 +101,8 @@ states:
 sampling:
   seed: 2026
   n_per_state_block: 60
-  n_untagged: 20          # records the local tagging could not assign (fidelity check)
+  n_untagged: 20          # records WITH an abstract that the local tagging could not assign
+  n_no_abstract: 60       # records still without an abstract after recovery (judged by title)
   state_priority: ["sentience", "consciousness", "affect_emotion", "welfare", "nociception_pain"]
   taxon_priority: ["cephalopods", "other_molluscs", "other_invertebrates", "crustaceans",
                    "other_arthropods", "arthropods_general", "invertebrates_general", "insects"]

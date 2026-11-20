@@ -31,15 +31,19 @@ make_validation_sample <- function(rec, cfg) {
   m_tx <- as.matrix(rec[paste0("taxon_", names(cfg$taxa))]);   colnames(m_tx) <- names(cfg$taxa)
   rec$primary_state <- first_true(m_st, sp$state_priority)
   rec$primary_taxon <- first_true(m_tx, sp$taxon_priority)
-  untagged <- is.na(rec$primary_state) | is.na(rec$primary_taxon)
-  rec$stratum_block <- ifelse(untagged, "untagged", rec$primary_state)
+  # Tags taken from a title alone are unreliable: records still without an abstract
+  # form their own stratum, labelled from the title and DOI.
+  no_abs <- is.na(rec$abstract)
+  untagged <- !no_abs & (is.na(rec$primary_state) | is.na(rec$primary_taxon))
+  rec$stratum_block <- ifelse(no_abs, "no_abstract", ifelse(untagged, "untagged", rec$primary_state))
+  rec$primary_taxon[no_abs] <- NA
 
   set.seed(sp$seed)
   out <- list()
-  for (b in c(sp$state_priority, "untagged")) {
+  for (b in c(sp$state_priority, "untagged", "no_abstract")) {
     rb <- rec[rec$stratum_block == b, , drop = FALSE]
     if (nrow(rb) == 0) next
-    n_b <- if (b == "untagged") sp$n_untagged else sp$n_per_state_block
+    n_b <- switch(b, untagged = sp$n_untagged, no_abstract = sp$n_no_abstract, sp$n_per_state_block)
     tx <- ifelse(is.na(rb$primary_taxon), "none", rb$primary_taxon)
     sizes <- table(tx); sizes <- setNames(as.integer(sizes), names(sizes))
     alloc <- round_robin_allocate(sizes, n_b)
