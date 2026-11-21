@@ -47,7 +47,7 @@ a journal-type source. The current calendar year is partial and is flagged as su
 
 ## Requirements
 
-R >= 4.3 with `yaml`, `httr2`, `dplyr`, `tidyr`, `readr`, `jsonlite`, `ggplot2`.
+R >= 4.3 with `yaml`, `httr2`, `jsonlite` and, for the members map, `readxl`.
 `renv` lock file to be added once the pipeline is validated against the live API.
 
 ## Pipeline steps
@@ -59,6 +59,7 @@ R >= 4.3 with `yaml`, `httr2`, `dplyr`, `tidyr`, `readr`, `jsonlite`, `ggplot2`.
 | `scripts/02_fetch_records.R` | Downloads every matching record with its abstract (one query per taxon group, de-duplicated) and tags taxon groups, state blocks and the strict core definition | `data/processed/records_meta.csv`, `core_counts_by_year.csv`, `tagging_fidelity.csv`; abstracts in `data/raw/` (not tracked) |
 | `scripts/02b_recover_abstracts.R` | OpenAlex searches abstracts it does not return (~11% of records); recovers them by DOI from Crossref and Europe PMC, re-tags, rewrites the tables | `data/raw/` (not tracked), `data/processed/records_meta.csv`, `tagging_fidelity.csv` |
 | `scripts/03_make_validation_sample.R` | Stratified sample for manual relevance labelling | `data/raw/validation_sample.csv` (not tracked), `data/validation/sample_ids.csv` |
+| `scripts/06_build_member_map_data.R` | Counts members per country from the membership list kept in `data/private/` (never committed) and writes `site/members.js` | `site/members.js` |
 | `scripts/05_build_site_data.R` | Exports the counts to `site/data.js`, the file the static site reads | `site/data.js` |
 
 **Two definitions.** The *broad* search counts every paper that mentions an animal name and a
@@ -99,6 +100,16 @@ placeholders chosen for contrast (white on the band is 5.6:1 in light mode), set
 `--brand`, `--accent` and `--tint` at the top of `site/assets/style.css`. The typeface
 is the system font; set `--font` in the same file to use the IWRS one. The colours of
 the data series are a separate, validated palette and should not follow the brand.
+
+### Members map
+
+The membership list is personal data. Keep it in `data/private/` (git ignores it, along with
+every `.xlsx`) and never commit it: `scripts/06_build_member_map_data.R` reads it on your own
+computer and writes only counts per country to `site/members.js`, with countries of fewer
+than `members.min_cell` members shown as "fewer than 3". The script finds the country column
+by its header (or set `members.country_column`) and lists country spellings it does not
+recognise; add them to `data/reference/country_names.csv`. The country outlines
+(`site/assets/world.js`) come from Natural Earth through `tools/build_world_assets.mjs`.
 
 ## Contact email for OpenAlex
 

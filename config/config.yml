@@ -137,3 +137,13 @@ core:
     consciousness:    ["conscious*"]
     welfare:          ["welfare", "wellbeing", "well-being", "suffering"]
     nociception_pain: ["pain", "painful", "nocicept*"]
+
+# ---------------------------------------------------------------------------
+# Members map (script 06). The membership list holds personal data: it stays in
+# data/private/ (ignored by git) and only counts per country leave it.
+# ---------------------------------------------------------------------------
+members:
+  file: "data/private/Membership Application_Anonymized.xlsx"
+  sheet: 1
+  country_column: ~        # ~ = find the column whose header mentions country / pais
+  min_cell: 3              # a country with fewer members is shown as "fewer than 3"
