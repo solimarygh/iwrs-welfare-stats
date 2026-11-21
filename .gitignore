@@ -21,3 +21,9 @@ data/raw/
 
 # Local credentials/contact settings
 .Renviron
+
+# Personal data: never commit membership lists or raw applications. Keep them in
+# data/private/ (ignored) and commit only aggregated, non-identifying tables.
+data/private/
+*.xlsx
+*.xls
