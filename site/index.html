@@ -99,6 +99,24 @@
     <details class="table-view"><summary>View as table</summary><div id="table-groups"></div></details>
   </section>
 
+  <section class="card chart-card" id="members" aria-labelledby="t-members" hidden>
+    <header class="card-head">
+      <div>
+        <h2 id="t-members">Where members live</h2>
+        <p class="sub" id="s-members"></p>
+      </div>
+    </header>
+    <div class="member-filters" id="member-filters" hidden>
+      <label class="field"><span class="field-label">Show members by</span><select id="m-facet"></select></label>
+      <label class="field" id="m-term-field" hidden><span class="field-label" id="m-term-label">Term</span><select id="m-term"></select></label>
+    </div>
+    <p class="mstats" id="member-stats"></p>
+    <div class="chart map" id="chart-map"></div>
+    <ul class="legend" id="legend-map"></ul>
+    <p class="note" id="note-map"></p>
+    <details class="table-view"><summary>View as table</summary><div id="table-members"></div></details>
+  </section>
+
   <section class="coming" aria-labelledby="t-next">
     <h2 id="t-next">Still to come</h2>
     <div class="coming-grid">
@@ -128,6 +146,8 @@
 
 <noscript><p class="wrap">This page needs JavaScript to draw its charts. The numbers are in <code>data/processed/counts_by_year.csv</code>.</p></noscript>
 <script src="data.js"></script>
+<script src="assets/world.js"></script>
+<script src="members.js"></script>
 <script src="assets/app.js"></script>
 </body>
 </html>

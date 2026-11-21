@@ -70,6 +70,7 @@ function makeTip(host) {
   const tip = h('div', { class: 'tip', role: 'status' });
   host.appendChild(tip);
   return {
+    el: tip,
     show(html, px, py, k) {
       tip.replaceChildren(...html);
       tip.classList.add('on');
@@ -324,6 +325,80 @@ function render() {
   st.animate = false;
 }
 
+
+/* ---------- members map (its own filters; not scoped by the filters above) ---------- */
+function drawMembers() {
+  const M = window.IWRS_MEMBERS, Wd = window.IWRS_WORLD, sec = $('members');
+  if (!M || !Wd || !M.countries || !M.countries.length) return;
+  sec.hidden = false;
+  const min = M.min_cell, cap = t => t.charAt(0).toUpperCase() + t.slice(1);
+  const bands = [{ test: n => n == null, label: `Fewer than ${min}`, slot: 1 },
+                 { test: n => n >= min && n <= 5, label: `${min}\u20135`, slot: 2 },
+                 { test: n => n >= 6 && n <= 10, label: '6\u201310', slot: 3 },
+                 { test: n => n >= 11 && n <= 25, label: '11\u201325', slot: 4 },
+                 { test: n => n >= 26, label: '26 or more', slot: 5 }];
+  const bandOf = n => bands.find(b => b.test(n));
+  const names = new Map(M.countries.map(c => [c.iso3, c.name]));
+  const facets = Object.entries(M.facets || {}).filter(([, f]) => f.terms && f.terms.length);
+  const sel = { facet: 'all', term: 0 };
+  const asOf = new Date(M.as_of + 'T00:00:00Z').toLocaleDateString('en-GB', { day: 'numeric', month: 'long', year: 'numeric', timeZone: 'UTC' });
+  const drawn = new Set(Wd.countries.map(c => c.id));
+  const host = $('chart-map'), tip = makeTip(host);
+
+  function current() {
+    if (sel.facet === 'all') return { countries: M.countries.map(c => ({ iso3: c.iso3, n: c.n })), total: M.located, who: 'members', what: 'all members' };
+    const f = M.facets[sel.facet], t = f.terms[sel.term];
+    return { countries: t.countries.map(c => ({ iso3: c.iso3, n: c.n })), total: t.total, who: `\u201c${cap(t.term)}\u201d`, what: `${f.label}: ${cap(t.term)}` };
+  }
+
+  function paint() {
+    const cur = current(), byId = new Map(cur.countries.map(c => [c.iso3, c])), nC = cur.countries.length;
+    $('s-members').textContent = `As of ${asOf}. A country with fewer than ${min} members in a view is shown without a number, and a term is listed only if at least ${min} members state it. ` +
+      'This section has its own filters and does not change with the ones above.';
+    const ms = $('member-stats'); ms.replaceChildren(h('strong', { text: fmt(cur.total) }),
+      h('span', { text: sel.facet === 'all' ? ' members in ' : ` members listed ${cur.who}, in ` }), h('strong', { text: String(nC) }), h('span', { text: nC === 1 ? ' country' : ' countries' }));
+    $('note-map').textContent = sel.facet === 'all' && M.total > M.located
+      ? `${fmt(M.total - M.located)} of ${fmt(M.total)} entries could not be placed on the map (no country, or one that was not recognised).` : '';
+
+    host.replaceChildren();
+    const svg = s('svg', { viewBox: `0 0 ${Wd.width} ${Wd.height}`, role: 'group', 'aria-label': `World map of members by country, ${cur.what}: ${fmt(cur.total)} in ${nC} countries.` }, host);
+    tip.hide(); host.appendChild(tip.el);
+    Wd.countries.forEach(c => {
+      const m = byId.get(c.id), nm = names.get(c.id) || c.name;
+      const label = m ? (m.n == null ? `${nm}: fewer than ${min} members` : `${nm}: ${fmt(m.n)} member${m.n === 1 ? '' : 's'}`) : `${nm}: none`;
+      const path = s('path', { d: c.d, ...(m ? { class: 'has', style: `fill:var(--m${bandOf(m.n).slot})`, tabindex: 0, role: 'img', 'aria-label': label } : { class: 'land' }) }, svg);
+      const show = (px, py) => tip.show([h('p', { class: 'tip-head', text: nm }),
+        h('div', { class: 'tip-row' }, h('span', { class: 'tip-name', text: 'Members' }),
+          h('span', { class: 'tip-val', text: m ? (m.n == null ? `fewer than ${min}` : fmt(m.n)) : 'none' }))], px, py, 1);
+      path.addEventListener('pointermove', e => { const r = host.getBoundingClientRect(); show(e.clientX - r.left, e.clientY - r.top - 14); });
+      path.addEventListener('pointerleave', () => tip.hide());
+      if (m) {
+        path.addEventListener('focus', () => { const k = svg.getBoundingClientRect().width / Wd.width; show(c.cx * k, c.cy * k - 10); });
+        path.addEventListener('blur', () => tip.hide());
+      }
+    });
+    $('legend-map').replaceChildren(...bands.filter(b => cur.countries.some(c => b.test(c.n)))
+      .map(b => h('li', {}, h('span', {}, h('span', { class: 'sw', style: `--c:var(--m${b.slot})` }), b.label))));
+    const rows = [...cur.countries].sort((a, b) => (b.n ?? -1) - (a.n ?? -1) || (names.get(a.iso3) || '').localeCompare(names.get(b.iso3) || ''));
+    $('table-members').replaceChildren(table(['Country', 'Members'], rows.map(c =>
+      [(names.get(c.iso3) || c.iso3) + (drawn.has(c.iso3) ? '' : ' (too small to draw)'), c.n == null ? `fewer than ${min}` : fmt(c.n)])));
+  }
+
+  // filters: which expertise to show, then which term
+  if (facets.length) {
+    $('member-filters').hidden = false;
+    const fs = $('m-facet'), ts = $('m-term');
+    fs.append(h('option', { value: 'all', text: 'All members' }), ...facets.map(([k, f]) => h('option', { value: k, text: f.label })));
+    const fillTerms = () => {
+      ts.replaceChildren(...M.facets[sel.facet].terms.map((t, i) => h('option', { value: String(i), text: `${cap(t.term)} (${t.total})` })));
+      $('m-term-label').textContent = M.facets[sel.facet].label;
+    };
+    fs.addEventListener('change', () => { sel.facet = fs.value; sel.term = 0; $('m-term-field').hidden = sel.facet === 'all'; if (sel.facet !== 'all') fillTerms(); paint(); });
+    ts.addEventListener('change', () => { sel.term = +ts.value; paint(); });
+  }
+  paint();
+}
+
 /* ---------- controls ---------- */
 (function init() {
   const sel = $('taxon');
@@ -359,6 +434,7 @@ function render() {
   apply();
 
   render();
+  drawMembers();
   let w = document.body.clientWidth, raf = 0;
   new ResizeObserver(() => { const nw = document.body.clientWidth; if (Math.abs(nw - w) < 2) return; w = nw;
     cancelAnimationFrame(raf); raf = requestAnimationFrame(render); }).observe(document.body);

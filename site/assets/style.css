@@ -8,6 +8,7 @@
   --s1: #2a78d6; --s2: #eb6834; --s3: #1baf7a; --s4: #eda100; --s5: #e87ba4;
   --accent: #2f6b5e; --other: #a6a49b;
   --brand: #4d6e66; --tint: #eaf0ed;
+  --land: #e4e3dc; --m1: #86b6ef; --m2: #5598e7; --m3: #2a78d6; --m4: #1c5cab; --m5: #104281;
   --font: system-ui, -apple-system, "Segoe UI", sans-serif;   /* swap for the IWRS typeface here */
   --shadow: 0 1px 2px rgba(11,11,11,.04), 0 8px 24px rgba(11,11,11,.04);
 }
@@ -21,6 +22,7 @@
     --s1: #3987e5; --s2: #d95926; --s3: #199e70; --s4: #c98500; --s5: #d55181;
     --other: #5d5c57;
     --accent: #8fc2b3; --brand: #2b3f3a; --tint: rgba(143,194,179,.10);
+    --land: #2a2a28; --m1: #184f95; --m2: #256abf; --m3: #3987e5; --m4: #6da7ec; --m5: #9ec5f4;
     --shadow: none;
   }
 }
@@ -33,10 +35,12 @@
   --s1: #3987e5; --s2: #d95926; --s3: #199e70; --s4: #c98500; --s5: #d55181;
   --other: #5d5c57;
   --accent: #8fc2b3; --brand: #2b3f3a; --tint: rgba(143,194,179,.10);
+  --land: #2a2a28; --m1: #184f95; --m2: #256abf; --m3: #3987e5; --m4: #6da7ec; --m5: #9ec5f4;
   --shadow: none;
 }
 
 * { box-sizing: border-box; }
+[hidden] { display: none !important; }
 html { -webkit-text-size-adjust: 100%; }
 body {
   margin: 0; background: var(--page); color: var(--ink);
@@ -160,6 +164,18 @@ th, td { text-align: right; padding: 6px 10px; border-bottom: 1px solid var(--gr
 th:first-child, td:first-child { text-align: left; }
 th { color: var(--ink-2); font-weight: 600; }
 td { font-variant-numeric: tabular-nums; }
+
+/* Members map */
+.member-filters { display: flex; flex-wrap: wrap; gap: 12px 20px; margin: 6px 0 12px; }
+.member-filters select { min-width: 220px; max-width: 100%; }
+.mstats { margin: 4px 0 8px; color: var(--ink-2); font-size: 15px; }
+.mstats strong { color: var(--ink); font-size: 26px; font-weight: 650; letter-spacing: -.02em; margin-right: 4px; }
+.mstats span + strong { margin-left: 18px; }
+.map svg { max-height: 560px; }
+.map .land { fill: var(--land); stroke: var(--surface); stroke-width: .8; stroke-linejoin: round; }
+.map .has { stroke: var(--surface); stroke-width: .8; cursor: default; transition: filter .15s ease; }
+.map .has:hover, .map .has:focus { filter: brightness(1.12); }
+.map .has:focus-visible { outline: 2px solid var(--accent); outline-offset: 1px; }
 
 /* Coming soon, method, footer */
 .coming h2 { margin-bottom: 14px; }

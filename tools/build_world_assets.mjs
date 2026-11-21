@@ -25,8 +25,18 @@ let minX = 1e9, minY = 1e9, maxX = -1e9, maxY = -1e9;
 const proj = feats.map(f => ({ f, polys: polys(f).map(poly => poly.map(ring => ring.map(equalEarth))) }));
 for (const c of proj) for (const poly of c.polys) for (const ring of poly) for (const [x, y] of ring) {
   minX = Math.min(minX, x); maxX = Math.max(maxX, x); minY = Math.min(minY, y); maxY = Math.max(maxY, y); }
+const maxJump = (maxX - minX) / 2;   // an edge longer than this crosses the antimeridian
 const W = 1000, k = W / (maxX - minX), H = Math.round((maxY - minY) * k);
 const sx = ([x, y]) => [(x - minX) * k, (y - minY) * k];
+// A ring cut at the antimeridian has edges that jump from one side of the map to the other
+// (Russia, Fiji). Split the ring at those edges so each piece is a closed polygon on its own side.
+function ringRuns(pts, jump) {
+  const n = pts.length, cuts = [];
+  for (let i = 0; i < n; i++) if (Math.abs(pts[i][0] - pts[(i + 1) % n][0]) > jump) cuts.push(i);
+  if (!cuts.length) return [pts];
+  return cuts.map((c, j) => { const run = []; let i = (c + 1) % n; const end = cuts[(j + 1) % cuts.length];
+    for (;;) { run.push(pts[i]); if (i === end) break; i = (i + 1) % n; } return run; });
+}
 const area = r => { let a = 0; for (let i = 0; i < r.length; i++) { const [x1, y1] = r[i], [x2, y2] = r[(i + 1) % r.length]; a += x1 * y2 - x2 * y1; } return a / 2; };
 const centroid = r => { let a = area(r), cx = 0, cy = 0; if (!a) return r[0];
   for (let i = 0; i < r.length; i++) { const [x1, y1] = r[i], [x2, y2] = r[(i + 1) % r.length], c = x1 * y2 - x2 * y1; cx += (x1 + x2) * c; cy += (y1 + y2) * c; }
@@ -35,9 +45,10 @@ const countries = [];
 for (const { f, polys: pp } of proj) {
   const id = iso.numericToAlpha3(f.id); if (!id) continue;
   let d = '', best = null, bestA = 0;
-  for (const poly of pp) for (const [i, ring0] of poly.entries()) {
-    const ring = ring0.map(sx);
-    d += 'M' + ring.map(([x, y], j) => { const p = `${x.toFixed(1)},${y.toFixed(1)}`; return p; }).join('L') + 'Z';
+  for (const poly of pp) for (const [i, ring0] of poly.entries()) for (const run of ringRuns(ring0, maxJump)) {
+    if (run.length < 3) continue;
+    const ring = run.map(sx);
+    d += 'M' + ring.map(([x, y]) => `${x.toFixed(1)},${y.toFixed(1)}`).join('L') + 'Z';
     if (i === 0 && Math.abs(area(ring)) > bestA) { bestA = Math.abs(area(ring)); best = ring; }
   }
   const [cx, cy] = centroid(best);

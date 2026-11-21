@@ -15,17 +15,21 @@ read_country_lookup <- function(path = "data/reference/country_names.csv") {
   utils::read.csv(path, stringsAsFactors = FALSE, encoding = "UTF-8")
 }
 
-# Reads the list (xlsx, xls or csv) and returns the country column as text. The column is
-# `members.country_column` in the config, or found by its header. Only headers are shown in errors.
-read_member_countries <- function(path, cfg) {
+# Reads the list (xlsx, xls or csv) as a table of text. Only headers appear in error messages.
+read_member_table <- function(path, cfg) {
   if (!file.exists(path)) stop("Membership file not found: ", path, "\nPut it in data/private/ (not tracked by git).", call. = FALSE)
-  df <- if (tolower(tools::file_ext(path)) %in% c("xlsx", "xls")) {
+  if (tolower(tools::file_ext(path)) %in% c("xlsx", "xls")) {
     if (!requireNamespace("readxl", quietly = TRUE)) stop("Install readxl: install.packages(\"readxl\")", call. = FALSE)
     as.data.frame(readxl::read_excel(path, sheet = cfg$members$sheet %||% 1, col_types = "text"), stringsAsFactors = FALSE)
   } else utils::read.csv(path, stringsAsFactors = FALSE, check.names = FALSE, encoding = "UTF-8")
+}
+
+# The country column is `members.country_column` in the config, or the only column whose header
+# mentions a country.
+country_of <- function(df, cfg) {
   col <- cfg$members$country_column
   if (is.null(col)) {
-    hit <- grep("countr|pa[ií]s|nation|resid", names(df), ignore.case = TRUE, value = TRUE)
+    hit <- grep("countr|pa[i\u00ed]s|nation|resid", names(df), ignore.case = TRUE, value = TRUE)
     if (length(hit) != 1)
       stop(if (length(hit)) "More than one column looks like a country: " else "No column looks like a country. ",
            "Set members.country_column in config/config.yml to one of: ", paste0('"', names(df), '"', collapse = ", "), call. = FALSE)
@@ -33,6 +37,67 @@ read_member_countries <- function(path, cfg) {
   }
   if (!col %in% names(df)) stop("Column \"", col, "\" not found. Columns: ", paste0('"', names(df), '"', collapse = ", "), call. = FALSE)
   df[[col]]
+}
+
+read_member_countries <- function(path, cfg) country_of(read_member_table(path, cfg), cfg)
+
+# ---- filters: free-text expertise columns -> counts per term and country -------------------------
+
+# Positions of the columns whose header starts with any of `headers` (case-insensitive). By
+# position, because a CSV can hold two columns with the same header.
+facet_columns <- function(df, headers) {
+  which(vapply(names(df), function(nm) any(startsWith(tolower(nm), tolower(headers))), logical(1)))
+}
+
+# One character vector of terms per row: split, lower-cased, tidied; empty and "n/a"-like dropped.
+split_terms <- function(x) {
+  x <- tolower(trimws(as.character(x)))
+  x <- gsub("(?<![a-z])n/a(?![a-z])", "na", x, perl = TRUE)      # "N/A" must not be split on the slash
+  parts <- strsplit(x, "[,;/\n|]+|\\s+and\\s+", perl = TRUE)
+  parts[is.na(x)] <- list(character(0))
+  lapply(parts, function(p) {
+    p <- gsub("\\s+", " ", trimws(gsub("[\"'.]+", "", p)))
+    unique(p[nzchar(p) & !p %in% c("n/a", "na", "none", "no", "-", "n.a")])
+  })
+}
+
+read_term_aliases <- function(path) {
+  if (is.null(path) || !file.exists(path)) return(data.frame(term = character(), canonical = character(), stringsAsFactors = FALSE))
+  a <- utils::read.csv(path, stringsAsFactors = FALSE, encoding = "UTF-8")
+  data.frame(term = tolower(trimws(a$term)), canonical = tolower(trimws(ifelse(is.na(a$canonical), "", a$canonical))), stringsAsFactors = FALSE)
+}
+
+apply_aliases <- function(person_terms, aliases) {
+  lapply(person_terms, function(t) {
+    i <- match(t, aliases$term)
+    out <- ifelse(is.na(i), t, aliases$canonical[i])
+    unique(out[nzchar(out)])
+  })
+}
+
+# Terms per person for one filter: the columns are merged, then aliases applied.
+member_terms <- function(df, headers, aliases) {
+  cols <- facet_columns(df, headers)
+  if (!length(cols)) stop("No column starts with: ", paste0('"', headers, '"', collapse = ", "),
+                          ". Columns: ", paste0('"', names(df), '"', collapse = ", "), call. = FALSE)
+  per_col <- lapply(cols, function(i) split_terms(df[[i]]))
+  merged <- lapply(seq_len(nrow(df)), function(i) unique(unlist(lapply(per_col, `[[`, i))))
+  apply_aliases(merged, aliases)
+}
+
+# Members per term, and per country within each term. Only terms stated by at least min_cell
+# members are kept; a country cell below min_cell carries no number.
+facet_counts <- function(person_terms, iso3, min_cell = 3, max_terms = 40) {
+  tot <- sort(table(unlist(person_terms)), decreasing = TRUE)
+  keep <- head(names(tot)[tot >= min_cell], max_terms)
+  terms <- lapply(keep, function(tm) {
+    has <- vapply(person_terms, function(x) tm %in% x, logical(1))
+    cn <- table(iso3[has & !is.na(iso3)])
+    n <- as.integer(cn)
+    list(term = tm, total = sum(has),
+         countries = data.frame(iso3 = names(cn), n = ifelse(n < min_cell, NA, n), small = n < min_cell, stringsAsFactors = FALSE))
+  })
+  list(terms = terms, distinct = length(tot), published = length(keep), tot = tot)
 }
 
 # Counts members per ISO3 country. Rows whose country is not recognised are reported, not guessed.
@@ -52,10 +117,11 @@ members_by_country <- function(countries, lookup, min_cell = 3) {
 }
 
 # Writes site/members.js. Countries with fewer than min_cell members carry no number.
-write_members_data <- function(agg, path = "site/members.js", as_of = format(Sys.Date())) {
+write_members_data <- function(agg, path = "site/members.js", as_of = format(Sys.Date()), facets = NULL) {
   d <- agg$table
   out <- list(as_of = as_of, total = agg$total, located = agg$located, min_cell = agg$min_cell,
               countries = data.frame(iso3 = d$iso3, name = d$country, n = ifelse(d$small, NA, d$n), small = d$small))
+  if (length(facets)) out$facets <- facets
   json <- jsonlite::toJSON(out, auto_unbox = TRUE, dataframe = "rows", na = "null", null = "null")
   writeLines(paste0("// Generated by scripts/06_build_member_map_data.R from counts only. Do not edit by hand.\n",
                     "window.IWRS_MEMBERS = ", json, ";"), path, useBytes = TRUE)

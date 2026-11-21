@@ -44,3 +44,68 @@ msg <- tryCatch(read_member_countries(csv, cfg), error = function(e) conditionMe
 stopifnot(grepl('"ID", "Name"', msg, fixed = TRUE), !grepl("Ana", msg))                    # only headers are shown
 stopifnot(inherits(try(read_member_countries("nope.xlsx", cfg), silent = TRUE), "try-error"))
 cat("test_members.R: all checks passed\n")
+
+# ============ filters: free-text expertise columns ============================================
+source("R/members.R")
+stopifnot(identical(split_terms(c("Entomology, Welfare science", "philosophy and ethics; N/A", NA, "", "None"))[[1]], c("entomology", "welfare science")))
+st <- split_terms(c("Entomology, Welfare science", "philosophy and ethics; N/A", NA, "", "None"))
+stopifnot(identical(st[[2]], c("philosophy", "ethics")), length(st[[3]]) == 0, length(st[[4]]) == 0, length(st[[5]]) == 0)
+stopifnot(length(split_terms("N/A")[[1]]) == 0, identical(split_terms("ethology, n/a")[[1]], "ethology"))
+stopifnot(identical(split_terms("  Honey Bees / 'Bumble bees'. ")[[1]], c("honey bees", "bumble bees")))
+
+# duplicated headers are merged per person; aliases unite spellings; an empty canonical drops a term
+df <- data.frame(ID = 1:8, Country = c("Brazil", "Brazil", "Brazil", "Chile", "Chile", "Chile", "Chile", "Atlantis"),
+                 `General Discipline` = c("Entomology", "entomology", "Entomologist", "Ethology", "Welfare science", NA, "Philosophy", "Entomology"),
+                 `Species-Specific Expertise` = c("Apis mellifera", "apis mellifera", NA, "Octopus vulgaris", NA, NA, NA, NA),
+                 `General Discipline` = c(NA, NA, "Animal welfare", NA, "Animal welfare", "animal welfare", "x", NA),
+                 check.names = FALSE, stringsAsFactors = FALSE)
+al <- data.frame(term = c("entomologist", "welfare science", "x"), canonical = c("entomology", "animal welfare", ""), stringsAsFactors = FALSE)
+pt <- member_terms(df, "General Discipline", al)
+stopifnot(identical(sort(pt[[3]]), c("animal welfare", "entomology")), identical(pt[[5]], "animal welfare"), identical(pt[[7]], "philosophy"))
+stopifnot(identical(pt[[5]], "animal welfare"))      # "welfare science" and "Animal welfare" in one person count once
+stopifnot(length(facet_columns(df, "General Discipline")) == 2)
+stopifnot(inherits(try(member_terms(df, "Nonexistent", al), silent = TRUE), "try-error"))
+
+iso <- ids(df$Country)
+fc <- facet_counts(pt, iso, min_cell = 3)
+tm <- vapply(fc$terms, function(x) x$term, "")
+stopifnot(setequal(tm, c("entomology", "animal welfare")))               # others have fewer than 3 members: not published
+e <- fc$terms[[match("entomology", tm)]]
+stopifnot(e$total == 4, e$countries$n[e$countries$iso3 == "BRA"] == 3, e$countries$small[e$countries$iso3 == "BRA"] == FALSE)
+stopifnot(is.na(e$countries$n[e$countries$iso3 == "ATL" | is.na(e$countries$iso3)]) || !any(is.na(e$countries$iso3)))
+w <- fc$terms[[match("animal welfare", tm)]]
+stopifnot(w$total == 3, all(w$countries$small), all(is.na(w$countries$n)))     # 3 members in total, 1 in Brazil and 2 in Chile: no country reaches 3, so no number
+sp <- facet_counts(member_terms(df, "Species-Specific", al), iso, min_cell = 3)
+stopifnot(length(sp$terms) == 0)                                              # a species stated by 2 members is never published
+
+# what is written for the site never carries a small number nor a rare term
+a2 <- members_by_country(df$Country, lk, 3)
+tmp2 <- tempfile(fileext = ".js")
+write_members_data(a2, tmp2, facets = list(discipline = list(label = "General discipline", terms = fc$terms)))
+j2 <- jsonlite::fromJSON(sub(";\\s*$", "", sub("^.*window.IWRS_MEMBERS = ", "", paste(readLines(tmp2), collapse = "\n"))), simplifyVector = FALSE)
+stopifnot(identical(names(j2$facets), "discipline"), length(j2$facets$discipline$terms) == 2)
+all_n <- unlist(lapply(j2$facets$discipline$terms, function(t) lapply(t$countries, function(cn) cn$n)))
+stopifnot(all(unlist(all_n) >= 3), all(vapply(j2$facets$discipline$terms, function(t) t$total >= 3, logical(1))))
+cat("test_members.R (filters): all checks passed\n")
+
+# ============ the real headers of the IWRS membership form (headers only, no data) ==========================
+hd <- c("Institutional Affiliation", "Membership Type",
+        "General Discipline (e.g., entomology, philosophy, economics, welfare science, comparative cognition)",
+        "Research Interest Keywords (e.g., farmed insect welfare, ethology, animal ethics)",
+        "Taxonomic Expertise (Order level)", "Species-Specific Expertise", "Are you interested in being contacted by others about:",
+        "General Discipline (e.g., entomology, philosophy, economics, welfare science, comparative cognition)",
+        "Research Interest Keywords (e.g., farmed insect welfare, ethology, animal ethics)",
+        "Taxonomic Expertise (Order level)", "Species-Specific Expertise", "Do you wish to be contacted about:",
+        "May we share your privately-stored email with third parties that wish to contact you about the above?",
+        "Country", "Rank (e.g., Associate Professor)", "Department")
+real <- as.data.frame(matrix("x", nrow = 1, ncol = length(hd), dimnames = list(NULL, hd)), check.names = FALSE, stringsAsFactors = FALSE)
+real$Country <- "Brazil"
+stopifnot(identical(country_of(real, cfg), "Brazil"))                           # one column mentions a country
+for (key in names(cfg$members$facets)) {
+  cols <- facet_columns(real, unlist(cfg$members$facets[[key]]$headers))
+  stopifnot(length(cols) == 2)                                                  # each filter merges its two duplicated columns
+}
+# nothing outside the country and the four filters is ever read
+used <- unlist(lapply(cfg$members$facets, function(f) facet_columns(real, unlist(f$headers))))
+stopifnot(!any(grepl("contact|email|Institution|Rank|Department|Membership", names(real)[used], ignore.case = TRUE)))
+cat("test_members.R (real headers): all checks passed\n")

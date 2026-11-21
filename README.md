@@ -108,7 +108,16 @@ every `.xlsx`) and never commit it: `scripts/06_build_member_map_data.R` reads i
 computer and writes only counts per country to `site/members.js`, with countries of fewer
 than `members.min_cell` members shown as "fewer than 3". The script finds the country column
 by its header (or set `members.country_column`) and lists country spellings it does not
-recognise; add them to `data/reference/country_names.csv`. The country outlines
+recognise; add them to `data/reference/country_names.csv`.
+
+The map also has filters by general discipline, taxonomic expertise, research interest and
+species expertise (`members.facets` in the config). Those columns are free text, so values
+are split on commas, semicolons and "and" and can be merged through a private CSV
+(`data/private/member_term_aliases.csv`, columns `term,canonical`; an empty `canonical` drops
+a term). Only terms stated by at least `min_cell` members are published, and a country cell
+below that carries no number. The contact, email, institution, department, rank and
+membership-type columns are never read. Even so, a filtered map narrows a group, so keep
+`min_cell` at 3 or more and review `site/members.js` before publishing. The country outlines
 (`site/assets/world.js`) come from Natural Earth through `tools/build_world_assets.mjs`.
 
 ## Contact email for OpenAlex
