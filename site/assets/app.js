@@ -218,7 +218,7 @@ function sparkline(vals, last) {
   const svg = s('svg', { viewBox: `0 0 ${W} ${H}`, 'aria-hidden': 'true' });
   s('path', { d: vals.map((v, i) => `${i ? 'L' : 'M'}${X(i).toFixed(1)},${Y(v).toFixed(1)}`).join(''),
     style: 'fill:none;stroke:var(--other);stroke-width:2;stroke-linecap:round;stroke-linejoin:round' }, svg);
-  s('circle', { cx: X(last), cy: Y(vals[last]), r: 4, style: 'fill:var(--accent);stroke:var(--surface);stroke-width:2' }, svg);
+  s('circle', { cx: X(last), cy: Y(vals[last]), r: 4, style: 'fill:var(--s1);stroke:var(--surface);stroke-width:2' }, svg);
   return svg;
 }
 function table(headers, rows) {

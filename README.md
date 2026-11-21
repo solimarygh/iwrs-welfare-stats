@@ -79,6 +79,17 @@ Every number on the page comes from `site/data.js`, which is generated from
 `data/processed/counts_by_year.csv`; nothing is typed by hand. The page says it is
 preliminary until the validation sample is labelled.
 
+### Look and logo
+
+`site/assets/logo-white.png` is the Insect Welfare Research Society logo (white, on a
+transparent background), supplied by Solimary García Hernández from the society's
+website. It belongs to IWRS: confirm with them that it may appear on this page before
+publishing. The colours are not taken from IWRS: the green band, accent and tint are
+placeholders chosen for contrast (white on the band is 5.6:1 in light mode), set by
+`--brand`, `--accent` and `--tint` at the top of `site/assets/style.css`. The typeface
+is the system font; set `--font` in the same file to use the IWRS one. The colours of
+the data series are a separate, validated palette and should not follow the brand.
+
 ## Contact email for OpenAlex
 
 OpenAlex gives faster, more reliable access to requests that identify a contact
