@@ -20,7 +20,7 @@ aliases <- read_term_aliases(cfg$members$aliases)
 facets <- list()
 for (key in names(cfg$members$facets)) {
   f <- cfg$members$facets[[key]]
-  fc <- facet_counts(member_terms(df, unlist(f$headers), aliases), iso3, cfg$members$min_cell, cfg$members$max_terms)
+  fc <- facet_counts(member_terms(df, unlist(f$headers), aliases, facet = key, split = !isFALSE(f$split)), iso3, cfg$members$min_cell, cfg$members$max_terms)
   facets[[key]] <- list(label = f$label, terms = fc$terms)
   message(sprintf("\n[%s] %d distinct terms; %d stated by at least %d members are published.",
                   f$label, fc$distinct, fc$published, cfg$members$min_cell))

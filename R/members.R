@@ -61,28 +61,47 @@ split_terms <- function(x) {
   })
 }
 
+# Aliases: CSV with columns term, canonical and (optional) facet. A `term` starting with "regex:"
+# is a regular expression (first matching rule wins, after exact terms). A row with a facet applies
+# only to that filter and beats a row without one. An empty canonical drops the term.
 read_term_aliases <- function(path) {
-  if (is.null(path) || !file.exists(path)) return(data.frame(term = character(), canonical = character(), stringsAsFactors = FALSE))
-  a <- utils::read.csv(path, stringsAsFactors = FALSE, encoding = "UTF-8")
-  data.frame(term = tolower(trimws(a$term)), canonical = tolower(trimws(ifelse(is.na(a$canonical), "", a$canonical))), stringsAsFactors = FALSE)
+  empty <- data.frame(term = character(), canonical = character(), facet = character(), stringsAsFactors = FALSE)
+  if (is.null(path) || !file.exists(path)) return(empty)
+  a <- utils::read.csv(path, stringsAsFactors = FALSE, encoding = "UTF-8", colClasses = "character")
+  if (is.null(a$facet)) a$facet <- ""
+  data.frame(term = trimws(a$term), canonical = tolower(trimws(ifelse(is.na(a$canonical), "", a$canonical))),
+             facet = trimws(ifelse(is.na(a$facet), "", a$facet)), stringsAsFactors = FALSE)
 }
 
-apply_aliases <- function(person_terms, aliases) {
+apply_aliases <- function(person_terms, aliases, facet = NULL) {
+  if (is.null(aliases$facet)) aliases$facet <- ""
+  keep_case <- startsWith(aliases$term, "regex:")                           # patterns keep their case
+  aliases$term[!keep_case] <- tolower(aliases$term[!keep_case])
+  if (!is.null(facet)) aliases <- aliases[aliases$facet %in% c("", facet), , drop = FALSE]
+  aliases <- aliases[order(aliases$facet == ""), , drop = FALSE]            # facet-specific rows first
+  rx <- startsWith(aliases$term, "regex:")
+  exact <- aliases[!rx, , drop = FALSE]; rules <- aliases[rx, , drop = FALSE]
+  pats <- sub("^regex:", "", rules$term)
   lapply(person_terms, function(t) {
-    i <- match(t, aliases$term)
-    out <- ifelse(is.na(i), t, aliases$canonical[i])
+    out <- vapply(t, function(x) {
+      i <- match(x, exact$term)
+      if (!is.na(i)) return(exact$canonical[i])
+      hit <- which(vapply(pats, function(r) grepl(r, x, perl = TRUE), logical(1)))
+      if (length(hit)) rules$canonical[hit[1]] else x
+    }, character(1))
     unique(out[nzchar(out)])
   })
 }
 
 # Terms per person for one filter: the columns are merged, then aliases applied.
-member_terms <- function(df, headers, aliases) {
+member_terms <- function(df, headers, aliases, facet = NULL, split = TRUE) {
   cols <- facet_columns(df, headers)
   if (!length(cols)) stop("No column starts with: ", paste0('"', headers, '"', collapse = ", "),
                           ". Columns: ", paste0('"', names(df), '"', collapse = ", "), call. = FALSE)
-  per_col <- lapply(cols, function(i) split_terms(df[[i]]))
+  one <- function(x) { x <- tolower(trimws(as.character(x))); lapply(x, function(v) if (is.na(v) || !nzchar(v)) character(0) else v) }
+  per_col <- lapply(cols, function(i) if (split) split_terms(df[[i]]) else one(df[[i]]))
   merged <- lapply(seq_len(nrow(df)), function(i) unique(unlist(lapply(per_col, `[[`, i))))
-  apply_aliases(merged, aliases)
+  apply_aliases(merged, aliases, facet)
 }
 
 # Members per term, and per country within each term. Only terms stated by at least min_cell

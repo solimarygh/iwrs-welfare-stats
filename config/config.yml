@@ -150,12 +150,14 @@ members:
   # Filters for the map. Each takes the columns whose header STARTS with one of `headers`
   # (duplicated headers are merged per person). Values are free text: they are split on
   # commas, semicolons, slashes and "and", lower-cased, and mapped through `aliases`
-  # (a private CSV with columns term,canonical; an empty canonical drops the term).
+  # (a CSV with columns term,canonical,facet; term can be regex:...; an empty canonical drops it).
+  # Keep it to generic vocabulary: it is committed, so it must not contain anything personal.
   # Only terms stated by at least min_cell members are published, never the others.
   facets:
+    membership_type: {label: "Membership type",       headers: ["Membership Type"], split: false}
     discipline:  {label: "General discipline",          headers: ["General Discipline"]}
     taxon_order: {label: "Taxonomic expertise (order)",  headers: ["Taxonomic Expertise"]}
     keywords:    {label: "Research interest",           headers: ["Research Interest Keywords"]}
     species:     {label: "Species expertise",           headers: ["Species-Specific Expertise"]}
-  aliases: "data/private/member_term_aliases.csv"
+  aliases: "data/reference/member_term_aliases.csv"
   max_terms: 40            # most frequent terms kept per filter

@@ -63,7 +63,7 @@ console.log('world.js:', countries.length, 'countries,', W + 'x' + H);
 const norm = s => strip(String(s)).toLowerCase().replace(/[^a-z0-9]+/g, ' ').trim();
 const aliases = {
   USA: ['usa', 'us', 'u s a', 'u s', 'united states', 'united states of america', 'estados unidos', 'eeuu', 'ee uu', 'eua', 'estados unidos da america', 'estados unidos de america'],
-  GBR: ['uk', 'u k', 'great britain', 'england', 'scotland', 'wales', 'northern ireland', 'united kingdom', 'reino unido', 'inglaterra', 'escocia', 'gales', 'gra bretanha'],
+  GBR: ['uk', 'u k', 'great britain', 'england', 'scotland', 'wales', 'northern ireland', 'united kingdom', 'reino unido', 'inglaterra', 'escocia', 'gales', 'gra bretanha', 'england uk', 'scotland u k', 'unite kingdom', 'united kingdom ni', 'northern ireland uk'],
   RUS: ['russia', 'rusia', 'russian federation', 'federacao russa'], KOR: ['south korea', 'korea', 'republic of korea', 'corea del sur', 'coreia do sul'],
   PRK: ['north korea', 'corea del norte', 'coreia do norte'], CZE: ['czechia', 'czech republic', 'republica checa', 'tchequia'],
   CIV: ['ivory coast', 'cote d ivoire', 'costa de marfil', 'costa do marfim'], TUR: ['turkey', 'turkiye', 'turquia'], IRN: ['iran'],
@@ -72,7 +72,7 @@ const aliases = {
   CPV: ['cape verde', 'cabo verde'], TLS: ['east timor', 'timor leste'], PSE: ['palestine'], NLD: ['holland', 'the netherlands', 'netherlands', 'paises bajos', 'holanda', 'paises baixos'],
   DEU: ['germany', 'deutschland', 'alemania', 'alemanha'], ARE: ['uae', 'emirates', 'united arab emirates', 'emiratos arabes unidos'],
   ZAF: ['south africa', 'sudafrica', 'africa do sul'], NZL: ['new zealand', 'nueva zelanda', 'nova zelandia'], BRA: ['brasil', 'brazil'],
-  CHN: ['china', 'pr china', 'people s republic of china'], COD: ['dr congo', 'drc', 'democratic republic of the congo'], COG: ['congo brazzaville'],
+  CHN: ['china', 'pr china', 'people s republic of china'], COD: ['dr congo', 'drc', 'democratic republic of the congo', 'democratic republic of congo', 'congo kinshasa', 'rd congo', 'congo dr'], CMR: ['cameroun'], COG: ['congo brazzaville'],
 };
 const rows = new Map(), conflicts = [];
 const add = (name, a3, en) => { const n = norm(name); if (!n) return;

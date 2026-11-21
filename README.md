@@ -116,7 +116,7 @@ are split on commas, semicolons and "and" and can be merged through a private CS
 (`data/private/member_term_aliases.csv`, columns `term,canonical`; an empty `canonical` drops
 a term). Only terms stated by at least `min_cell` members are published, and a country cell
 below that carries no number. The contact, email, institution, department, rank and
-membership-type columns are never read. Even so, a filtered map narrows a group, so keep
+timestamp columns are never read; membership type (career stage) is a filter. Even so, a filtered map narrows a group, so keep
 `min_cell` at 3 or more and review `site/members.js` before publishing. The country outlines
 (`site/assets/world.js`) come from Natural Earth through `tools/build_world_assets.mjs`.
 

@@ -103,9 +103,26 @@ real$Country <- "Brazil"
 stopifnot(identical(country_of(real, cfg), "Brazil"))                           # one column mentions a country
 for (key in names(cfg$members$facets)) {
   cols <- facet_columns(real, unlist(cfg$members$facets[[key]]$headers))
-  stopifnot(length(cols) == 2)                                                  # each filter merges its two duplicated columns
+  stopifnot(length(cols) == if (key == "membership_type") 1 else 2)            # each expertise filter merges its two duplicated columns
 }
 # nothing outside the country and the four filters is ever read
 used <- unlist(lapply(cfg$members$facets, function(f) facet_columns(real, unlist(f$headers))))
-stopifnot(!any(grepl("contact|email|Institution|Rank|Department|Membership", names(real)[used], ignore.case = TRUE)))
+stopifnot(!any(grepl("contact|email|Institution|Rank|Department|Timestamp", names(real)[used], ignore.case = TRUE)))
 cat("test_members.R (real headers): all checks passed\n")
+
+# ============ aliases: regex rules, per-filter rows, unsplit filters ======================================
+al2 <- data.frame(term = c("regex:^wel(fa|af)re", "welfare", "yes", "regex:entomol"),
+                  canonical = c("welfare science", "animal welfare", "", "entomology"),
+                  facet = c("discipline", "keywords", "", ""), stringsAsFactors = FALSE)
+stopifnot(identical(apply_aliases(list("welfare"), al2, "keywords")[[1]], "animal welfare"))     # the row of this filter wins
+stopifnot(identical(apply_aliases(list("welfare"), al2, "discipline")[[1]], "welfare science")) # the rule of this filter applies
+stopifnot(identical(apply_aliases(list(c("welafre", "entomolgy", "yes", "x")), al2, "discipline")[[1]], c("welfare science", "entomology", "x")))
+stopifnot(identical(apply_aliases(list("welafre"), al2, "keywords")[[1]], "welafre"))            # a rule of another filter does not apply
+mt <- data.frame(`Membership Type` = c("Graduate (Masters, PhD) Student", "Faculty", NA), check.names = FALSE, stringsAsFactors = FALSE)
+stopifnot(identical(member_terms(mt, "Membership Type", read_term_aliases(NULL), split = FALSE)[[1]], "graduate (masters, phd) student"))
+stopifnot(length(member_terms(mt, "Membership Type", read_term_aliases(NULL), split = FALSE)[[3]]) == 0)
+# the committed alias table loads and holds only generic vocabulary (no e-mail, URL or long digit runs)
+rt <- read_term_aliases(cfg$members$aliases)
+stopifnot(nrow(rt) > 30, !any(grepl("@|http|[0-9]{6,}", c(rt$term, rt$canonical))))
+stopifnot(all(rt$facet %in% c("", names(cfg$members$facets))))
+cat("test_members.R (aliases): all checks passed\n")
