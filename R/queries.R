@@ -60,3 +60,19 @@ build_filter <- function(cfg, search = NULL) {
   if (!is.null(search)) parts <- c(parts, paste0(cfg$openalex$search_field, ":", search))
   paste(parts, collapse = ",")
 }
+
+# ---- core (strict) definition: animal word NEAR state word ----------------------------
+# One phrase per animal x state word, e.g. "insects welfare"~6 (words within 6 positions,
+# any order, so "welfare of farmed insects" also matches).
+core_phrases <- function(cfg, block, proximity = cfg$core$proximity) {
+  words <- cfg$core$states[[block]]
+  if (is.null(words)) stop("Unknown core block: ", block)
+  grid <- expand.grid(n = unlist(cfg$core$taxon_nouns), w = unlist(words), stringsAsFactors = FALSE)
+  p <- paste0('"', grid$n, " ", grid$w, '"')
+  if (!is.null(proximity) && proximity > 0) p <- paste0(p, "~", proximity)
+  p
+}
+
+build_core_search <- function(cfg, blocks = names(cfg$core$states), proximity = cfg$core$proximity) {
+  paste0("(", paste(unlist(lapply(blocks, core_phrases, cfg = cfg, proximity = proximity)), collapse = " OR "), ")")
+}

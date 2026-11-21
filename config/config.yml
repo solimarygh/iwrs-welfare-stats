@@ -106,3 +106,30 @@ sampling:
   state_priority: ["sentience", "consciousness", "affect_emotion", "welfare", "nociception_pain"]
   taxon_priority: ["cephalopods", "other_molluscs", "other_invertebrates", "crustaceans",
                    "other_arthropods", "arthropods_general", "invertebrates_general", "insects"]
+
+# ---------------------------------------------------------------------------
+# CORE definition (strict). The broad search above counts any paper that mentions a
+# taxon term and a state term anywhere in its title or abstract; a first read of random
+# titles showed that most of those are not about the animals' welfare (human welfare,
+# venom pharmacology, fish farming...). The core keeps only papers in which an animal
+# word and a state word appear NEAR each other (within `proximity` words, in any order),
+# e.g. "insects welfare", "welfare of farmed insects", "sentient crabs".
+# Words must be single tokens; list singular and plural (the exact field does not stem).
+# Add an animal you miss to `taxon_nouns`; each one is crossed with every state word.
+# ---------------------------------------------------------------------------
+core:
+  proximity: 6
+  taxon_nouns: ["invertebrate", "invertebrates", "insect", "insects", "arthropod", "arthropods",
+                "crustacean", "crustaceans", "decapod", "decapods", "cephalopod", "cephalopods",
+                "mollusc", "molluscs", "mollusk", "mollusks",
+                "shrimp", "shrimps", "prawn", "prawns", "crab", "crabs", "lobster", "lobsters", "crayfish",
+                "octopus", "octopuses", "octopi", "squid", "cuttlefish",
+                "bee", "bees", "honeybee", "honeybees", "bumblebee", "bumblebees",
+                "cricket", "crickets", "mealworm", "mealworms", "locust", "locusts",
+                "cockroach", "cockroaches", "drosophila"]
+  states:
+    sentience:        ["sentience", "sentient"]
+    affect_emotion:   ["emotion", "emotions", "emotional", "affective"]
+    consciousness:    ["consciousness", "conscious"]
+    welfare:          ["welfare", "wellbeing", "suffering"]
+    nociception_pain: ["pain", "painful", "nociception", "nociceptive"]
