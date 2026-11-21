@@ -12,4 +12,13 @@ r <- suppressMessages(capture.output(res <- explain_match(c("https://openalex.or
 stopifnot(setequal(names(res), c("W1", "W2")))
 stopifnot(setequal(res$W1$taxon, c("insect*", "honey bee")), identical(res$W1$state, "welfare"))
 stopifnot(length(res$W2$taxon) == 0, length(res$W2$state) == 0)
+
+
+# --- probe_definition: counts, titles, and API errors ---------------------------------
+ok <- function(url, query, mailto) list(meta = list(count = 123),
+  results = list(list(title = "A paper", publication_year = 2020), list(title = NULL, publication_year = 2021)))
+p <- probe_definition("x", "f", cfg, fetch = ok)
+stopifnot(p$count == 123, identical(p$titles, c("(2020) A paper", "(2021) (no title)")), is.null(p$error))
+stopifnot(isTRUE(is.na(probe_definition("x", "f", cfg, fetch = function(...) stop("boom"))$count)))
+cat("probe_definition checks passed\n")
 cat("test_diagnostics.R: all checks passed\n")
