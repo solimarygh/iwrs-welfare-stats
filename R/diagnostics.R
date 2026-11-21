@@ -29,18 +29,21 @@ explain_match <- function(ids, cfg = read_config(), fetch = default_fetch) {
   invisible(out)
 }
 
-# Counts and a random sample of titles for one candidate definition of "on topic".
+# Total and a random sample of titles for one candidate definition of "on topic".
 # `filter` is a complete OpenAlex filter string. Returns list(count, titles, error).
+# Two calls: with `sample`, OpenAlex reports the sample size as the total, so the
+# total has to come from a separate call without it.
 probe_definition <- function(label, filter, cfg = read_config(), fetch = default_fetch, n_titles = 10) {
-  res <- tryCatch(
-    fetch(paste0(cfg$openalex$base_url, "/works"),
-          list(filter = filter, select = "id,title,publication_year", `per-page` = n_titles,
-               sample = n_titles, seed = 42), oa_mailto(cfg)),
-    error = function(e) {
-      body <- tryCatch(httr2::resp_body_string(httr2::last_response()), error = function(e2) "")
-      list(error = paste(conditionMessage(e), body))
-    })
-  if (!is.null(res$error)) return(list(label = label, count = NA, titles = character(), error = res$error))
-  titles <- vapply(res$results, function(w) paste0("(", w$publication_year %||% "?", ") ", w$title %||% "(no title)"), character(1))
-  list(label = label, count = res$meta$count %||% NA, titles = titles, error = NULL)
+  url <- paste0(cfg$openalex$base_url, "/works"); mailto <- oa_mailto(cfg)
+  fail <- function(e) {
+    body <- tryCatch(httr2::resp_body_string(httr2::last_response()), error = function(e2) "")
+    list(error = paste(conditionMessage(e), body))
+  }
+  tot <- tryCatch(fetch(url, list(filter = filter, `per-page` = 1), mailto), error = fail)
+  if (!is.null(tot$error)) return(list(label = label, count = NA, titles = character(), error = tot$error))
+  smp <- tryCatch(fetch(url, list(filter = filter, select = "id,title,publication_year",
+                                  `per-page` = n_titles, sample = n_titles, seed = 42), mailto), error = fail)
+  if (!is.null(smp$error)) return(list(label = label, count = tot$meta$count %||% NA, titles = character(), error = smp$error))
+  titles <- vapply(smp$results, function(w) paste0("(", w$publication_year %||% "?", ") ", w$title %||% "(no title)"), character(1))
+  list(label = label, count = tot$meta$count %||% NA, titles = titles, error = NULL)
 }

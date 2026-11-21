@@ -14,11 +14,14 @@ stopifnot(setequal(res$W1$taxon, c("insect*", "honey bee")), identical(res$W1$st
 stopifnot(length(res$W2$taxon) == 0, length(res$W2$state) == 0)
 
 
-# --- probe_definition: counts, titles, and API errors ---------------------------------
-ok <- function(url, query, mailto) list(meta = list(count = 123),
-  results = list(list(title = "A paper", publication_year = 2020), list(title = NULL, publication_year = 2021)))
-p <- probe_definition("x", "f", cfg, fetch = ok)
+# --- probe_definition: total from its own call, titles from the sample, API errors ------
+mock_probe <- function(url, query, mailto) {
+  if (!is.null(query$sample))                       # with `sample`, the API reports the sample size as the total
+    return(list(meta = list(count = query$sample),
+                results = list(list(title = "A paper", publication_year = 2020), list(title = NULL, publication_year = 2021))))
+  list(meta = list(count = 123), results = list())
+}
+p <- probe_definition("x", "f", cfg, fetch = mock_probe)
 stopifnot(p$count == 123, identical(p$titles, c("(2020) A paper", "(2021) (no title)")), is.null(p$error))
 stopifnot(isTRUE(is.na(probe_definition("x", "f", cfg, fetch = function(...) stop("boom"))$count)))
-cat("probe_definition checks passed\n")
 cat("test_diagnostics.R: all checks passed\n")
