@@ -17,12 +17,12 @@ tag_terms <- function(text, terms) {
   grepl(pat, text, perl = TRUE)
 }
 
-# Adds taxon_<group>, state_<block> and is_arthropod columns (logical).
+# Adds taxon_<group>, state_<block>, is_arthropod, core_<block> and core_any (logical).
 tag_records <- function(rec, cfg) {
   text <- paste(rec$title, rec$abstract)
   for (g in names(cfg$taxa)) rec[[paste0("taxon_", g)]] <- tag_terms(text, taxon_terms(cfg, g))
   for (b in names(cfg$states)) rec[[paste0("state_", b)]] <- tag_terms(text, state_terms(cfg, b))
   arth <- paste0("taxon_", arthropod_groups(cfg))
   rec$is_arthropod <- Reduce(`|`, lapply(arth, function(cl) rec[[cl]]))
-  rec
+  tag_core(rec, cfg)
 }

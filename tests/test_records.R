@@ -1,7 +1,7 @@
 # Offline tests for R/records.R, R/tagging.R and R/sampling.R.
 #   Rscript tests/test_records.R
 source("R/queries.R"); source("R/openalex.R"); source("R/records.R")
-source("R/tagging.R"); source("R/sampling.R")
+source("R/tagging.R"); source("R/core.R"); source("R/sampling.R")
 cfg <- read_config()
 
 # --- abstract reconstruction ------------------------------------------------
@@ -60,28 +60,28 @@ set.seed(1); n <- 900
 sim <- data.frame(openalex_id = paste0("W", seq_len(n)), title = "t", abstract = "a",
                   year = 2020L, source_name = "j", stringsAsFactors = FALSE)
 sim$abstract[sample(n, 120)] <- NA
-for (g in names(cfg$taxa))   sim[[paste0("taxon_", g)]] <- runif(n) < 0.12
-for (b in names(cfg$states)) sim[[paste0("state_", b)]] <- runif(n) < 0.25
+for (g in names(cfg$taxa))        sim[[paste0("taxon_", g)]] <- runif(n) < 0.12
+for (b in names(cfg$core$states)) sim[[paste0("core_", b)]]  <- runif(n) < 0.08
 s1 <- make_validation_sample(sim, cfg); s2 <- make_validation_sample(sim, cfg)
 stopifnot(identical(s1$openalex_id, s2$openalex_id))                  # reproducible
 stopifnot(!anyDuplicated(s1$openalex_id))
-per_block <- tapply(s1$stratum_block, s1$stratum_block, length)
-stopifnot(all(per_block[names(per_block) != "untagged"] <= cfg$sampling$n_per_state_block))
+per <- table(s1$stratum_block)
+cap <- function(b) switch(b, broad_only = cfg$sampling$n_broad_only, no_abstract = cfg$sampling$n_no_abstract, cfg$sampling$n_per_state_block)
+stopifnot(all(per <= vapply(names(per), cap, numeric(1))))
+stopifnot(setequal(names(per), c(cfg$sampling$state_priority, "broad_only", "no_abstract")))
 st <- unique(s1[, c("stratum_block", "primary_taxon", "stratum_N", "stratum_n")])
 stopifnot(all(st$stratum_n <= st$stratum_N), all(abs(s1$weight * s1$stratum_n - s1$stratum_N) < 1e-9))
 # stratum sizes recorded in the sample equal the population counts, recomputed independently
-mat <- function(pref, nm) setNames(sim[paste0(pref, names(nm))], names(nm))
-prim_st <- first_true(as.matrix(mat("state_", cfg$states)), cfg$sampling$state_priority)
-prim_tx <- first_true(as.matrix(mat("taxon_", cfg$taxa)), cfg$sampling$taxon_priority)
-for (b in cfg$sampling$state_priority) {
-  pop <- sum(prim_st == b & !is.na(prim_tx) & !is.na(sim$abstract), na.rm = TRUE)
-  got <- sum(st$stratum_N[st$stratum_block == b])
-  stopifnot(pop == got)
-}
-stopifnot(sum(st$stratum_N[st$stratum_block == "untagged"]) ==
-          sum(!is.na(sim$abstract) & (is.na(prim_st) | is.na(prim_tx))))
-stopifnot(sum(st$stratum_N[st$stratum_block == "no_abstract"]) == sum(is.na(sim$abstract)))
+core_m <- as.matrix(setNames(sim[paste0("core_", names(cfg$core$states))], names(cfg$core$states)))
+prim <- first_true(core_m, cfg$sampling$state_priority)
+has_abs <- !is.na(sim$abstract)
+for (b in cfg$sampling$state_priority)
+  stopifnot(sum(prim == b & has_abs, na.rm = TRUE) == sum(st$stratum_N[st$stratum_block == b]))
+stopifnot(sum(is.na(prim) & has_abs) == sum(st$stratum_N[st$stratum_block == "broad_only"]))
+stopifnot(sum(!has_abs) == sum(st$stratum_N[st$stratum_block == "no_abstract"]))
 stopifnot(all(is.na(s1$abstract[s1$stratum_block == "no_abstract"])),
           all(s1$primary_taxon[s1$stratum_block == "no_abstract"] == "none"))
+# a core record is never sampled as broad_only
+stopifnot(!any(s1$stratum_block == "broad_only" & s1$openalex_id %in% sim$openalex_id[!is.na(prim)]))
 
 cat("test_records.R: all checks passed\n")

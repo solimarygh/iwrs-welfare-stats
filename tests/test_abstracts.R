@@ -1,5 +1,5 @@
 # Offline tests for R/abstracts.R and R/outputs.R.   Rscript tests/test_abstracts.R
-source("R/queries.R"); source("R/openalex.R"); source("R/records.R"); source("R/tagging.R")
+source("R/queries.R"); source("R/openalex.R"); source("R/records.R"); source("R/tagging.R"); source("R/core.R")
 source("R/abstracts.R"); source("R/outputs.R")
 cfg <- read_config()
 Sys.setenv(OPENALEX_MAILTO = "t@example.org"); on.exit(Sys.unsetenv("OPENALEX_MAILTO"))
@@ -53,5 +53,17 @@ stopifnot(f$api[f$taxon_group == "crustaceans" & f$state_block == "nociception_p
           f$local[f$taxon_group == "crustaceans" & f$state_block == "nociception_pain"] == 1)
 u <- untagged_by_abstract(tagged)
 stopifnot(u["TRUE", "TRUE"] == 0, u["FALSE", "TRUE"] == 100)
+
+# --- core counts by year -----------------------------------------------------------------------
+cfg2 <- cfg; cfg2$project$years <- c(2024, 2026)
+r <- tag_records(data.frame(
+  year = c(2024, 2025, 2025, 2026), title = c("Insect welfare", "Pain in shrimp", "Human welfare", "Sentient octopuses"),
+  abstract = NA, stringsAsFactors = FALSE), cfg2)
+cc <- core_counts_by_year(r, cfg2, this_year = 2026)
+n_of <- function(g, b, y) cc$n[cc$taxon_group == g & cc$state_block == b & cc$year == y]
+stopifnot(n_of("ALL_INVERTEBRATES", "ANY", 2025) == 1, n_of("ALL_INVERTEBRATES", "BROAD", 2025) == 2)
+stopifnot(n_of("insects", "welfare", 2024) == 1, n_of("crustaceans", "nociception_pain", 2025) == 1)
+stopifnot(n_of("cephalopods", "sentience", 2026) == 1, n_of("ALL_ARTHROPODS", "ANY", 2026) == 0)
+stopifnot(all(cc$partial_year[cc$year == 2026]), !any(cc$partial_year[cc$year < 2026]), !anyNA(cc$n))
 
 cat("test_abstracts.R: all checks passed\n")

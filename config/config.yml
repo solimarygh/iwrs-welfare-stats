@@ -39,19 +39,25 @@ taxa:
   insects:
     arthropod: true
     terms: ["insect*", "honey bee", "honey bees", "honeybee*", "bumble bee", "bumble bees",
-            "bumblebee*", "bee", "bees", "Drosophila", "black soldier fly", "black soldier flies",
-            "mealworm*", "Tenebrio", "Hermetia", "locust*", "cockroach*", "butterfl*",
-            "beetle*", "Apis mellifera", "Bombus"]
-    noisy: ["cricket*", "ant", "ants", "moth*", "bug*"]
+            "bumblebee*", "stingless bee", "stingless bees", "bee", "bees", "wasp", "wasps",
+            "hornet", "hornets", "butterfl*", "caterpillar*", "beetle*", "mosquito", "mosquitoes",
+            "mosquitos", "grasshopper*", "locust*", "cockroach*", "termite*", "aphid*", "silkworm*",
+            "mealworm*", "crickets", "house cricket", "house crickets", "black soldier fly",
+            "black soldier flies", "fruit fly", "fruit flies", "house fly", "house flies", "housefly",
+            "houseflies", "Drosophila", "Apis", "Bombus", "Tenebrio", "Hermetia", "Acheta", "Gryllus",
+            "Periplaneta", "Schistocerca", "Locusta", "Bombyx", "Musca", "Tribolium", "Galleria"]
+    noisy: ["cricket", "ant", "ants", "moth*", "bug*"]
   crustaceans:
     arthropod: true
-    terms: ["crustacean*", "decapod*", "crab*", "lobster*", "shrimp*", "crayfish",
-            "prawn*", "isopod*", "amphipod*"]
+    terms: ["crustacean*", "decapod*", "crab", "crabs", "lobster*", "shrimp*", "prawn*", "crayfish",
+            "crawfish", "krill", "isopod*", "amphipod*", "copepod*", "barnacle*", "Daphnia", "Artemia",
+            "Penaeus", "Litopenaeus", "Macrobrachium", "Homarus", "Nephrops", "Procambarus", "Carcinus",
+            "Pacifastacus", "Astacus", "Cherax"]
     noisy: []
   other_arthropods:
     arthropod: true
-    terms: ["arachnid*", "spider*", "scorpion*", "mite*", "horseshoe crab", "horseshoe crabs",
-            "myriapod*", "centipede*", "millipede*"]
+    terms: ["arachnid*", "spider*", "scorpion*", "tarantula*", "mite", "mites", "horseshoe crab",
+            "horseshoe crabs", "myriapod*", "centipede*", "millipede*", "harvestman", "harvestmen"]
     noisy: ["tick", "ticks"]
   arthropods_general:
     arthropod: true
@@ -59,16 +65,19 @@ taxa:
     noisy: []
   cephalopods:
     arthropod: false
-    terms: ["cephalopod*", "octopus*", "octopod*", "squid*", "cuttlefish*", "nautilus"]
+    terms: ["cephalopod*", "octopus*", "octopod*", "octopi", "squid", "squids", "cuttlefish*",
+            "nautilus", "nautiluses", "Sepia"]
     noisy: []
   other_molluscs:
     arthropod: false
-    terms: ["mollus*", "gastropod*", "snail*", "bivalve*", "oyster*", "mussel*", "Aplysia"]
+    terms: ["mollus*", "gastropod*", "snail*", "bivalve*", "oyster*", "mussel*", "clam", "clams",
+            "scallop*", "abalone*", "limpet*", "whelk*", "Aplysia", "Lymnaea"]
     noisy: ["slug*"]
   other_invertebrates:
     arthropod: false
-    terms: ["annelid*", "leech*", "earthworm*", "nematode*", "Caenorhabditis", "planarian*",
-            "cnidarian*"]
+    terms: ["annelid*", "leech*", "earthworm*", "nematode*", "Caenorhabditis", "planarian*", "cnidarian*",
+            "jellyfish*", "sea urchin", "sea urchins", "starfish", "sea star", "sea stars", "echinoderm*",
+            "polychaete*", "tardigrade*", "rotifer*", "coral", "corals"]
     noisy: ["sponge*"]
   invertebrates_general:
     arthropod: false
@@ -83,7 +92,7 @@ states:
   sentience:
     terms: ["sentien*"]
   affect_emotion:
-    terms: ["affective state", "affective states", "affect-like", "emotion*", "emotion-like",
+    terms: ["affective", "affective state", "affective states", "affect-like", "emotion*", "emotion-like",
             "emotional state", "emotional states", "cognitive bias", "cognitive biases"]
   consciousness:
     terms: ["conscious*", "subjective experience", "subjective experiences"]
@@ -93,7 +102,7 @@ states:
     terms: ["nocicept*", "pain", "painful", "noxious stimulus", "noxious stimuli", "analges*"]
 
 # ---------------------------------------------------------------------------
-# Validation sample (script 03). A paper can match several state blocks and taxon
+# Validation sample (script 03). A paper can match several core blocks and taxon
 # groups; it is assigned to the FIRST one in these lists, listed rarest-first so
 # that rare categories are well represented. Weights (stratum_N / stratum_n) are
 # stored so that precision can be estimated for the whole set afterwards.
@@ -101,35 +110,30 @@ states:
 sampling:
   seed: 2026
   n_per_state_block: 60
-  n_untagged: 20          # records WITH an abstract that the local tagging could not assign
+  n_broad_only: 100       # records with an abstract that are in the broad set but not in the core
   n_no_abstract: 60       # records still without an abstract after recovery (judged by title)
   state_priority: ["sentience", "consciousness", "affect_emotion", "welfare", "nociception_pain"]
   taxon_priority: ["cephalopods", "other_molluscs", "other_invertebrates", "crustaceans",
                    "other_arthropods", "arthropods_general", "invertebrates_general", "insects"]
 
 # ---------------------------------------------------------------------------
-# CORE definition (strict). The broad search above counts any paper that mentions a
-# taxon term and a state term anywhere in its title or abstract; a first read of random
-# titles showed that most of those are not about the animals' welfare (human welfare,
-# venom pharmacology, fish farming...). The core keeps only papers in which an animal
-# word and a state word appear NEAR each other (within `proximity` words, in any order),
-# e.g. "insects welfare", "welfare of farmed insects", "sentient crabs".
-# Words must be single tokens; list singular and plural (the exact field does not stem).
-# Add an animal you miss to `taxon_nouns`; each one is crossed with every state word.
+# CORE definition (strict), applied LOCALLY to the downloaded titles and abstracts.
+# The broad search above counts any paper that mentions a taxon term and a state term
+# anywhere; a first read of random titles showed most of those are not about the animals'
+# welfare (human welfare, venom pharmacology, fish farming...). The core keeps a paper only
+# when an animal word (any term of `taxa` above) and a state word of one block appear
+# within `proximity` words of each other, in any order: "insect welfare", "welfare of
+# farmed insects", "sentient crabs". Words may end in * (prefix) or be a phrase.
+# Every state word must also be matched by the broad search (a test checks this), because
+# the core can only find papers that the broad search retrieved.
 # ---------------------------------------------------------------------------
 core:
   proximity: 6
-  taxon_nouns: ["invertebrate", "invertebrates", "insect", "insects", "arthropod", "arthropods",
-                "crustacean", "crustaceans", "decapod", "decapods", "cephalopod", "cephalopods",
-                "mollusc", "molluscs", "mollusk", "mollusks",
-                "shrimp", "shrimps", "prawn", "prawns", "crab", "crabs", "lobster", "lobsters", "crayfish",
-                "octopus", "octopuses", "octopi", "squid", "cuttlefish",
-                "bee", "bees", "honeybee", "honeybees", "bumblebee", "bumblebees",
-                "cricket", "crickets", "mealworm", "mealworms", "locust", "locusts",
-                "cockroach", "cockroaches", "drosophila"]
+  # Tokens a wildcard would wrongly catch (insect* also matches insecticide).
+  noun_exclude: ["insectic*", "insectivor*", "insectar*", "molluscic*", "nematicid*"]
   states:
-    sentience:        ["sentience", "sentient"]
-    affect_emotion:   ["emotion", "emotions", "emotional", "affective"]
-    consciousness:    ["consciousness", "conscious"]
-    welfare:          ["welfare", "wellbeing", "suffering"]
-    nociception_pain: ["pain", "painful", "nociception", "nociceptive"]
+    sentience:        ["sentien*"]
+    affect_emotion:   ["emotion*", "affective"]
+    consciousness:    ["conscious*"]
+    welfare:          ["welfare", "wellbeing", "well-being", "suffering"]
+    nociception_pain: ["pain", "painful", "nocicept*"]

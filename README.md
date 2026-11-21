@@ -56,10 +56,20 @@ R >= 4.3 with `yaml`, `httr2`, `dplyr`, `tidyr`, `readr`, `jsonlite`, `ggplot2`.
 |--------|--------------|--------|
 | `scripts/00_check_api.R` | Probes the query pieces against the live API (diagnostic) | console |
 | `scripts/01_publication_counts.R` | Counts per year, taxon group x state block (+ denominators) | `data/processed/counts_by_year.csv` |
-| `scripts/02_fetch_records.R` | Downloads every matching record with its abstract and tags taxon groups and state blocks | `data/processed/records_meta.csv`, `tagging_fidelity.csv`; abstracts in `data/raw/` (not tracked) |
+| `scripts/02_fetch_records.R` | Downloads every matching record with its abstract (one query per taxon group, de-duplicated) and tags taxon groups, state blocks and the strict core definition | `data/processed/records_meta.csv`, `core_counts_by_year.csv`, `tagging_fidelity.csv`; abstracts in `data/raw/` (not tracked) |
 | `scripts/02b_recover_abstracts.R` | OpenAlex searches abstracts it does not return (~11% of records); recovers them by DOI from Crossref and Europe PMC, re-tags, rewrites the tables | `data/raw/` (not tracked), `data/processed/records_meta.csv`, `tagging_fidelity.csv` |
 | `scripts/03_make_validation_sample.R` | Stratified sample for manual relevance labelling | `data/raw/validation_sample.csv` (not tracked), `data/validation/sample_ids.csv` |
 | `scripts/05_build_site_data.R` | Exports the counts to `site/data.js`, the file the static site reads | `site/data.js` |
+
+**Two definitions.** The *broad* search counts every paper that mentions an animal name and a
+state word anywhere in its title or abstract. A first read of random titles showed that
+most of those are not about the animals' welfare. The *core* keeps a paper only when an
+animal word and a state word occur within a few words of each other ("insect welfare",
+"welfare of farmed insects"); it is applied locally to the downloaded records
+(`R/core.R`), so the list of animal names in `config/config.yml` can be long and the
+window (`core.proximity`) can change without new queries. The validation sample measures
+the precision of the core and, through its `broad_only` stratum, how much on-topic work
+the core leaves out.
 
 The search is deliberately broad (high recall). Keyword matches are not the same as
 relevance: "welfare" also finds human economic welfare, "pain" finds venom pharmacology,

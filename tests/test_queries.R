@@ -10,8 +10,8 @@ stopifnot(or_group(c("a", "b c")) == '(a OR "b c")')
 stopifnot(build_search("x", c("y", "z w")) == '(x) AND (y OR "z w")')
 
 # Noisy terms are excluded by default and included on request
-stopifnot(!"cricket*" %in% taxon_terms(cfg, "insects"))
-stopifnot("cricket*" %in% taxon_terms(cfg, "insects", include_noisy = TRUE))
+stopifnot(!"cricket" %in% taxon_terms(cfg, "insects"))
+stopifnot("cricket" %in% taxon_terms(cfg, "insects", include_noisy = TRUE))
 
 # Arthropods are tagged; non-arthropods are not
 arth <- arthropod_groups(cfg)
@@ -38,17 +38,3 @@ stopifnot(grepl("from_publication_date:2016-01-01", f), grepl("type:article\\|re
           grepl("title_and_abstract.search.exact:\\(x\\) AND \\(y\\)$", f))
 
 cat("test_queries.R: all checks passed\n")
-
-# --- core definition ---------------------------------------------------------------
-cfg <- read_config()
-ph <- core_phrases(cfg, "welfare")
-stopifnot(length(ph) == length(cfg$core$taxon_nouns) * length(cfg$core$states$welfare))
-stopifnot('"insects welfare"~6' %in% ph, all(grepl('^"[a-z]+ [a-z]+"~6$', ph)))
-stopifnot(!anyDuplicated(ph), !any(grepl(",", ph)))
-stopifnot(all(!grepl("~", core_phrases(cfg, "welfare", proximity = 0))))             # adjacency variant
-stopifnot(inherits(try(core_phrases(cfg, "dragons"), silent = TRUE), "try-error"))
-all_core <- build_core_search(cfg)
-stopifnot(startsWith(all_core, "("), endsWith(all_core, ")"), grepl('"crabs sentient"~6', all_core, fixed = TRUE))
-# every noun and every state word is a single token, as the phrase syntax needs
-stopifnot(!any(grepl("[[:space:]]", unlist(cfg$core$taxon_nouns))), !any(grepl("[[:space:]]", unlist(cfg$core$states))))
-cat("core checks passed\n")

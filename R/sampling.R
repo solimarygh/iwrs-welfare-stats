@@ -25,25 +25,24 @@ first_true <- function(m, priority) {
 
 make_validation_sample <- function(rec, cfg) {
   sp <- cfg$sampling
-  stopifnot(setequal(sp$state_priority, names(cfg$states)),
+  stopifnot(setequal(sp$state_priority, names(cfg$core$states)),
             setequal(sp$taxon_priority, names(cfg$taxa)))
-  m_st <- as.matrix(rec[paste0("state_", names(cfg$states))]); colnames(m_st) <- names(cfg$states)
-  m_tx <- as.matrix(rec[paste0("taxon_", names(cfg$taxa))]);   colnames(m_tx) <- names(cfg$taxa)
-  rec$primary_state <- first_true(m_st, sp$state_priority)
+  m_co <- as.matrix(rec[paste0("core_", names(cfg$core$states))]); colnames(m_co) <- names(cfg$core$states)
+  m_tx <- as.matrix(rec[paste0("taxon_", names(cfg$taxa))]);       colnames(m_tx) <- names(cfg$taxa)
+  rec$primary_core <- first_true(m_co, sp$state_priority)
   rec$primary_taxon <- first_true(m_tx, sp$taxon_priority)
-  # Tags taken from a title alone are unreliable: records still without an abstract
-  # form their own stratum, labelled from the title and DOI.
+  # Strata: each core block; "broad_only" = in the broad set but not in the core (what the core
+  # leaves out, which says how much on-topic work it misses); "no_abstract" = judged by title only.
   no_abs <- is.na(rec$abstract)
-  untagged <- !no_abs & (is.na(rec$primary_state) | is.na(rec$primary_taxon))
-  rec$stratum_block <- ifelse(no_abs, "no_abstract", ifelse(untagged, "untagged", rec$primary_state))
-  rec$primary_taxon[no_abs] <- NA
+  rec$stratum_block <- ifelse(no_abs, "no_abstract", ifelse(!is.na(rec$primary_core), rec$primary_core, "broad_only"))
+  rec$primary_taxon[no_abs] <- NA        # tags from a title alone are unreliable
 
   set.seed(sp$seed)
   out <- list()
-  for (b in c(sp$state_priority, "untagged", "no_abstract")) {
+  for (b in c(sp$state_priority, "broad_only", "no_abstract")) {
     rb <- rec[rec$stratum_block == b, , drop = FALSE]
     if (nrow(rb) == 0) next
-    n_b <- switch(b, untagged = sp$n_untagged, no_abstract = sp$n_no_abstract, sp$n_per_state_block)
+    n_b <- switch(b, broad_only = sp$n_broad_only, no_abstract = sp$n_no_abstract, sp$n_per_state_block)
     tx <- ifelse(is.na(rb$primary_taxon), "none", rb$primary_taxon)
     sizes <- table(tx); sizes <- setNames(as.integer(sizes), names(sizes))
     alloc <- round_robin_allocate(sizes, n_b)
@@ -57,5 +56,5 @@ make_validation_sample <- function(rec, cfg) {
     }
   }
   res <- do.call(rbind, out)
-  res[sample.int(nrow(res)), , drop = FALSE]    # shuffle: the labeller should not see blocks in order
+  res[sample.int(nrow(res)), , drop = FALSE]    # shuffle: the labeller should not see strata in order
 }

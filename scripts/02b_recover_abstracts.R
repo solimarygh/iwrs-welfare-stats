@@ -4,7 +4,7 @@
 #   source("scripts/02b_recover_abstracts.R")
 # ~2,000 DOIs, one or two calls each: expect 10-30 minutes. Interruptions are safe:
 # answers are cached in data/raw/abstract_cache.rds and the run resumes.
-source("R/queries.R"); source("R/openalex.R"); source("R/records.R"); source("R/tagging.R")
+source("R/queries.R"); source("R/openalex.R"); source("R/records.R"); source("R/tagging.R"); source("R/core.R")
 source("R/abstracts.R"); source("R/outputs.R")
 cfg <- read_config()
 
