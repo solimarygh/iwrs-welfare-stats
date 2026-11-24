@@ -204,3 +204,9 @@ journals:
       label: "Open-access megajournals"
       patterns: ["^scientific reports$", "^plos one$", "^peerj$"]
   other_label: "Other journals"
+
+# ---------------------------------------------------------------------------
+# Events and theses (script 08): the template IWRS fills in (data/templates/), saved here.
+# ---------------------------------------------------------------------------
+events:
+  file: "data/curated/IWRS_events_and_theses.xlsx"

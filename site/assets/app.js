@@ -425,6 +425,74 @@ function renderJournals(years, tx) {
   $('table-journals-top').replaceChildren(top.length ? table(['Journal', 'Group', 'Core papers'], top.map(t => [t.journal, lab[t.group], fmt(t.n)])) : h('p', { class: 'note', text: 'No journal has enough papers in this selection.' }));
 }
 
+
+/* ---------- events and theses (counts reported by IWRS; not scoped by the filters) ---------- */
+function drawColumns(host, o) {
+  host.replaceChildren();
+  const W = Math.max(host.clientWidth, 240), H = 190, m = { t: 10, r: 6, b: 24, l: 30 };
+  const n = o.years.length, iw = W - m.l - m.r, ih = H - m.t - m.b, band = iw / n;
+  const totals = o.years.map((_, i) => o.series.reduce((a, se) => a + se.values[i], 0));
+  const mx = Math.max(...totals, 1), step = [1, 2, 5, 10, 20, 50, 100, 200, 500].find(x => Math.ceil(mx / x) <= 4) || 1000;
+  const top = step * Math.ceil(mx / step), Y = v => m.t + ih - (v / top) * ih, bw = Math.min(22, band * 0.62);
+  const svg = s('svg', { viewBox: `0 0 ${W} ${H}`, role: 'group', 'aria-label': o.aria }, host);
+  for (let t = 0; t <= top; t += step) {
+    s('line', { class: 'grid', x1: m.l, x2: W - m.r, y1: Y(t), y2: Y(t) }, svg);
+    s('text', { class: 'tick', x: m.l - 6, y: Y(t) + 4, 'text-anchor': 'end' }, svg).textContent = fmt(t);
+  }
+  s('line', { class: 'axis', x1: m.l, x2: W - m.r, y1: Y(0), y2: Y(0) }, svg);
+  const every = band < 30 ? 2 : 1;
+  o.years.forEach((y, i) => { if ((n - 1 - i) % every === 0) s('text', { class: 'tick', x: m.l + band * (i + 0.5), y: H - 7, 'text-anchor': 'middle' }, svg).textContent = String(y).slice(every > 1 ? 2 : 0); });
+  const tip = makeTip(host);
+  o.years.forEach((y, i) => {
+    const cx = m.l + band * (i + 0.5); let acc = 0; const segs = [];
+    o.series.forEach(se => { const v = se.values[i]; if (!v) return;
+      const y1 = Y(acc + v), h = Y(acc) - y1 - (acc ? 2 : 0);               // 2px gap between segments
+      segs.push(s('rect', { class: 'col', x: cx - bw / 2, y: y1, width: bw, height: Math.max(h, 1), rx: 2, style: `fill:var(--s${se.slot})` }, svg)); acc += v; });
+    const hit = s('rect', { class: 'bar-hit', x: m.l + band * i, y: m.t, width: band, height: ih + 14, tabindex: 0, role: 'img',
+      'aria-label': `${y}: ${totals[i]}` }, svg);
+    const on = () => { segs.forEach(r => r.classList.add('hot'));
+      tip.show([h('p', { class: 'tip-head', text: String(y) }), ...o.series.filter(se => se.values[i]).map(se => h('div', { class: 'tip-row' },
+        h('span', { class: 'tip-key', style: `border-color:var(--s${se.slot})` }), h('span', { class: 'tip-name', text: se.label }), h('span', { class: 'tip-val', text: String(se.values[i]) }))),
+        ...(totals[i] ? [] : [h('div', { class: 'tip-row' }, h('span', { class: 'tip-name', text: 'None reported' }))])], cx, m.t, svg.getBoundingClientRect().width / W || 1); };
+    const off = () => { segs.forEach(r => r.classList.remove('hot')); tip.hide(); };
+    hit.addEventListener('pointerenter', on); hit.addEventListener('pointerleave', off); hit.addEventListener('focus', on); hit.addEventListener('blur', off);
+  });
+}
+
+function renderEvents() {
+  const E = window.IWRS_EVENTS, sec = $('events');
+  if (!E || !E.years) return;
+  sec.hidden = false;
+  const panels = [
+    { title: 'Talks at major conferences', data: E.talks, keys: ['ESA annual meeting', 'International Congress of Entomology', 'Insects as Food and Feed (IAFF)', 'Other major conference', 'Not applicable'], rename: { 'Not applicable': 'Series not stated' } },
+    { title: 'Symposia, workshops and panels at major conferences', data: E.sessions, keys: ['Symposium', 'Workshop', 'Panel'] },
+    { title: 'Academic events of any kind', data: E.events, keys: ['Symposium', 'Workshop', 'Panel', 'Other event'] },
+    { title: 'Theses', data: E.theses, keys: ['PhD', "Master's"] }];
+  const grid = $('events-grid'); grid.replaceChildren();
+  const jobs = [];
+  panels.forEach((p, k) => {
+    const series = p.keys.map((key, i) => ({ label: (p.rename || {})[key] || key, slot: i + 1,
+      values: E.years.map(y => p.data.filter(r => r.key === key && r.year === y).reduce((a, r) => a + r.n, 0)) })).filter(se => se.values.some(v => v > 0));
+    const total = series.reduce((a, se) => a + se.values.reduce((x, y) => x + y, 0), 0);
+    const host = h('div', { class: 'chart' }), legend = h('ul', { class: 'legend' });
+    series.forEach(se => legend.append(h('li', {}, h('span', {}, h('span', { class: 'sw', style: `--c:var(--s${se.slot})` }), se.label))));
+    grid.append(h('div', { class: 'panel' }, h('h3', { text: p.title }),
+      h('p', { class: 'sub', text: `${fmt(total)} in ${E.years[0]}\u2013${E.years[E.years.length - 1]}` }), series.length > 1 ? legend : '',
+      total ? host : h('p', { class: 'empty', text: 'No entries yet.' })));
+    if (total) jobs.push(() => drawColumns(host, { years: E.years, series, aria: `${p.title} per year: ${fmt(total)} in total.` }));
+  });
+  jobs.forEach(f => f());                       // measured now, when the grid has its final columns
+  const asOf = new Date(E.as_of + 'T00:00:00Z').toLocaleDateString('en-GB', { day: 'numeric', month: 'long', year: 'numeric', timeZone: 'UTC' });
+  $('s-events').textContent = `Entries compiled by IWRS, as of ${asOf}. Only items on invertebrate welfare or sentience are counted. This section does not change with the filters above.`;
+  $('note-events').textContent = 'These numbers come from a curated list, not from a database: they are a minimum, because items that nobody reported are missing.';
+  const items = [...(E.items || [])].sort((a, b) => b.year - a.year || a.title.localeCompare(b.title));
+  $('table-events').replaceChildren(table(['Year', 'Type', 'Event or institution', 'Title'], items.map(it => [it.year, it.type, it.name, it.title]))
+  );
+  // titles become links when the entry has a public address
+  [...$('table-events').querySelectorAll('tbody tr')].forEach((tr, i) => { const u = items[i].url;
+    if (u && /^https?:\/\//.test(u)) { const td = tr.lastElementChild, a = h('a', { href: u, rel: 'noopener', target: '_blank' }); a.textContent = td.textContent; td.replaceChildren(a); } });
+}
+
 /* ---------- controls ---------- */
 (function init() {
   const sel = $('taxon');
@@ -460,6 +528,7 @@ function renderJournals(years, tx) {
   apply();
 
   render();
+  renderEvents();
   drawMembers();
   let w = document.body.clientWidth, raf = 0;
   new ResizeObserver(() => { const nw = document.body.clientWidth; if (Math.abs(nw - w) < 2) return; w = nw;

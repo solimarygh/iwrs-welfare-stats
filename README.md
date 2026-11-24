@@ -60,6 +60,9 @@ R >= 4.3 with `yaml`, `httr2`, `jsonlite` and, for the members map, `readxl`.
 | `scripts/02b_recover_abstracts.R` | OpenAlex searches abstracts it does not return (~11% of records); recovers them by DOI from Crossref and Europe PMC, re-tags, rewrites the tables | `data/raw/` (not tracked), `data/processed/records_meta.csv`, `tagging_fidelity.csv` |
 | `scripts/03_make_validation_sample.R` | Stratified sample for manual relevance labelling | `data/raw/validation_sample.csv` (not tracked), `data/validation/sample_ids.csv` |
 | `scripts/06_build_member_map_data.R` | Counts members per country from the membership list kept in `data/private/` (never committed) and writes `site/members.js` | `site/members.js` |
+| `scripts/04_read_labels.R` | Reads your labels of the validation sample; estimates, per block, the share of papers that are on topic (with intervals), what the core leaves out, and why papers were not relevant | `data/validation/labels.csv` (ids and labels only), `data/processed/validation_summary.csv` |
+| `scripts/07_journal_distribution.R` | Groups the core papers by journal (groups editable in the config) per year and taxon group | `data/processed/journals_by_year.csv`, `journals_top.csv`, `site/journals.js` |
+| `scripts/08_build_events_data.R` | Checks the template that IWRS fills in (talks, symposia, workshops, panels, events, theses), lists problems by row, and counts per year | `data/processed/events_by_year.csv`, `site/events.js` |
 | `scripts/05_build_site_data.R` | Exports the counts to `site/data.js`, the file the static site reads | `site/data.js` |
 
 **Two definitions.** The *broad* search counts every paper that mentions an animal name and a
@@ -100,6 +103,23 @@ placeholders chosen for contrast (white on the band is 5.6:1 in light mode), set
 `--brand`, `--accent` and `--tint` at the top of `site/assets/style.css`. The typeface
 is the system font; set `--font` in the same file to use the IWRS one. The colours of
 the data series are a separate, validated palette and should not follow the brand.
+
+### Events and theses (filled in by IWRS)
+
+Talks, symposia, workshops, panels, other academic events and theses have no database.
+`data/templates/IWRS_events_and_theses_template.xlsx` is an English template with dropdown
+lists (rebuild it with `python tools/build_events_template.py`). IWRS fills it in, saves it as
+`data/curated/IWRS_events_and_theses.xlsx` and runs `scripts/08_build_events_data.R`, which
+checks every row, reports the problems with their spreadsheet row, and writes the counts to
+`site/events.js`. The template has no field for personal names and the script refuses
+e-mail addresses. Only items on welfare or sentience are counted; rows marked "Related" stay in
+the list.
+
+### Publishing the site
+
+The workflow `.github/workflows/pages.yml` publishes the `site/` folder to GitHub Pages
+whenever it changes. One-time setup on GitHub: make the repository public, then
+Settings > Pages > Source: GitHub Actions.
 
 ### Members map
 
