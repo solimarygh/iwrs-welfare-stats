@@ -18,6 +18,12 @@ Some rows have an empty `abstract`. Judge those
 from the title and open the `doi` link if the title is not enough; use `?` when you cannot
 tell. They are sampled separately so that their precision is reported on its own.
 
+## The focus: invertebrates
+
+What matters here is **invertebrate animals**: insects and other arthropods (crustaceans, spiders, mites), molluscs (cephalopods, snails, bivalves), worms and the rest. A paper about the welfare or sentience of **vertebrates** (fish, birds, mammals) is **0** with the reason `vertebrate`, however good the paper is and however close the topic. This also holds when invertebrates only appear as a tool, for example insect meal in the diet of fish or poultry.
+
+When a paper covers both, label it by its invertebrate part. If invertebrates are a main subject (for example pain in fish **and** decapods), it counts as if it were only about invertebrates. If invertebrates are a passing mention in a paper about vertebrates, it is **0**.
+
 ## Key terms
 
 **Welfare** (animal welfare) is the state of an individual animal in terms of how well it is doing: its health, its living conditions, whether it can behave in the ways that are natural to it, and, if it can feel, whether it feels good or bad. It is about the *individual* and about how it is kept, handled or killed. Welfare is not the same as productivity (how many insects a farm yields), as the health of a colony or a population, or as human well-being (for example the income of farmers). Those are different topics, even when the word is the same.
@@ -38,7 +44,7 @@ A quick test: does the paper treat the animal as someone who could have a good o
 
 Apply these questions in order, thinking of the whole paper and not of the word that made it appear:
 
-1. Is the subject an **invertebrate animal**? A person, a vertebrate, a plant, or an animal that only appears as background is **0**.
+1. Is the subject an **invertebrate animal** (the focus of this project)? A person, a vertebrate, a plant, or an animal that only appears as background is **0**.
 2. Does the paper study or discuss the animal's **welfare, pain, emotions or affective states, consciousness or sentience, or how it should be treated** (farming, handling, slaughter, living conditions)? Then it is **2**. This includes papers that test whether the animal feels pain even if they never use the word welfare.
 3. Does it study something that **underlies** that, without framing it that way (mechanisms of nociception, neurobiology, learning and cognition, stress physiology, behaviour)? Then it is **1**.
 4. Otherwise it is **0**; give the reason in `reason_if_0`.
