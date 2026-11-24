@@ -18,6 +18,19 @@ Some rows have an empty `abstract`. Judge those
 from the title and open the `doi` link if the title is not enough; use `?` when you cannot
 tell. They are sampled separately so that their precision is reported on its own.
 
+## Key terms
+
+**Welfare** (animal welfare) is the state of an individual animal in terms of how well it is doing: its health, its living conditions, whether it can behave in the ways that are natural to it, and, if it can feel, whether it feels good or bad. It is about the *individual* and about how it is kept, handled or killed. Welfare is not the same as productivity (how many insects a farm yields), as the health of a colony or a population, or as human well-being (for example the income of farmers). Those are different topics, even when the word is the same.
+
+**Sentience** is the capacity to have experiences that feel good or bad, such as pain, pleasure, fear or comfort. A sentient animal is one for which things can matter *to the animal*. Whether insects, crustaceans, cephalopods and other invertebrates are sentient is an open scientific question, and it is the reason why their welfare is studied with a precautionary approach: if they may feel, how they are treated may matter.
+
+Three neighbouring terms that appear in the papers:
+- **Nociception** is the detection of a harmful stimulus and the reflex response to it. It can happen without any feeling, so a paper on the mechanism of nociception says nothing, by itself, about pain.
+- **Pain** is an unpleasant *experience*. A paper that asks whether an invertebrate feels pain is about sentience, and that is a **2**. A paper that only describes how nociceptors work is a **1**.
+- **Affective states and emotions** are feelings with a positive or negative tone (fear, anxiety, something like optimism). **Consciousness** is having subjective experience at all. In this project the four ideas (sentience, consciousness, affect, pain) go together: a paper about any of them in an invertebrate animal can be a **2**.
+
+A quick test: does the paper treat the animal as someone who could have a good or bad time? If yes, it is about welfare or sentience. If it treats the animal as a pest to control, a product, a model for a human disease, a source of venom or a food, it is not, even if it names the same animal.
+
 ## The question and the order of the decision
 
 > Is the paper about the **experience or welfare of an invertebrate animal**, or about whether it has any?
