@@ -8,5 +8,15 @@ snaps <- sort(list.files("data/snapshots", "^queries_.*\\.json$", full.names = T
 if (length(snaps) == 0) stop("No query snapshot found; run scripts/01_publication_counts.R first.")
 run_date <- jsonlite::read_json(snaps[length(snaps)])$run_date
 
-write_site_data(build_site_data(counts, run_date))
-message("Wrote site/data.js (counts of ", run_date, ")")
+core_path <- "data/processed/core_counts_by_year.csv"
+if (file.exists(core_path)) {
+  # the figures on the page are the strict (core) counts; the all-papers denominators come from the API counts
+  core <- utils::read.csv(core_path, stringsAsFactors = FALSE)
+  data <- build_site_data_core(core, counts, run_date)
+  message("Using the strict (core) counts.")
+} else {
+  data <- build_site_data(counts, run_date)
+  message("core_counts_by_year.csv not found: using the broad counts (upper bound).")
+}
+write_site_data(data)
+message("Wrote site/data.js (OpenAlex counts of ", run_date, ")")

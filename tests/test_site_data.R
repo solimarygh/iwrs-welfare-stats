@@ -23,4 +23,13 @@ txt <- paste(readLines(tmp), collapse = "\n")
 stopifnot(grepl("window.IWRS_DATA = ", txt, fixed = TRUE))
 j <- jsonlite::fromJSON(sub(";\\s*$", "", sub("^.*window.IWRS_DATA = ", "", txt)))
 stopifnot(identical(j$meta$run_date, "2026-10-01"), nrow(j$rows) == nrow(cnt), is.logical(j$taxa$arthropod))
+# ---- core version: blocks and ANY from the records, NONE from the API counts ----
+cr <- expand.grid(taxon_group = c("insects", "ALL_INVERTEBRATES"), state_block = c("welfare", "ANY", "BROAD"), year = 2024:2026, stringsAsFactors = FALSE)
+cr$is_arthropod <- cr$taxon_group == "insects"; cr$n <- 1:nrow(cr); cr$partial_year <- cr$year == 2026
+api <- expand.grid(taxon_group = c("insects", "ALL_INVERTEBRATES"), state_block = c("welfare", "ANY", "NONE"), year = 2024:2026, stringsAsFactors = FALSE)
+api$is_arthropod <- api$taxon_group == "insects"; api$n <- 1000L + seq_len(nrow(api)); api$partial_year <- api$year == 2026; api$n_all_works <- api$year * 10
+dc <- build_site_data_core(cr, api, "2026-11-24")
+stopifnot(identical(dc$meta$definition, "core"), !"BROAD" %in% dc$rows$state)               # the broad set is not shown
+stopifnot(all(dc$rows$n[dc$rows$state == "NONE"] > 1000), all(dc$rows$n[dc$rows$state == "ANY"] <= nrow(cr)))   # NONE from the API, ANY from the core
+stopifnot(setequal(unique(dc$rows$state), c("welfare", "ANY", "NONE")), dc$meta$partial_year == 2026)
 cat("test_site_data.R: all checks passed\n")
