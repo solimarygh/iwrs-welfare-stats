@@ -117,7 +117,7 @@ are split on commas, semicolons and "and" and can be merged through a private CS
 a term). Only terms stated by at least `min_cell` members are published, and a country cell
 below that carries no number. The contact, email, institution, department, rank and
 timestamp columns are never read; membership type (career stage) is a filter. Even so, a filtered map narrows a group, so keep
-`min_cell` at 3 or more and review `site/members.js` before publishing. The country outlines
+`min_cell` at 5 or more (the published map uses 5) and review `site/members.js` before publishing. The country outlines
 (`site/assets/world.js`) come from Natural Earth through `tools/build_world_assets.mjs`.
 
 ## Contact email for OpenAlex

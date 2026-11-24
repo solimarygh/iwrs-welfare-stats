@@ -27,3 +27,5 @@ data/raw/
 data/private/
 *.xlsx
 *.xls
+# ...except the blank templates that IWRS fills in (no data in them)
+!data/templates/*.xlsx

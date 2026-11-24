@@ -165,6 +165,8 @@ th:first-child, td:first-child { text-align: left; }
 th { color: var(--ink-2); font-weight: 600; }
 td { font-variant-numeric: tabular-nums; }
 
+.subhead { margin: 18px 0 6px; font-size: 15px; color: var(--ink-2); font-weight: 600; }
+
 /* Members map */
 .member-filters { display: flex; flex-wrap: wrap; gap: 12px 20px; margin: 6px 0 12px; }
 .member-filters select { min-width: 220px; max-width: 100%; }

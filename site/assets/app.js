@@ -200,11 +200,11 @@ function drawBars(host, o) {
       d: `M${m.l},${by}L${m.l + len - rad},${by}Q${m.l + len},${by} ${m.l + len},${by + rad}L${m.l + len},${by + barH - rad}Q${m.l + len},${by + barH} ${m.l + len - rad},${by + barH}L${m.l},${by + barH}Z` }, svg);
     s('text', { class: 'bar-val', x: m.l + len + 8, y: by + barH / 2 + 4.5 }, svg).textContent = fmt(r.value);
     const hit = s('rect', { class: 'bar-hit', x: 0, y: y0, width: W, height: rowH, tabindex: 0, role: 'img',
-      'aria-label': `${r.label}: ${fmt(r.value)} papers, ${r.share.toFixed(1)}% of its literature` }, svg);
+      'aria-label': `${r.label}: ${fmt(r.value)} papers, ${r.share.toFixed(1)}% ${(o.shareLabel || 'of its literature').toLowerCase()}` }, svg);
     const on = () => { if (bar) bar.classList.add('hot');
       tip.show([h('p', { class: 'tip-head', text: r.label }),
-        h('div', { class: 'tip-row' }, h('span', { class: 'tip-name', text: 'Matching papers' }), h('span', { class: 'tip-val', text: fmt(r.value) })),
-        h('div', { class: 'tip-row' }, h('span', { class: 'tip-name', text: 'Share of its literature' }), h('span', { class: 'tip-val', text: r.share.toFixed(1) + '%' }))],
+        h('div', { class: 'tip-row' }, h('span', { class: 'tip-name', text: o.valueLabel || 'Matching papers' }), h('span', { class: 'tip-val', text: fmt(r.value) })),
+        h('div', { class: 'tip-row' }, h('span', { class: 'tip-name', text: o.shareLabel || 'Share of its literature' }), h('span', { class: 'tip-val', text: r.share.toFixed(1) + '%' }))],
         m.l + len, y0, svg.getBoundingClientRect().width / W || 1); };
     const off = () => { if (bar) bar.classList.remove('hot'); tip.hide(); };
     hit.addEventListener('pointerenter', on); hit.addEventListener('pointerleave', off);
@@ -317,6 +317,8 @@ function render() {
   $('table-groups').replaceChildren(table(['Group', 'Arthropod', 'Matching papers', 'All papers in group', 'Share'],
     groups.map(g => [g.label, g.arthropod ? 'yes' : 'no', fmt(g.value), fmt(val(g.key, 'NONE', endY)), pct1(g.share)])));
 
+  renderJournals(years, tx);
+
   // controls state
   [...$('range').children].forEach(b => b.setAttribute('aria-checked', String(b.dataset.id === st.range)));
   $('taxon').value = st.taxon;
@@ -332,11 +334,12 @@ function drawMembers() {
   if (!M || !Wd || !M.countries || !M.countries.length) return;
   sec.hidden = false;
   const min = M.min_cell, cap = t => t.charAt(0).toUpperCase() + t.slice(1);
+  // colour classes from the minimum per cell: "fewer than min", then breaks at min, 10, 25, 50
+  const br = [min, ...[10, 25, 50].filter(x => x > min)];
   const bands = [{ test: n => n == null, label: `Fewer than ${min}`, slot: 1 },
-                 { test: n => n >= min && n <= 5, label: `${min}\u20135`, slot: 2 },
-                 { test: n => n >= 6 && n <= 10, label: '6\u201310', slot: 3 },
-                 { test: n => n >= 11 && n <= 25, label: '11\u201325', slot: 4 },
-                 { test: n => n >= 26, label: '26 or more', slot: 5 }];
+    ...br.map((lo, i) => { const hi = br[i + 1];
+      return { test: n => n != null && n >= lo && (hi == null || n < hi),
+               label: hi == null ? `${lo} or more` : (hi - 1 === lo ? `${lo}` : `${lo}\u2013${hi - 1}`), slot: i + 2 }; })];
   const bandOf = n => bands.find(b => b.test(n));
   const names = new Map(M.countries.map(c => [c.iso3, c.name]));
   const facets = Object.entries(M.facets || {}).filter(([, f]) => f.terms && f.terms.length);
@@ -397,6 +400,29 @@ function drawMembers() {
     ts.addEventListener('change', () => { sel.term = +ts.value; paint(); });
   }
   paint();
+}
+
+
+/* ---------- journals (scoped by the taxon and year filters) ---------- */
+function renderJournals(years, tx) {
+  const J = window.IWRS_JOURNALS, sec = $('journals');
+  if (!J || !J.rows) return;
+  sec.hidden = false;
+  const lab = Object.fromEntries(J.groups.map(g => [g.key, g.label]));
+  const inRange = y => years.includes(y);
+  const tot = Object.fromEntries(J.groups.map(g => [g.key, 0]));
+  J.rows.filter(r => r.taxon === st.taxon && inRange(r.year)).forEach(r => { tot[r.group] += r.n; });
+  const all = Object.values(tot).reduce((a, b) => a + b, 0);
+  $('s-journals').textContent = `${tx.label}, ${years[0]}\u2013${years[years.length - 1]}. Core papers only (${fmt(all)}), by group of journal.`;
+  $('note-journals').textContent = 'Groups are defined by journal name (see config/config.yml) and can be edited. A group such as medicine and toxicology often signals matches that are not about the animals\u2019 welfare.';
+  const rows = J.groups.map(g => ({ key: g.key, label: lab[g.key], short: lab[g.key], value: tot[g.key], share: all ? 100 * tot[g.key] / all : 0,
+    color: g.key === 'other' ? 'var(--other)' : 'var(--s1)', dim: false })).sort((a, b) => (a.key === 'other') - (b.key === 'other') || b.value - a.value);
+  drawBars($('chart-journals'), { rows, aria: `Core papers by group of journal for ${tx.label}.`, valueLabel: 'Core papers', shareLabel: 'Share of core papers' });
+  $('table-journals').replaceChildren(table(['Group of journal', 'Core papers', 'Share'], rows.map(r => [r.label, fmt(r.value), r.share.toFixed(1) + '%'])));
+  const idx = J.years.map((y, i) => inRange(y) ? i : -1).filter(i => i >= 0);
+  const top = ((J.top || {})[st.taxon] || []).map(t => ({ ...t, n: idx.reduce((a, i) => a + (t.counts[i] || 0), 0) }))
+    .filter(t => t.n > 0).sort((a, b) => b.n - a.n).slice(0, 10);
+  $('table-journals-top').replaceChildren(top.length ? table(['Journal', 'Group', 'Core papers'], top.map(t => [t.journal, lab[t.group], fmt(t.n)])) : h('p', { class: 'note', text: 'No journal has enough papers in this selection.' }));
 }
 
 /* ---------- controls ---------- */
