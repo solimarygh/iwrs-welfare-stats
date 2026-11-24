@@ -1,0 +1,427 @@
+{
+  "run_date": "2026-11-21",
+  "years": [2016, 2026],
+  "include_noisy": false,
+  "queries": [
+    {
+      "taxon_group": "insects",
+      "state_block": "sentience",
+      "search": "(insect* OR \"honey bee\" OR \"honey bees\" OR honeybee* OR \"bumble bee\" OR \"bumble bees\" OR bumblebee* OR \"stingless bee\" OR \"stingless bees\" OR bee OR bees OR wasp OR wasps OR hornet OR hornets OR butterfl* OR caterpillar* OR beetle* OR mosquito OR mosquitoes OR mosquitos OR grasshopper* OR locust* OR cockroach* OR termite* OR aphid* OR silkworm* OR mealworm* OR crickets OR \"house cricket\" OR \"house crickets\" OR \"black soldier fly\" OR \"black soldier flies\" OR \"fruit fly\" OR \"fruit flies\" OR \"house fly\" OR \"house flies\" OR housefly OR houseflies OR Drosophila OR Apis OR Bombus OR Tenebrio OR Hermetia OR Acheta OR Gryllus OR Periplaneta OR Schistocerca OR Locusta OR Bombyx OR Musca OR Tribolium OR Galleria) AND (sentien*)",
+      "n_chars": 727
+    },
+    {
+      "taxon_group": "insects",
+      "state_block": "affect_emotion",
+      "search": "(insect* OR \"honey bee\" OR \"honey bees\" OR honeybee* OR \"bumble bee\" OR \"bumble bees\" OR bumblebee* OR \"stingless bee\" OR \"stingless bees\" OR bee OR bees OR wasp OR wasps OR hornet OR hornets OR butterfl* OR caterpillar* OR beetle* OR mosquito OR mosquitoes OR mosquitos OR grasshopper* OR locust* OR cockroach* OR termite* OR aphid* OR silkworm* OR mealworm* OR crickets OR \"house cricket\" OR \"house crickets\" OR \"black soldier fly\" OR \"black soldier flies\" OR \"fruit fly\" OR \"fruit flies\" OR \"house fly\" OR \"house flies\" OR housefly OR houseflies OR Drosophila OR Apis OR Bombus OR Tenebrio OR Hermetia OR Acheta OR Gryllus OR Periplaneta OR Schistocerca OR Locusta OR Bombyx OR Musca OR Tribolium OR Galleria) AND (affective OR \"affective state\" OR \"affective states\" OR \"affect-like\" OR emotion* OR \"emotion-like\" OR \"emotional state\" OR \"emotional states\" OR \"cognitive bias\" OR \"cognitive biases\")",
+      "n_chars": 903
+    },
+    {
+      "taxon_group": "insects",
+      "state_block": "consciousness",
+      "search": "(insect* OR \"honey bee\" OR \"honey bees\" OR honeybee* OR \"bumble bee\" OR \"bumble bees\" OR bumblebee* OR \"stingless bee\" OR \"stingless bees\" OR bee OR bees OR wasp OR wasps OR hornet OR hornets OR butterfl* OR caterpillar* OR beetle* OR mosquito OR mosquitoes OR mosquitos OR grasshopper* OR locust* OR cockroach* OR termite* OR aphid* OR silkworm* OR mealworm* OR crickets OR \"house cricket\" OR \"house crickets\" OR \"black soldier fly\" OR \"black soldier flies\" OR \"fruit fly\" OR \"fruit flies\" OR \"house fly\" OR \"house flies\" OR housefly OR houseflies OR Drosophila OR Apis OR Bombus OR Tenebrio OR Hermetia OR Acheta OR Gryllus OR Periplaneta OR Schistocerca OR Locusta OR Bombyx OR Musca OR Tribolium OR Galleria) AND (conscious* OR \"subjective experience\" OR \"subjective experiences\")",
+      "n_chars": 784
+    },
+    {
+      "taxon_group": "insects",
+      "state_block": "welfare",
+      "search": "(insect* OR \"honey bee\" OR \"honey bees\" OR honeybee* OR \"bumble bee\" OR \"bumble bees\" OR bumblebee* OR \"stingless bee\" OR \"stingless bees\" OR bee OR bees OR wasp OR wasps OR hornet OR hornets OR butterfl* OR caterpillar* OR beetle* OR mosquito OR mosquitoes OR mosquitos OR grasshopper* OR locust* OR cockroach* OR termite* OR aphid* OR silkworm* OR mealworm* OR crickets OR \"house cricket\" OR \"house crickets\" OR \"black soldier fly\" OR \"black soldier flies\" OR \"fruit fly\" OR \"fruit flies\" OR \"house fly\" OR \"house flies\" OR housefly OR houseflies OR Drosophila OR Apis OR Bombus OR Tenebrio OR Hermetia OR Acheta OR Gryllus OR Periplaneta OR Schistocerca OR Locusta OR Bombyx OR Musca OR Tribolium OR Galleria) AND (welfare OR \"well-being\" OR wellbeing OR suffering)",
+      "n_chars": 768
+    },
+    {
+      "taxon_group": "insects",
+      "state_block": "nociception_pain",
+      "search": "(insect* OR \"honey bee\" OR \"honey bees\" OR honeybee* OR \"bumble bee\" OR \"bumble bees\" OR bumblebee* OR \"stingless bee\" OR \"stingless bees\" OR bee OR bees OR wasp OR wasps OR hornet OR hornets OR butterfl* OR caterpillar* OR beetle* OR mosquito OR mosquitoes OR mosquitos OR grasshopper* OR locust* OR cockroach* OR termite* OR aphid* OR silkworm* OR mealworm* OR crickets OR \"house cricket\" OR \"house crickets\" OR \"black soldier fly\" OR \"black soldier flies\" OR \"fruit fly\" OR \"fruit flies\" OR \"house fly\" OR \"house flies\" OR housefly OR houseflies OR Drosophila OR Apis OR Bombus OR Tenebrio OR Hermetia OR Acheta OR Gryllus OR Periplaneta OR Schistocerca OR Locusta OR Bombyx OR Musca OR Tribolium OR Galleria) AND (nocicept* OR pain OR painful OR \"noxious stimulus\" OR \"noxious stimuli\" OR analges*)",
+      "n_chars": 802
+    },
+    {
+      "taxon_group": "insects",
+      "state_block": "ANY",
+      "search": "(insect* OR \"honey bee\" OR \"honey bees\" OR honeybee* OR \"bumble bee\" OR \"bumble bees\" OR bumblebee* OR \"stingless bee\" OR \"stingless bees\" OR bee OR bees OR wasp OR wasps OR hornet OR hornets OR butterfl* OR caterpillar* OR beetle* OR mosquito OR mosquitoes OR mosquitos OR grasshopper* OR locust* OR cockroach* OR termite* OR aphid* OR silkworm* OR mealworm* OR crickets OR \"house cricket\" OR \"house crickets\" OR \"black soldier fly\" OR \"black soldier flies\" OR \"fruit fly\" OR \"fruit flies\" OR \"house fly\" OR \"house flies\" OR housefly OR houseflies OR Drosophila OR Apis OR Bombus OR Tenebrio OR Hermetia OR Acheta OR Gryllus OR Periplaneta OR Schistocerca OR Locusta OR Bombyx OR Musca OR Tribolium OR Galleria) AND (sentien* OR affective OR \"affective state\" OR \"affective states\" OR \"affect-like\" OR emotion* OR \"emotion-like\" OR \"emotional state\" OR \"emotional states\" OR \"cognitive bias\" OR \"cognitive biases\" OR conscious* OR \"subjective experience\" OR \"subjective experiences\" OR welfare OR \"well-being\" OR wellbeing OR suffering OR nocicept* OR pain OR painful OR \"noxious stimulus\" OR \"noxious stimuli\" OR analges*)",
+      "n_chars": 1124
+    },
+    {
+      "taxon_group": "insects",
+      "state_block": "NONE",
+      "search": "(insect* OR \"honey bee\" OR \"honey bees\" OR honeybee* OR \"bumble bee\" OR \"bumble bees\" OR bumblebee* OR \"stingless bee\" OR \"stingless bees\" OR bee OR bees OR wasp OR wasps OR hornet OR hornets OR butterfl* OR caterpillar* OR beetle* OR mosquito OR mosquitoes OR mosquitos OR grasshopper* OR locust* OR cockroach* OR termite* OR aphid* OR silkworm* OR mealworm* OR crickets OR \"house cricket\" OR \"house crickets\" OR \"black soldier fly\" OR \"black soldier flies\" OR \"fruit fly\" OR \"fruit flies\" OR \"house fly\" OR \"house flies\" OR housefly OR houseflies OR Drosophila OR Apis OR Bombus OR Tenebrio OR Hermetia OR Acheta OR Gryllus OR Periplaneta OR Schistocerca OR Locusta OR Bombyx OR Musca OR Tribolium OR Galleria)",
+      "n_chars": 712
+    },
+    {
+      "taxon_group": "crustaceans",
+      "state_block": "sentience",
+      "search": "(crustacean* OR decapod* OR crab OR crabs OR lobster* OR shrimp* OR prawn* OR crayfish OR crawfish OR krill OR isopod* OR amphipod* OR copepod* OR barnacle* OR Daphnia OR Artemia OR Penaeus OR Litopenaeus OR Macrobrachium OR Homarus OR Nephrops OR Procambarus OR Carcinus OR Pacifastacus OR Astacus OR Cherax) AND (sentien*)",
+      "n_chars": 324
+    },
+    {
+      "taxon_group": "crustaceans",
+      "state_block": "affect_emotion",
+      "search": "(crustacean* OR decapod* OR crab OR crabs OR lobster* OR shrimp* OR prawn* OR crayfish OR crawfish OR krill OR isopod* OR amphipod* OR copepod* OR barnacle* OR Daphnia OR Artemia OR Penaeus OR Litopenaeus OR Macrobrachium OR Homarus OR Nephrops OR Procambarus OR Carcinus OR Pacifastacus OR Astacus OR Cherax) AND (affective OR \"affective state\" OR \"affective states\" OR \"affect-like\" OR emotion* OR \"emotion-like\" OR \"emotional state\" OR \"emotional states\" OR \"cognitive bias\" OR \"cognitive biases\")",
+      "n_chars": 500
+    },
+    {
+      "taxon_group": "crustaceans",
+      "state_block": "consciousness",
+      "search": "(crustacean* OR decapod* OR crab OR crabs OR lobster* OR shrimp* OR prawn* OR crayfish OR crawfish OR krill OR isopod* OR amphipod* OR copepod* OR barnacle* OR Daphnia OR Artemia OR Penaeus OR Litopenaeus OR Macrobrachium OR Homarus OR Nephrops OR Procambarus OR Carcinus OR Pacifastacus OR Astacus OR Cherax) AND (conscious* OR \"subjective experience\" OR \"subjective experiences\")",
+      "n_chars": 381
+    },
+    {
+      "taxon_group": "crustaceans",
+      "state_block": "welfare",
+      "search": "(crustacean* OR decapod* OR crab OR crabs OR lobster* OR shrimp* OR prawn* OR crayfish OR crawfish OR krill OR isopod* OR amphipod* OR copepod* OR barnacle* OR Daphnia OR Artemia OR Penaeus OR Litopenaeus OR Macrobrachium OR Homarus OR Nephrops OR Procambarus OR Carcinus OR Pacifastacus OR Astacus OR Cherax) AND (welfare OR \"well-being\" OR wellbeing OR suffering)",
+      "n_chars": 365
+    },
+    {
+      "taxon_group": "crustaceans",
+      "state_block": "nociception_pain",
+      "search": "(crustacean* OR decapod* OR crab OR crabs OR lobster* OR shrimp* OR prawn* OR crayfish OR crawfish OR krill OR isopod* OR amphipod* OR copepod* OR barnacle* OR Daphnia OR Artemia OR Penaeus OR Litopenaeus OR Macrobrachium OR Homarus OR Nephrops OR Procambarus OR Carcinus OR Pacifastacus OR Astacus OR Cherax) AND (nocicept* OR pain OR painful OR \"noxious stimulus\" OR \"noxious stimuli\" OR analges*)",
+      "n_chars": 399
+    },
+    {
+      "taxon_group": "crustaceans",
+      "state_block": "ANY",
+      "search": "(crustacean* OR decapod* OR crab OR crabs OR lobster* OR shrimp* OR prawn* OR crayfish OR crawfish OR krill OR isopod* OR amphipod* OR copepod* OR barnacle* OR Daphnia OR Artemia OR Penaeus OR Litopenaeus OR Macrobrachium OR Homarus OR Nephrops OR Procambarus OR Carcinus OR Pacifastacus OR Astacus OR Cherax) AND (sentien* OR affective OR \"affective state\" OR \"affective states\" OR \"affect-like\" OR emotion* OR \"emotion-like\" OR \"emotional state\" OR \"emotional states\" OR \"cognitive bias\" OR \"cognitive biases\" OR conscious* OR \"subjective experience\" OR \"subjective experiences\" OR welfare OR \"well-being\" OR wellbeing OR suffering OR nocicept* OR pain OR painful OR \"noxious stimulus\" OR \"noxious stimuli\" OR analges*)",
+      "n_chars": 721
+    },
+    {
+      "taxon_group": "crustaceans",
+      "state_block": "NONE",
+      "search": "(crustacean* OR decapod* OR crab OR crabs OR lobster* OR shrimp* OR prawn* OR crayfish OR crawfish OR krill OR isopod* OR amphipod* OR copepod* OR barnacle* OR Daphnia OR Artemia OR Penaeus OR Litopenaeus OR Macrobrachium OR Homarus OR Nephrops OR Procambarus OR Carcinus OR Pacifastacus OR Astacus OR Cherax)",
+      "n_chars": 309
+    },
+    {
+      "taxon_group": "other_arthropods",
+      "state_block": "sentience",
+      "search": "(arachnid* OR spider* OR scorpion* OR tarantula* OR mite OR mites OR \"horseshoe crab\" OR \"horseshoe crabs\" OR myriapod* OR centipede* OR millipede* OR harvestman OR harvestmen) AND (sentien*)",
+      "n_chars": 191
+    },
+    {
+      "taxon_group": "other_arthropods",
+      "state_block": "affect_emotion",
+      "search": "(arachnid* OR spider* OR scorpion* OR tarantula* OR mite OR mites OR \"horseshoe crab\" OR \"horseshoe crabs\" OR myriapod* OR centipede* OR millipede* OR harvestman OR harvestmen) AND (affective OR \"affective state\" OR \"affective states\" OR \"affect-like\" OR emotion* OR \"emotion-like\" OR \"emotional state\" OR \"emotional states\" OR \"cognitive bias\" OR \"cognitive biases\")",
+      "n_chars": 367
+    },
+    {
+      "taxon_group": "other_arthropods",
+      "state_block": "consciousness",
+      "search": "(arachnid* OR spider* OR scorpion* OR tarantula* OR mite OR mites OR \"horseshoe crab\" OR \"horseshoe crabs\" OR myriapod* OR centipede* OR millipede* OR harvestman OR harvestmen) AND (conscious* OR \"subjective experience\" OR \"subjective experiences\")",
+      "n_chars": 248
+    },
+    {
+      "taxon_group": "other_arthropods",
+      "state_block": "welfare",
+      "search": "(arachnid* OR spider* OR scorpion* OR tarantula* OR mite OR mites OR \"horseshoe crab\" OR \"horseshoe crabs\" OR myriapod* OR centipede* OR millipede* OR harvestman OR harvestmen) AND (welfare OR \"well-being\" OR wellbeing OR suffering)",
+      "n_chars": 232
+    },
+    {
+      "taxon_group": "other_arthropods",
+      "state_block": "nociception_pain",
+      "search": "(arachnid* OR spider* OR scorpion* OR tarantula* OR mite OR mites OR \"horseshoe crab\" OR \"horseshoe crabs\" OR myriapod* OR centipede* OR millipede* OR harvestman OR harvestmen) AND (nocicept* OR pain OR painful OR \"noxious stimulus\" OR \"noxious stimuli\" OR analges*)",
+      "n_chars": 266
+    },
+    {
+      "taxon_group": "other_arthropods",
+      "state_block": "ANY",
+      "search": "(arachnid* OR spider* OR scorpion* OR tarantula* OR mite OR mites OR \"horseshoe crab\" OR \"horseshoe crabs\" OR myriapod* OR centipede* OR millipede* OR harvestman OR harvestmen) AND (sentien* OR affective OR \"affective state\" OR \"affective states\" OR \"affect-like\" OR emotion* OR \"emotion-like\" OR \"emotional state\" OR \"emotional states\" OR \"cognitive bias\" OR \"cognitive biases\" OR conscious* OR \"subjective experience\" OR \"subjective experiences\" OR welfare OR \"well-being\" OR wellbeing OR suffering OR nocicept* OR pain OR painful OR \"noxious stimulus\" OR \"noxious stimuli\" OR analges*)",
+      "n_chars": 588
+    },
+    {
+      "taxon_group": "other_arthropods",
+      "state_block": "NONE",
+      "search": "(arachnid* OR spider* OR scorpion* OR tarantula* OR mite OR mites OR \"horseshoe crab\" OR \"horseshoe crabs\" OR myriapod* OR centipede* OR millipede* OR harvestman OR harvestmen)",
+      "n_chars": 176
+    },
+    {
+      "taxon_group": "arthropods_general",
+      "state_block": "sentience",
+      "search": "(arthropod*) AND (sentien*)",
+      "n_chars": 27
+    },
+    {
+      "taxon_group": "arthropods_general",
+      "state_block": "affect_emotion",
+      "search": "(arthropod*) AND (affective OR \"affective state\" OR \"affective states\" OR \"affect-like\" OR emotion* OR \"emotion-like\" OR \"emotional state\" OR \"emotional states\" OR \"cognitive bias\" OR \"cognitive biases\")",
+      "n_chars": 203
+    },
+    {
+      "taxon_group": "arthropods_general",
+      "state_block": "consciousness",
+      "search": "(arthropod*) AND (conscious* OR \"subjective experience\" OR \"subjective experiences\")",
+      "n_chars": 84
+    },
+    {
+      "taxon_group": "arthropods_general",
+      "state_block": "welfare",
+      "search": "(arthropod*) AND (welfare OR \"well-being\" OR wellbeing OR suffering)",
+      "n_chars": 68
+    },
+    {
+      "taxon_group": "arthropods_general",
+      "state_block": "nociception_pain",
+      "search": "(arthropod*) AND (nocicept* OR pain OR painful OR \"noxious stimulus\" OR \"noxious stimuli\" OR analges*)",
+      "n_chars": 102
+    },
+    {
+      "taxon_group": "arthropods_general",
+      "state_block": "ANY",
+      "search": "(arthropod*) AND (sentien* OR affective OR \"affective state\" OR \"affective states\" OR \"affect-like\" OR emotion* OR \"emotion-like\" OR \"emotional state\" OR \"emotional states\" OR \"cognitive bias\" OR \"cognitive biases\" OR conscious* OR \"subjective experience\" OR \"subjective experiences\" OR welfare OR \"well-being\" OR wellbeing OR suffering OR nocicept* OR pain OR painful OR \"noxious stimulus\" OR \"noxious stimuli\" OR analges*)",
+      "n_chars": 424
+    },
+    {
+      "taxon_group": "arthropods_general",
+      "state_block": "NONE",
+      "search": "(arthropod*)",
+      "n_chars": 12
+    },
+    {
+      "taxon_group": "cephalopods",
+      "state_block": "sentience",
+      "search": "(cephalopod* OR octopus* OR octopod* OR octopi OR squid OR squids OR cuttlefish* OR nautilus OR nautiluses OR Sepia) AND (sentien*)",
+      "n_chars": 131
+    },
+    {
+      "taxon_group": "cephalopods",
+      "state_block": "affect_emotion",
+      "search": "(cephalopod* OR octopus* OR octopod* OR octopi OR squid OR squids OR cuttlefish* OR nautilus OR nautiluses OR Sepia) AND (affective OR \"affective state\" OR \"affective states\" OR \"affect-like\" OR emotion* OR \"emotion-like\" OR \"emotional state\" OR \"emotional states\" OR \"cognitive bias\" OR \"cognitive biases\")",
+      "n_chars": 307
+    },
+    {
+      "taxon_group": "cephalopods",
+      "state_block": "consciousness",
+      "search": "(cephalopod* OR octopus* OR octopod* OR octopi OR squid OR squids OR cuttlefish* OR nautilus OR nautiluses OR Sepia) AND (conscious* OR \"subjective experience\" OR \"subjective experiences\")",
+      "n_chars": 188
+    },
+    {
+      "taxon_group": "cephalopods",
+      "state_block": "welfare",
+      "search": "(cephalopod* OR octopus* OR octopod* OR octopi OR squid OR squids OR cuttlefish* OR nautilus OR nautiluses OR Sepia) AND (welfare OR \"well-being\" OR wellbeing OR suffering)",
+      "n_chars": 172
+    },
+    {
+      "taxon_group": "cephalopods",
+      "state_block": "nociception_pain",
+      "search": "(cephalopod* OR octopus* OR octopod* OR octopi OR squid OR squids OR cuttlefish* OR nautilus OR nautiluses OR Sepia) AND (nocicept* OR pain OR painful OR \"noxious stimulus\" OR \"noxious stimuli\" OR analges*)",
+      "n_chars": 206
+    },
+    {
+      "taxon_group": "cephalopods",
+      "state_block": "ANY",
+      "search": "(cephalopod* OR octopus* OR octopod* OR octopi OR squid OR squids OR cuttlefish* OR nautilus OR nautiluses OR Sepia) AND (sentien* OR affective OR \"affective state\" OR \"affective states\" OR \"affect-like\" OR emotion* OR \"emotion-like\" OR \"emotional state\" OR \"emotional states\" OR \"cognitive bias\" OR \"cognitive biases\" OR conscious* OR \"subjective experience\" OR \"subjective experiences\" OR welfare OR \"well-being\" OR wellbeing OR suffering OR nocicept* OR pain OR painful OR \"noxious stimulus\" OR \"noxious stimuli\" OR analges*)",
+      "n_chars": 528
+    },
+    {
+      "taxon_group": "cephalopods",
+      "state_block": "NONE",
+      "search": "(cephalopod* OR octopus* OR octopod* OR octopi OR squid OR squids OR cuttlefish* OR nautilus OR nautiluses OR Sepia)",
+      "n_chars": 116
+    },
+    {
+      "taxon_group": "other_molluscs",
+      "state_block": "sentience",
+      "search": "(mollus* OR gastropod* OR snail* OR bivalve* OR oyster* OR mussel* OR clam OR clams OR scallop* OR abalone* OR limpet* OR whelk* OR Aplysia OR Lymnaea) AND (sentien*)",
+      "n_chars": 166
+    },
+    {
+      "taxon_group": "other_molluscs",
+      "state_block": "affect_emotion",
+      "search": "(mollus* OR gastropod* OR snail* OR bivalve* OR oyster* OR mussel* OR clam OR clams OR scallop* OR abalone* OR limpet* OR whelk* OR Aplysia OR Lymnaea) AND (affective OR \"affective state\" OR \"affective states\" OR \"affect-like\" OR emotion* OR \"emotion-like\" OR \"emotional state\" OR \"emotional states\" OR \"cognitive bias\" OR \"cognitive biases\")",
+      "n_chars": 342
+    },
+    {
+      "taxon_group": "other_molluscs",
+      "state_block": "consciousness",
+      "search": "(mollus* OR gastropod* OR snail* OR bivalve* OR oyster* OR mussel* OR clam OR clams OR scallop* OR abalone* OR limpet* OR whelk* OR Aplysia OR Lymnaea) AND (conscious* OR \"subjective experience\" OR \"subjective experiences\")",
+      "n_chars": 223
+    },
+    {
+      "taxon_group": "other_molluscs",
+      "state_block": "welfare",
+      "search": "(mollus* OR gastropod* OR snail* OR bivalve* OR oyster* OR mussel* OR clam OR clams OR scallop* OR abalone* OR limpet* OR whelk* OR Aplysia OR Lymnaea) AND (welfare OR \"well-being\" OR wellbeing OR suffering)",
+      "n_chars": 207
+    },
+    {
+      "taxon_group": "other_molluscs",
+      "state_block": "nociception_pain",
+      "search": "(mollus* OR gastropod* OR snail* OR bivalve* OR oyster* OR mussel* OR clam OR clams OR scallop* OR abalone* OR limpet* OR whelk* OR Aplysia OR Lymnaea) AND (nocicept* OR pain OR painful OR \"noxious stimulus\" OR \"noxious stimuli\" OR analges*)",
+      "n_chars": 241
+    },
+    {
+      "taxon_group": "other_molluscs",
+      "state_block": "ANY",
+      "search": "(mollus* OR gastropod* OR snail* OR bivalve* OR oyster* OR mussel* OR clam OR clams OR scallop* OR abalone* OR limpet* OR whelk* OR Aplysia OR Lymnaea) AND (sentien* OR affective OR \"affective state\" OR \"affective states\" OR \"affect-like\" OR emotion* OR \"emotion-like\" OR \"emotional state\" OR \"emotional states\" OR \"cognitive bias\" OR \"cognitive biases\" OR conscious* OR \"subjective experience\" OR \"subjective experiences\" OR welfare OR \"well-being\" OR wellbeing OR suffering OR nocicept* OR pain OR painful OR \"noxious stimulus\" OR \"noxious stimuli\" OR analges*)",
+      "n_chars": 563
+    },
+    {
+      "taxon_group": "other_molluscs",
+      "state_block": "NONE",
+      "search": "(mollus* OR gastropod* OR snail* OR bivalve* OR oyster* OR mussel* OR clam OR clams OR scallop* OR abalone* OR limpet* OR whelk* OR Aplysia OR Lymnaea)",
+      "n_chars": 151
+    },
+    {
+      "taxon_group": "other_invertebrates",
+      "state_block": "sentience",
+      "search": "(annelid* OR leech* OR earthworm* OR nematode* OR Caenorhabditis OR planarian* OR cnidarian* OR jellyfish* OR \"sea urchin\" OR \"sea urchins\" OR starfish OR \"sea star\" OR \"sea stars\" OR echinoderm* OR polychaete* OR tardigrade* OR rotifer* OR coral OR corals) AND (sentien*)",
+      "n_chars": 272
+    },
+    {
+      "taxon_group": "other_invertebrates",
+      "state_block": "affect_emotion",
+      "search": "(annelid* OR leech* OR earthworm* OR nematode* OR Caenorhabditis OR planarian* OR cnidarian* OR jellyfish* OR \"sea urchin\" OR \"sea urchins\" OR starfish OR \"sea star\" OR \"sea stars\" OR echinoderm* OR polychaete* OR tardigrade* OR rotifer* OR coral OR corals) AND (affective OR \"affective state\" OR \"affective states\" OR \"affect-like\" OR emotion* OR \"emotion-like\" OR \"emotional state\" OR \"emotional states\" OR \"cognitive bias\" OR \"cognitive biases\")",
+      "n_chars": 448
+    },
+    {
+      "taxon_group": "other_invertebrates",
+      "state_block": "consciousness",
+      "search": "(annelid* OR leech* OR earthworm* OR nematode* OR Caenorhabditis OR planarian* OR cnidarian* OR jellyfish* OR \"sea urchin\" OR \"sea urchins\" OR starfish OR \"sea star\" OR \"sea stars\" OR echinoderm* OR polychaete* OR tardigrade* OR rotifer* OR coral OR corals) AND (conscious* OR \"subjective experience\" OR \"subjective experiences\")",
+      "n_chars": 329
+    },
+    {
+      "taxon_group": "other_invertebrates",
+      "state_block": "welfare",
+      "search": "(annelid* OR leech* OR earthworm* OR nematode* OR Caenorhabditis OR planarian* OR cnidarian* OR jellyfish* OR \"sea urchin\" OR \"sea urchins\" OR starfish OR \"sea star\" OR \"sea stars\" OR echinoderm* OR polychaete* OR tardigrade* OR rotifer* OR coral OR corals) AND (welfare OR \"well-being\" OR wellbeing OR suffering)",
+      "n_chars": 313
+    },
+    {
+      "taxon_group": "other_invertebrates",
+      "state_block": "nociception_pain",
+      "search": "(annelid* OR leech* OR earthworm* OR nematode* OR Caenorhabditis OR planarian* OR cnidarian* OR jellyfish* OR \"sea urchin\" OR \"sea urchins\" OR starfish OR \"sea star\" OR \"sea stars\" OR echinoderm* OR polychaete* OR tardigrade* OR rotifer* OR coral OR corals) AND (nocicept* OR pain OR painful OR \"noxious stimulus\" OR \"noxious stimuli\" OR analges*)",
+      "n_chars": 347
+    },
+    {
+      "taxon_group": "other_invertebrates",
+      "state_block": "ANY",
+      "search": "(annelid* OR leech* OR earthworm* OR nematode* OR Caenorhabditis OR planarian* OR cnidarian* OR jellyfish* OR \"sea urchin\" OR \"sea urchins\" OR starfish OR \"sea star\" OR \"sea stars\" OR echinoderm* OR polychaete* OR tardigrade* OR rotifer* OR coral OR corals) AND (sentien* OR affective OR \"affective state\" OR \"affective states\" OR \"affect-like\" OR emotion* OR \"emotion-like\" OR \"emotional state\" OR \"emotional states\" OR \"cognitive bias\" OR \"cognitive biases\" OR conscious* OR \"subjective experience\" OR \"subjective experiences\" OR welfare OR \"well-being\" OR wellbeing OR suffering OR nocicept* OR pain OR painful OR \"noxious stimulus\" OR \"noxious stimuli\" OR analges*)",
+      "n_chars": 669
+    },
+    {
+      "taxon_group": "other_invertebrates",
+      "state_block": "NONE",
+      "search": "(annelid* OR leech* OR earthworm* OR nematode* OR Caenorhabditis OR planarian* OR cnidarian* OR jellyfish* OR \"sea urchin\" OR \"sea urchins\" OR starfish OR \"sea star\" OR \"sea stars\" OR echinoderm* OR polychaete* OR tardigrade* OR rotifer* OR coral OR corals)",
+      "n_chars": 257
+    },
+    {
+      "taxon_group": "invertebrates_general",
+      "state_block": "sentience",
+      "search": "(invertebrate*) AND (sentien*)",
+      "n_chars": 30
+    },
+    {
+      "taxon_group": "invertebrates_general",
+      "state_block": "affect_emotion",
+      "search": "(invertebrate*) AND (affective OR \"affective state\" OR \"affective states\" OR \"affect-like\" OR emotion* OR \"emotion-like\" OR \"emotional state\" OR \"emotional states\" OR \"cognitive bias\" OR \"cognitive biases\")",
+      "n_chars": 206
+    },
+    {
+      "taxon_group": "invertebrates_general",
+      "state_block": "consciousness",
+      "search": "(invertebrate*) AND (conscious* OR \"subjective experience\" OR \"subjective experiences\")",
+      "n_chars": 87
+    },
+    {
+      "taxon_group": "invertebrates_general",
+      "state_block": "welfare",
+      "search": "(invertebrate*) AND (welfare OR \"well-being\" OR wellbeing OR suffering)",
+      "n_chars": 71
+    },
+    {
+      "taxon_group": "invertebrates_general",
+      "state_block": "nociception_pain",
+      "search": "(invertebrate*) AND (nocicept* OR pain OR painful OR \"noxious stimulus\" OR \"noxious stimuli\" OR analges*)",
+      "n_chars": 105
+    },
+    {
+      "taxon_group": "invertebrates_general",
+      "state_block": "ANY",
+      "search": "(invertebrate*) AND (sentien* OR affective OR \"affective state\" OR \"affective states\" OR \"affect-like\" OR emotion* OR \"emotion-like\" OR \"emotional state\" OR \"emotional states\" OR \"cognitive bias\" OR \"cognitive biases\" OR conscious* OR \"subjective experience\" OR \"subjective experiences\" OR welfare OR \"well-being\" OR wellbeing OR suffering OR nocicept* OR pain OR painful OR \"noxious stimulus\" OR \"noxious stimuli\" OR analges*)",
+      "n_chars": 427
+    },
+    {
+      "taxon_group": "invertebrates_general",
+      "state_block": "NONE",
+      "search": "(invertebrate*)",
+      "n_chars": 15
+    },
+    {
+      "taxon_group": "ALL_ARTHROPODS",
+      "state_block": "sentience",
+      "search": "(insect* OR \"honey bee\" OR \"honey bees\" OR honeybee* OR \"bumble bee\" OR \"bumble bees\" OR bumblebee* OR \"stingless bee\" OR \"stingless bees\" OR bee OR bees OR wasp OR wasps OR hornet OR hornets OR butterfl* OR caterpillar* OR beetle* OR mosquito OR mosquitoes OR mosquitos OR grasshopper* OR locust* OR cockroach* OR termite* OR aphid* OR silkworm* OR mealworm* OR crickets OR \"house cricket\" OR \"house crickets\" OR \"black soldier fly\" OR \"black soldier flies\" OR \"fruit fly\" OR \"fruit flies\" OR \"house fly\" OR \"house flies\" OR housefly OR houseflies OR Drosophila OR Apis OR Bombus OR Tenebrio OR Hermetia OR Acheta OR Gryllus OR Periplaneta OR Schistocerca OR Locusta OR Bombyx OR Musca OR Tribolium OR Galleria OR crustacean* OR decapod* OR crab OR crabs OR lobster* OR shrimp* OR prawn* OR crayfish OR crawfish OR krill OR isopod* OR amphipod* OR copepod* OR barnacle* OR Daphnia OR Artemia OR Penaeus OR Litopenaeus OR Macrobrachium OR Homarus OR Nephrops OR Procambarus OR Carcinus OR Pacifastacus OR Astacus OR Cherax OR arachnid* OR spider* OR scorpion* OR tarantula* OR mite OR mites OR \"horseshoe crab\" OR \"horseshoe crabs\" OR myriapod* OR centipede* OR millipede* OR harvestman OR harvestmen OR arthropod*) AND (sentien*)",
+      "n_chars": 1230
+    },
+    {
+      "taxon_group": "ALL_ARTHROPODS",
+      "state_block": "affect_emotion",
+      "search": "(insect* OR \"honey bee\" OR \"honey bees\" OR honeybee* OR \"bumble bee\" OR \"bumble bees\" OR bumblebee* OR \"stingless bee\" OR \"stingless bees\" OR bee OR bees OR wasp OR wasps OR hornet OR hornets OR butterfl* OR caterpillar* OR beetle* OR mosquito OR mosquitoes OR mosquitos OR grasshopper* OR locust* OR cockroach* OR termite* OR aphid* OR silkworm* OR mealworm* OR crickets OR \"house cricket\" OR \"house crickets\" OR \"black soldier fly\" OR \"black soldier flies\" OR \"fruit fly\" OR \"fruit flies\" OR \"house fly\" OR \"house flies\" OR housefly OR houseflies OR Drosophila OR Apis OR Bombus OR Tenebrio OR Hermetia OR Acheta OR Gryllus OR Periplaneta OR Schistocerca OR Locusta OR Bombyx OR Musca OR Tribolium OR Galleria OR crustacean* OR decapod* OR crab OR crabs OR lobster* OR shrimp* OR prawn* OR crayfish OR crawfish OR krill OR isopod* OR amphipod* OR copepod* OR barnacle* OR Daphnia OR Artemia OR Penaeus OR Litopenaeus OR Macrobrachium OR Homarus OR Nephrops OR Procambarus OR Carcinus OR Pacifastacus OR Astacus OR Cherax OR arachnid* OR spider* OR scorpion* OR tarantula* OR mite OR mites OR \"horseshoe crab\" OR \"horseshoe crabs\" OR myriapod* OR centipede* OR millipede* OR harvestman OR harvestmen OR arthropod*) AND (affective OR \"affective state\" OR \"affective states\" OR \"affect-like\" OR emotion* OR \"emotion-like\" OR \"emotional state\" OR \"emotional states\" OR \"cognitive bias\" OR \"cognitive biases\")",
+      "n_chars": 1406
+    },
+    {
+      "taxon_group": "ALL_ARTHROPODS",
+      "state_block": "consciousness",
+      "search": "(insect* OR \"honey bee\" OR \"honey bees\" OR honeybee* OR \"bumble bee\" OR \"bumble bees\" OR bumblebee* OR \"stingless bee\" OR \"stingless bees\" OR bee OR bees OR wasp OR wasps OR hornet OR hornets OR butterfl* OR caterpillar* OR beetle* OR mosquito OR mosquitoes OR mosquitos OR grasshopper* OR locust* OR cockroach* OR termite* OR aphid* OR silkworm* OR mealworm* OR crickets OR \"house cricket\" OR \"house crickets\" OR \"black soldier fly\" OR \"black soldier flies\" OR \"fruit fly\" OR \"fruit flies\" OR \"house fly\" OR \"house flies\" OR housefly OR houseflies OR Drosophila OR Apis OR Bombus OR Tenebrio OR Hermetia OR Acheta OR Gryllus OR Periplaneta OR Schistocerca OR Locusta OR Bombyx OR Musca OR Tribolium OR Galleria OR crustacean* OR decapod* OR crab OR crabs OR lobster* OR shrimp* OR prawn* OR crayfish OR crawfish OR krill OR isopod* OR amphipod* OR copepod* OR barnacle* OR Daphnia OR Artemia OR Penaeus OR Litopenaeus OR Macrobrachium OR Homarus OR Nephrops OR Procambarus OR Carcinus OR Pacifastacus OR Astacus OR Cherax OR arachnid* OR spider* OR scorpion* OR tarantula* OR mite OR mites OR \"horseshoe crab\" OR \"horseshoe crabs\" OR myriapod* OR centipede* OR millipede* OR harvestman OR harvestmen OR arthropod*) AND (conscious* OR \"subjective experience\" OR \"subjective experiences\")",
+      "n_chars": 1287
+    },
+    {
+      "taxon_group": "ALL_ARTHROPODS",
+      "state_block": "welfare",
+      "search": "(insect* OR \"honey bee\" OR \"honey bees\" OR honeybee* OR \"bumble bee\" OR \"bumble bees\" OR bumblebee* OR \"stingless bee\" OR \"stingless bees\" OR bee OR bees OR wasp OR wasps OR hornet OR hornets OR butterfl* OR caterpillar* OR beetle* OR mosquito OR mosquitoes OR mosquitos OR grasshopper* OR locust* OR cockroach* OR termite* OR aphid* OR silkworm* OR mealworm* OR crickets OR \"house cricket\" OR \"house crickets\" OR \"black soldier fly\" OR \"black soldier flies\" OR \"fruit fly\" OR \"fruit flies\" OR \"house fly\" OR \"house flies\" OR housefly OR houseflies OR Drosophila OR Apis OR Bombus OR Tenebrio OR Hermetia OR Acheta OR Gryllus OR Periplaneta OR Schistocerca OR Locusta OR Bombyx OR Musca OR Tribolium OR Galleria OR crustacean* OR decapod* OR crab OR crabs OR lobster* OR shrimp* OR prawn* OR crayfish OR crawfish OR krill OR isopod* OR amphipod* OR copepod* OR barnacle* OR Daphnia OR Artemia OR Penaeus OR Litopenaeus OR Macrobrachium OR Homarus OR Nephrops OR Procambarus OR Carcinus OR Pacifastacus OR Astacus OR Cherax OR arachnid* OR spider* OR scorpion* OR tarantula* OR mite OR mites OR \"horseshoe crab\" OR \"horseshoe crabs\" OR myriapod* OR centipede* OR millipede* OR harvestman OR harvestmen OR arthropod*) AND (welfare OR \"well-being\" OR wellbeing OR suffering)",
+      "n_chars": 1271
+    },
+    {
+      "taxon_group": "ALL_ARTHROPODS",
+      "state_block": "nociception_pain",
+      "search": "(insect* OR \"honey bee\" OR \"honey bees\" OR honeybee* OR \"bumble bee\" OR \"bumble bees\" OR bumblebee* OR \"stingless bee\" OR \"stingless bees\" OR bee OR bees OR wasp OR wasps OR hornet OR hornets OR butterfl* OR caterpillar* OR beetle* OR mosquito OR mosquitoes OR mosquitos OR grasshopper* OR locust* OR cockroach* OR termite* OR aphid* OR silkworm* OR mealworm* OR crickets OR \"house cricket\" OR \"house crickets\" OR \"black soldier fly\" OR \"black soldier flies\" OR \"fruit fly\" OR \"fruit flies\" OR \"house fly\" OR \"house flies\" OR housefly OR houseflies OR Drosophila OR Apis OR Bombus OR Tenebrio OR Hermetia OR Acheta OR Gryllus OR Periplaneta OR Schistocerca OR Locusta OR Bombyx OR Musca OR Tribolium OR Galleria OR crustacean* OR decapod* OR crab OR crabs OR lobster* OR shrimp* OR prawn* OR crayfish OR crawfish OR krill OR isopod* OR amphipod* OR copepod* OR barnacle* OR Daphnia OR Artemia OR Penaeus OR Litopenaeus OR Macrobrachium OR Homarus OR Nephrops OR Procambarus OR Carcinus OR Pacifastacus OR Astacus OR Cherax OR arachnid* OR spider* OR scorpion* OR tarantula* OR mite OR mites OR \"horseshoe crab\" OR \"horseshoe crabs\" OR myriapod* OR centipede* OR millipede* OR harvestman OR harvestmen OR arthropod*) AND (nocicept* OR pain OR painful OR \"noxious stimulus\" OR \"noxious stimuli\" OR analges*)",
+      "n_chars": 1305
+    },
+    {
+      "taxon_group": "ALL_ARTHROPODS",
+      "state_block": "ANY",
+      "search": "(insect* OR \"honey bee\" OR \"honey bees\" OR honeybee* OR \"bumble bee\" OR \"bumble bees\" OR bumblebee* OR \"stingless bee\" OR \"stingless bees\" OR bee OR bees OR wasp OR wasps OR hornet OR hornets OR butterfl* OR caterpillar* OR beetle* OR mosquito OR mosquitoes OR mosquitos OR grasshopper* OR locust* OR cockroach* OR termite* OR aphid* OR silkworm* OR mealworm* OR crickets OR \"house cricket\" OR \"house crickets\" OR \"black soldier fly\" OR \"black soldier flies\" OR \"fruit fly\" OR \"fruit flies\" OR \"house fly\" OR \"house flies\" OR housefly OR houseflies OR Drosophila OR Apis OR Bombus OR Tenebrio OR Hermetia OR Acheta OR Gryllus OR Periplaneta OR Schistocerca OR Locusta OR Bombyx OR Musca OR Tribolium OR Galleria OR crustacean* OR decapod* OR crab OR crabs OR lobster* OR shrimp* OR prawn* OR crayfish OR crawfish OR krill OR isopod* OR amphipod* OR copepod* OR barnacle* OR Daphnia OR Artemia OR Penaeus OR Litopenaeus OR Macrobrachium OR Homarus OR Nephrops OR Procambarus OR Carcinus OR Pacifastacus OR Astacus OR Cherax OR arachnid* OR spider* OR scorpion* OR tarantula* OR mite OR mites OR \"horseshoe crab\" OR \"horseshoe crabs\" OR myriapod* OR centipede* OR millipede* OR harvestman OR harvestmen OR arthropod*) AND (sentien* OR affective OR \"affective state\" OR \"affective states\" OR \"affect-like\" OR emotion* OR \"emotion-like\" OR \"emotional state\" OR \"emotional states\" OR \"cognitive bias\" OR \"cognitive biases\" OR conscious* OR \"subjective experience\" OR \"subjective experiences\" OR welfare OR \"well-being\" OR wellbeing OR suffering OR nocicept* OR pain OR painful OR \"noxious stimulus\" OR \"noxious stimuli\" OR analges*)",
+      "n_chars": 1627
+    },
+    {
+      "taxon_group": "ALL_ARTHROPODS",
+      "state_block": "NONE",
+      "search": "(insect* OR \"honey bee\" OR \"honey bees\" OR honeybee* OR \"bumble bee\" OR \"bumble bees\" OR bumblebee* OR \"stingless bee\" OR \"stingless bees\" OR bee OR bees OR wasp OR wasps OR hornet OR hornets OR butterfl* OR caterpillar* OR beetle* OR mosquito OR mosquitoes OR mosquitos OR grasshopper* OR locust* OR cockroach* OR termite* OR aphid* OR silkworm* OR mealworm* OR crickets OR \"house cricket\" OR \"house crickets\" OR \"black soldier fly\" OR \"black soldier flies\" OR \"fruit fly\" OR \"fruit flies\" OR \"house fly\" OR \"house flies\" OR housefly OR houseflies OR Drosophila OR Apis OR Bombus OR Tenebrio OR Hermetia OR Acheta OR Gryllus OR Periplaneta OR Schistocerca OR Locusta OR Bombyx OR Musca OR Tribolium OR Galleria OR crustacean* OR decapod* OR crab OR crabs OR lobster* OR shrimp* OR prawn* OR crayfish OR crawfish OR krill OR isopod* OR amphipod* OR copepod* OR barnacle* OR Daphnia OR Artemia OR Penaeus OR Litopenaeus OR Macrobrachium OR Homarus OR Nephrops OR Procambarus OR Carcinus OR Pacifastacus OR Astacus OR Cherax OR arachnid* OR spider* OR scorpion* OR tarantula* OR mite OR mites OR \"horseshoe crab\" OR \"horseshoe crabs\" OR myriapod* OR centipede* OR millipede* OR harvestman OR harvestmen OR arthropod*)",
+      "n_chars": 1215
+    },
+    {
+      "taxon_group": "ALL_INVERTEBRATES",
+      "state_block": "sentience",
+      "search": "(insect* OR \"honey bee\" OR \"honey bees\" OR honeybee* OR \"bumble bee\" OR \"bumble bees\" OR bumblebee* OR \"stingless bee\" OR \"stingless bees\" OR bee OR bees OR wasp OR wasps OR hornet OR hornets OR butterfl* OR caterpillar* OR beetle* OR mosquito OR mosquitoes OR mosquitos OR grasshopper* OR locust* OR cockroach* OR termite* OR aphid* OR silkworm* OR mealworm* OR crickets OR \"house cricket\" OR \"house crickets\" OR \"black soldier fly\" OR \"black soldier flies\" OR \"fruit fly\" OR \"fruit flies\" OR \"house fly\" OR \"house flies\" OR housefly OR houseflies OR Drosophila OR Apis OR Bombus OR Tenebrio OR Hermetia OR Acheta OR Gryllus OR Periplaneta OR Schistocerca OR Locusta OR Bombyx OR Musca OR Tribolium OR Galleria OR crustacean* OR decapod* OR crab OR crabs OR lobster* OR shrimp* OR prawn* OR crayfish OR crawfish OR krill OR isopod* OR amphipod* OR copepod* OR barnacle* OR Daphnia OR Artemia OR Penaeus OR Litopenaeus OR Macrobrachium OR Homarus OR Nephrops OR Procambarus OR Carcinus OR Pacifastacus OR Astacus OR Cherax OR arachnid* OR spider* OR scorpion* OR tarantula* OR mite OR mites OR \"horseshoe crab\" OR \"horseshoe crabs\" OR myriapod* OR centipede* OR millipede* OR harvestman OR harvestmen OR arthropod* OR cephalopod* OR octopus* OR octopod* OR octopi OR squid OR squids OR cuttlefish* OR nautilus OR nautiluses OR Sepia OR mollus* OR gastropod* OR snail* OR bivalve* OR oyster* OR mussel* OR clam OR clams OR scallop* OR abalone* OR limpet* OR whelk* OR Aplysia OR Lymnaea OR annelid* OR leech* OR earthworm* OR nematode* OR Caenorhabditis OR planarian* OR cnidarian* OR jellyfish* OR \"sea urchin\" OR \"sea urchins\" OR starfish OR \"sea star\" OR \"sea stars\" OR echinoderm* OR polychaete* OR tardigrade* OR rotifer* OR coral OR corals OR invertebrate*) AND (sentien*)",
+      "n_chars": 1777
+    },
+    {
+      "taxon_group": "ALL_INVERTEBRATES",
+      "state_block": "affect_emotion",
+      "search": "(insect* OR \"honey bee\" OR \"honey bees\" OR honeybee* OR \"bumble bee\" OR \"bumble bees\" OR bumblebee* OR \"stingless bee\" OR \"stingless bees\" OR bee OR bees OR wasp OR wasps OR hornet OR hornets OR butterfl* OR caterpillar* OR beetle* OR mosquito OR mosquitoes OR mosquitos OR grasshopper* OR locust* OR cockroach* OR termite* OR aphid* OR silkworm* OR mealworm* OR crickets OR \"house cricket\" OR \"house crickets\" OR \"black soldier fly\" OR \"black soldier flies\" OR \"fruit fly\" OR \"fruit flies\" OR \"house fly\" OR \"house flies\" OR housefly OR houseflies OR Drosophila OR Apis OR Bombus OR Tenebrio OR Hermetia OR Acheta OR Gryllus OR Periplaneta OR Schistocerca OR Locusta OR Bombyx OR Musca OR Tribolium OR Galleria OR crustacean* OR decapod* OR crab OR crabs OR lobster* OR shrimp* OR prawn* OR crayfish OR crawfish OR krill OR isopod* OR amphipod* OR copepod* OR barnacle* OR Daphnia OR Artemia OR Penaeus OR Litopenaeus OR Macrobrachium OR Homarus OR Nephrops OR Procambarus OR Carcinus OR Pacifastacus OR Astacus OR Cherax OR arachnid* OR spider* OR scorpion* OR tarantula* OR mite OR mites OR \"horseshoe crab\" OR \"horseshoe crabs\" OR myriapod* OR centipede* OR millipede* OR harvestman OR harvestmen OR arthropod* OR cephalopod* OR octopus* OR octopod* OR octopi OR squid OR squids OR cuttlefish* OR nautilus OR nautiluses OR Sepia OR mollus* OR gastropod* OR snail* OR bivalve* OR oyster* OR mussel* OR clam OR clams OR scallop* OR abalone* OR limpet* OR whelk* OR Aplysia OR Lymnaea OR annelid* OR leech* OR earthworm* OR nematode* OR Caenorhabditis OR planarian* OR cnidarian* OR jellyfish* OR \"sea urchin\" OR \"sea urchins\" OR starfish OR \"sea star\" OR \"sea stars\" OR echinoderm* OR polychaete* OR tardigrade* OR rotifer* OR coral OR corals OR invertebrate*) AND (affective OR \"affective state\" OR \"affective states\" OR \"affect-like\" OR emotion* OR \"emotion-like\" OR \"emotional state\" OR \"emotional states\" OR \"cognitive bias\" OR \"cognitive biases\")",
+      "n_chars": 1953
+    },
+    {
+      "taxon_group": "ALL_INVERTEBRATES",
+      "state_block": "consciousness",
+      "search": "(insect* OR \"honey bee\" OR \"honey bees\" OR honeybee* OR \"bumble bee\" OR \"bumble bees\" OR bumblebee* OR \"stingless bee\" OR \"stingless bees\" OR bee OR bees OR wasp OR wasps OR hornet OR hornets OR butterfl* OR caterpillar* OR beetle* OR mosquito OR mosquitoes OR mosquitos OR grasshopper* OR locust* OR cockroach* OR termite* OR aphid* OR silkworm* OR mealworm* OR crickets OR \"house cricket\" OR \"house crickets\" OR \"black soldier fly\" OR \"black soldier flies\" OR \"fruit fly\" OR \"fruit flies\" OR \"house fly\" OR \"house flies\" OR housefly OR houseflies OR Drosophila OR Apis OR Bombus OR Tenebrio OR Hermetia OR Acheta OR Gryllus OR Periplaneta OR Schistocerca OR Locusta OR Bombyx OR Musca OR Tribolium OR Galleria OR crustacean* OR decapod* OR crab OR crabs OR lobster* OR shrimp* OR prawn* OR crayfish OR crawfish OR krill OR isopod* OR amphipod* OR copepod* OR barnacle* OR Daphnia OR Artemia OR Penaeus OR Litopenaeus OR Macrobrachium OR Homarus OR Nephrops OR Procambarus OR Carcinus OR Pacifastacus OR Astacus OR Cherax OR arachnid* OR spider* OR scorpion* OR tarantula* OR mite OR mites OR \"horseshoe crab\" OR \"horseshoe crabs\" OR myriapod* OR centipede* OR millipede* OR harvestman OR harvestmen OR arthropod* OR cephalopod* OR octopus* OR octopod* OR octopi OR squid OR squids OR cuttlefish* OR nautilus OR nautiluses OR Sepia OR mollus* OR gastropod* OR snail* OR bivalve* OR oyster* OR mussel* OR clam OR clams OR scallop* OR abalone* OR limpet* OR whelk* OR Aplysia OR Lymnaea OR annelid* OR leech* OR earthworm* OR nematode* OR Caenorhabditis OR planarian* OR cnidarian* OR jellyfish* OR \"sea urchin\" OR \"sea urchins\" OR starfish OR \"sea star\" OR \"sea stars\" OR echinoderm* OR polychaete* OR tardigrade* OR rotifer* OR coral OR corals OR invertebrate*) AND (conscious* OR \"subjective experience\" OR \"subjective experiences\")",
+      "n_chars": 1834
+    },
+    {
+      "taxon_group": "ALL_INVERTEBRATES",
+      "state_block": "welfare",
+      "search": "(insect* OR \"honey bee\" OR \"honey bees\" OR honeybee* OR \"bumble bee\" OR \"bumble bees\" OR bumblebee* OR \"stingless bee\" OR \"stingless bees\" OR bee OR bees OR wasp OR wasps OR hornet OR hornets OR butterfl* OR caterpillar* OR beetle* OR mosquito OR mosquitoes OR mosquitos OR grasshopper* OR locust* OR cockroach* OR termite* OR aphid* OR silkworm* OR mealworm* OR crickets OR \"house cricket\" OR \"house crickets\" OR \"black soldier fly\" OR \"black soldier flies\" OR \"fruit fly\" OR \"fruit flies\" OR \"house fly\" OR \"house flies\" OR housefly OR houseflies OR Drosophila OR Apis OR Bombus OR Tenebrio OR Hermetia OR Acheta OR Gryllus OR Periplaneta OR Schistocerca OR Locusta OR Bombyx OR Musca OR Tribolium OR Galleria OR crustacean* OR decapod* OR crab OR crabs OR lobster* OR shrimp* OR prawn* OR crayfish OR crawfish OR krill OR isopod* OR amphipod* OR copepod* OR barnacle* OR Daphnia OR Artemia OR Penaeus OR Litopenaeus OR Macrobrachium OR Homarus OR Nephrops OR Procambarus OR Carcinus OR Pacifastacus OR Astacus OR Cherax OR arachnid* OR spider* OR scorpion* OR tarantula* OR mite OR mites OR \"horseshoe crab\" OR \"horseshoe crabs\" OR myriapod* OR centipede* OR millipede* OR harvestman OR harvestmen OR arthropod* OR cephalopod* OR octopus* OR octopod* OR octopi OR squid OR squids OR cuttlefish* OR nautilus OR nautiluses OR Sepia OR mollus* OR gastropod* OR snail* OR bivalve* OR oyster* OR mussel* OR clam OR clams OR scallop* OR abalone* OR limpet* OR whelk* OR Aplysia OR Lymnaea OR annelid* OR leech* OR earthworm* OR nematode* OR Caenorhabditis OR planarian* OR cnidarian* OR jellyfish* OR \"sea urchin\" OR \"sea urchins\" OR starfish OR \"sea star\" OR \"sea stars\" OR echinoderm* OR polychaete* OR tardigrade* OR rotifer* OR coral OR corals OR invertebrate*) AND (welfare OR \"well-being\" OR wellbeing OR suffering)",
+      "n_chars": 1818
+    },
+    {
+      "taxon_group": "ALL_INVERTEBRATES",
+      "state_block": "nociception_pain",
+      "search": "(insect* OR \"honey bee\" OR \"honey bees\" OR honeybee* OR \"bumble bee\" OR \"bumble bees\" OR bumblebee* OR \"stingless bee\" OR \"stingless bees\" OR bee OR bees OR wasp OR wasps OR hornet OR hornets OR butterfl* OR caterpillar* OR beetle* OR mosquito OR mosquitoes OR mosquitos OR grasshopper* OR locust* OR cockroach* OR termite* OR aphid* OR silkworm* OR mealworm* OR crickets OR \"house cricket\" OR \"house crickets\" OR \"black soldier fly\" OR \"black soldier flies\" OR \"fruit fly\" OR \"fruit flies\" OR \"house fly\" OR \"house flies\" OR housefly OR houseflies OR Drosophila OR Apis OR Bombus OR Tenebrio OR Hermetia OR Acheta OR Gryllus OR Periplaneta OR Schistocerca OR Locusta OR Bombyx OR Musca OR Tribolium OR Galleria OR crustacean* OR decapod* OR crab OR crabs OR lobster* OR shrimp* OR prawn* OR crayfish OR crawfish OR krill OR isopod* OR amphipod* OR copepod* OR barnacle* OR Daphnia OR Artemia OR Penaeus OR Litopenaeus OR Macrobrachium OR Homarus OR Nephrops OR Procambarus OR Carcinus OR Pacifastacus OR Astacus OR Cherax OR arachnid* OR spider* OR scorpion* OR tarantula* OR mite OR mites OR \"horseshoe crab\" OR \"horseshoe crabs\" OR myriapod* OR centipede* OR millipede* OR harvestman OR harvestmen OR arthropod* OR cephalopod* OR octopus* OR octopod* OR octopi OR squid OR squids OR cuttlefish* OR nautilus OR nautiluses OR Sepia OR mollus* OR gastropod* OR snail* OR bivalve* OR oyster* OR mussel* OR clam OR clams OR scallop* OR abalone* OR limpet* OR whelk* OR Aplysia OR Lymnaea OR annelid* OR leech* OR earthworm* OR nematode* OR Caenorhabditis OR planarian* OR cnidarian* OR jellyfish* OR \"sea urchin\" OR \"sea urchins\" OR starfish OR \"sea star\" OR \"sea stars\" OR echinoderm* OR polychaete* OR tardigrade* OR rotifer* OR coral OR corals OR invertebrate*) AND (nocicept* OR pain OR painful OR \"noxious stimulus\" OR \"noxious stimuli\" OR analges*)",
+      "n_chars": 1852
+    },
+    {
+      "taxon_group": "ALL_INVERTEBRATES",
+      "state_block": "ANY",
+      "search": "(insect* OR \"honey bee\" OR \"honey bees\" OR honeybee* OR \"bumble bee\" OR \"bumble bees\" OR bumblebee* OR \"stingless bee\" OR \"stingless bees\" OR bee OR bees OR wasp OR wasps OR hornet OR hornets OR butterfl* OR caterpillar* OR beetle* OR mosquito OR mosquitoes OR mosquitos OR grasshopper* OR locust* OR cockroach* OR termite* OR aphid* OR silkworm* OR mealworm* OR crickets OR \"house cricket\" OR \"house crickets\" OR \"black soldier fly\" OR \"black soldier flies\" OR \"fruit fly\" OR \"fruit flies\" OR \"house fly\" OR \"house flies\" OR housefly OR houseflies OR Drosophila OR Apis OR Bombus OR Tenebrio OR Hermetia OR Acheta OR Gryllus OR Periplaneta OR Schistocerca OR Locusta OR Bombyx OR Musca OR Tribolium OR Galleria OR crustacean* OR decapod* OR crab OR crabs OR lobster* OR shrimp* OR prawn* OR crayfish OR crawfish OR krill OR isopod* OR amphipod* OR copepod* OR barnacle* OR Daphnia OR Artemia OR Penaeus OR Litopenaeus OR Macrobrachium OR Homarus OR Nephrops OR Procambarus OR Carcinus OR Pacifastacus OR Astacus OR Cherax OR arachnid* OR spider* OR scorpion* OR tarantula* OR mite OR mites OR \"horseshoe crab\" OR \"horseshoe crabs\" OR myriapod* OR centipede* OR millipede* OR harvestman OR harvestmen OR arthropod* OR cephalopod* OR octopus* OR octopod* OR octopi OR squid OR squids OR cuttlefish* OR nautilus OR nautiluses OR Sepia OR mollus* OR gastropod* OR snail* OR bivalve* OR oyster* OR mussel* OR clam OR clams OR scallop* OR abalone* OR limpet* OR whelk* OR Aplysia OR Lymnaea OR annelid* OR leech* OR earthworm* OR nematode* OR Caenorhabditis OR planarian* OR cnidarian* OR jellyfish* OR \"sea urchin\" OR \"sea urchins\" OR starfish OR \"sea star\" OR \"sea stars\" OR echinoderm* OR polychaete* OR tardigrade* OR rotifer* OR coral OR corals OR invertebrate*) AND (sentien* OR affective OR \"affective state\" OR \"affective states\" OR \"affect-like\" OR emotion* OR \"emotion-like\" OR \"emotional state\" OR \"emotional states\" OR \"cognitive bias\" OR \"cognitive biases\" OR conscious* OR \"subjective experience\" OR \"subjective experiences\" OR welfare OR \"well-being\" OR wellbeing OR suffering OR nocicept* OR pain OR painful OR \"noxious stimulus\" OR \"noxious stimuli\" OR analges*)",
+      "n_chars": 2174
+    },
+    {
+      "taxon_group": "ALL_INVERTEBRATES",
+      "state_block": "NONE",
+      "search": "(insect* OR \"honey bee\" OR \"honey bees\" OR honeybee* OR \"bumble bee\" OR \"bumble bees\" OR bumblebee* OR \"stingless bee\" OR \"stingless bees\" OR bee OR bees OR wasp OR wasps OR hornet OR hornets OR butterfl* OR caterpillar* OR beetle* OR mosquito OR mosquitoes OR mosquitos OR grasshopper* OR locust* OR cockroach* OR termite* OR aphid* OR silkworm* OR mealworm* OR crickets OR \"house cricket\" OR \"house crickets\" OR \"black soldier fly\" OR \"black soldier flies\" OR \"fruit fly\" OR \"fruit flies\" OR \"house fly\" OR \"house flies\" OR housefly OR houseflies OR Drosophila OR Apis OR Bombus OR Tenebrio OR Hermetia OR Acheta OR Gryllus OR Periplaneta OR Schistocerca OR Locusta OR Bombyx OR Musca OR Tribolium OR Galleria OR crustacean* OR decapod* OR crab OR crabs OR lobster* OR shrimp* OR prawn* OR crayfish OR crawfish OR krill OR isopod* OR amphipod* OR copepod* OR barnacle* OR Daphnia OR Artemia OR Penaeus OR Litopenaeus OR Macrobrachium OR Homarus OR Nephrops OR Procambarus OR Carcinus OR Pacifastacus OR Astacus OR Cherax OR arachnid* OR spider* OR scorpion* OR tarantula* OR mite OR mites OR \"horseshoe crab\" OR \"horseshoe crabs\" OR myriapod* OR centipede* OR millipede* OR harvestman OR harvestmen OR arthropod* OR cephalopod* OR octopus* OR octopod* OR octopi OR squid OR squids OR cuttlefish* OR nautilus OR nautiluses OR Sepia OR mollus* OR gastropod* OR snail* OR bivalve* OR oyster* OR mussel* OR clam OR clams OR scallop* OR abalone* OR limpet* OR whelk* OR Aplysia OR Lymnaea OR annelid* OR leech* OR earthworm* OR nematode* OR Caenorhabditis OR planarian* OR cnidarian* OR jellyfish* OR \"sea urchin\" OR \"sea urchins\" OR starfish OR \"sea star\" OR \"sea stars\" OR echinoderm* OR polychaete* OR tardigrade* OR rotifer* OR coral OR corals OR invertebrate*)",
+      "n_chars": 1762
+    }
+  ]
+}
