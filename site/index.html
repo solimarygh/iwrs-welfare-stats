@@ -99,6 +99,32 @@
     <details class="table-view"><summary>View as table</summary><div id="table-groups"></div></details>
   </section>
 
+  <section class="card chart-card" id="journals" aria-labelledby="t-journals" hidden>
+    <header class="card-head">
+      <div>
+        <h2 id="t-journals">Where the papers are published</h2>
+        <p class="sub" id="s-journals"></p>
+      </div>
+    </header>
+    <div class="chart" id="chart-journals"></div>
+    <p class="note" id="note-journals"></p>
+    <h3 class="subhead">Most frequent journals</h3>
+    <div id="table-journals-top"></div>
+    <details class="table-view"><summary>View group counts as a table</summary><div id="table-journals"></div></details>
+  </section>
+
+  <section class="card chart-card" id="events" aria-labelledby="t-events" hidden>
+    <header class="card-head">
+      <div>
+        <h2 id="t-events">Talks, symposia, events and theses</h2>
+        <p class="sub" id="s-events"></p>
+      </div>
+    </header>
+    <div class="panels" id="events-grid"></div>
+    <p class="note" id="note-events"></p>
+    <details class="table-view"><summary>View the list of entries</summary><div id="table-events"></div></details>
+  </section>
+
   <section class="card chart-card" id="members" aria-labelledby="t-members" hidden>
     <header class="card-head">
       <div>
@@ -148,6 +174,8 @@
 <script src="data.js"></script>
 <script src="assets/world.js"></script>
 <script src="members.js"></script>
+<script src="journals.js"></script>
+<script src="events.js"></script>
 <script src="assets/app.js"></script>
 </body>
 </html>

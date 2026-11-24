@@ -146,7 +146,7 @@ members:
   file: "data/private/Membership Application_Anonymized.xlsx"
   sheet: 1
   country_column: ~        # ~ = find the column whose header mentions country / pais
-  min_cell: 3              # a country (or country x term) with fewer members is shown as "fewer than 3"
+  min_cell: 5              # a country (or country x term) with fewer members is shown as "fewer than 5"
   # Filters for the map. Each takes the columns whose header STARTS with one of `headers`
   # (duplicated headers are merged per person). Values are free text: they are split on
   # commas, semicolons, slashes and "and", lower-cased, and mapped through `aliases`
@@ -161,3 +161,52 @@ members:
     species:     {label: "Species expertise",           headers: ["Species-Specific Expertise"]}
   aliases: "data/reference/member_term_aliases.csv"
   max_terms: 40            # most frequent terms kept per filter
+
+# ---------------------------------------------------------------------------
+# Journal groups (script 07). Each paper of the core is assigned to the FIRST group whose
+# pattern matches the lower-case journal name (regular expressions); the rest go to "other".
+# Edit the lists freely: IWRS can add the journals it cares about.
+# ---------------------------------------------------------------------------
+journals:
+  top_n: 25                # journals kept per taxon group for the "most frequent journals" table
+  groups:
+    - key: multidisciplinary
+      label: "High-impact multidisciplinary"
+      patterns: ["^nature$", "^science$", "^proceedings of the national academy of sciences",
+                 "^nature communications$", "^science advances$"]
+    - key: animal_welfare
+      label: "Animal welfare and behaviour"
+      patterns: ["animal welfare", "applied animal behaviou?r", "animal sentience", "^animals?$",
+                 "animal behaviou?r", "animal cognition", "animal frontiers", "zoo biology",
+                 "veterinar", "animal science"]
+    - key: entomology
+      label: "Entomology and insect science"
+      patterns: ["entomolog", "insect", "apicultur", "bee world", "pollinat"]
+    - key: aquaculture
+      label: "Aquaculture and fisheries"
+      patterns: ["aquacultur", "fisher", "^fishes$", "marine", "shellfish"]
+    - key: medicine_toxicology
+      label: "Medicine, toxicology and pharmacology"
+      patterns: ["toxin", "toxicon", "toxicol", "pharmac", "^molecules$", "cureus", "medicine", "clinical",
+                 "medical", "molecular pain", "^pain$"]
+    - key: food
+      label: "Food science and nutrition"
+      patterns: ["food", "nutrition", "gastronom", "culinary"]
+    - key: psychology_philosophy
+      label: "Psychology, philosophy and consciousness"
+      patterns: ["psycholog", "philosoph", "ethic", "consciousness", "cognit", "mind"]
+    - key: general_biology
+      label: "General biology, physiology and neuroscience"
+      patterns: ["experimental biology", "physiolog", "^elife$", "royal society", "biology letters", "current biology",
+                 "behavioral ecology", "behavioural ecology", "ecology", "neuroscience", "neurobiolog", "^biology$",
+                 "evolution", "iscience", "communications biology", "biology open"]
+    - key: megajournal
+      label: "Open-access megajournals"
+      patterns: ["^scientific reports$", "^plos one$", "^peerj$"]
+  other_label: "Other journals"
+
+# ---------------------------------------------------------------------------
+# Events and theses (script 08): the template IWRS fills in (data/templates/), saved here.
+# ---------------------------------------------------------------------------
+events:
+  file: "data/curated/IWRS_events_and_theses.xlsx"
