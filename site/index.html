@@ -28,10 +28,10 @@
 <section class="intro wrap">
   <p class="eyebrow">Prepared for the Insect Welfare Research Society's annual report</p>
   <h1>Invertebrate sentience and welfare in the scientific literature</h1>
-  <p class="lede" id="lede">Papers per year that study, or mention together, invertebrates and sentience, emotion, consciousness, welfare or pain, and how that compares with all research on the same animals. Counts come from OpenAlex and are updated each year by rerunning the code.</p>
+  <p class="lede" id="lede">Papers per year in which an invertebrate animal and sentience, emotion, consciousness, welfare or pain are discussed together, and how that compares with all research on the same animals. Counts come from OpenAlex and are updated each year by rerunning the code.</p>
   <div class="notice" role="note">
     <svg viewBox="0 0 24 24" width="18" height="18" aria-hidden="true"><circle cx="12" cy="12" r="9" fill="none" stroke="currentColor" stroke-width="1.6"/><path d="M12 7.5v5.5M12 16.5v.01" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg>
-    <p><strong>Preliminary.</strong> These are keyword matches in titles and abstracts. Some matches are not about the animals' welfare (for example human well-being or venom pharmacology). A manual validation will estimate the on-topic share; until then, read each number as an upper bound.</p>
+    <p><strong>Preliminary.</strong> A paper counts when an animal word and a word about sentience, emotion, consciousness, welfare or pain appear within a few words of each other in its title or abstract. Some of those papers are still not about the animals' welfare (for example venom pharmacology, or consumer studies of insects as food). A manual check of a random sample will estimate the on-topic share; until then, treat each number as an approximation.</p>
   </div>
 </section>
 </div>
@@ -64,7 +64,7 @@
   <section class="card chart-card" aria-labelledby="t-trend">
     <header class="card-head">
       <div>
-        <h2 id="t-trend">Papers matching the search, per year</h2>
+        <h2 id="t-trend">Papers per year</h2>
         <p class="sub" id="s-trend"></p>
       </div>
     </header>
@@ -146,7 +146,7 @@
   <section class="coming" aria-labelledby="t-next">
     <h2 id="t-next">Still to come</h2>
     <div class="coming-grid">
-      <article class="card soft"><span class="chip">In progress</span><h3>On-topic share</h3><p>A labelled sample of papers will give the share that is really about invertebrate welfare, so the counts above can be read as estimates and not as upper bounds.</p></article>
+      <article class="card soft"><span class="chip">In progress</span><h3>On-topic share</h3><p>A labelled sample of papers will give the share that is really about invertebrate welfare, so the counts above can be read as estimates with a margin of error.</p></article>
       <article class="card soft"><span class="chip">Planned</span><h3>Study type</h3><p>Ratio of conceptual, theoretical, methodological and perspective papers to empirical ones.</p></article>
       <article class="card soft"><span class="chip">Planned</span><h3>Journals</h3><p>Where the papers appear: animal welfare, entomology and high-impact multidisciplinary journals.</p></article>
       <article class="card soft"><span class="chip">Planned</span><h3>Events and theses</h3><p>Talks, symposia and workshops at major conferences, and PhD and Master's theses.</p></article>
@@ -157,9 +157,9 @@
     <h2 id="t-method">How the numbers are made</h2>
     <ul>
       <li><strong>Source.</strong> OpenAlex, queried on <span id="m-date"></span>. Journal articles and reviews, from <span id="m-first"></span> onward.</li>
-      <li><strong>Search.</strong> A taxon term (insect, crustacean, cephalopod, invertebrate and others) together with a state term (sentience, affective state, emotion, consciousness, welfare, nociception, pain) in the title or abstract. The terms are listed in <code>config/config.yml</code>.</li>
-      <li><strong>Matches, not verdicts.</strong> A paper counts when both kinds of term appear anywhere in its title or abstract. Papers that merely mention both are included.</li>
-      <li><strong>Share of the literature.</strong> Matching papers divided by all papers in the same taxon group in the same year, which corrects for the overall growth of publishing.</li>
+      <li><strong>Two steps.</strong> First a broad search retrieves every paper that mentions an animal name (insect, crustacean, cephalopod, bee, shrimp, octopus, <em>Drosophila</em> and about 140 more) and a word about sentience, emotion, consciousness, welfare or pain in its title or abstract. Then a strict rule keeps a paper only when an animal word and one of those words occur within six words of each other, in any order ("insect welfare", "welfare of farmed insects"). Only those papers are counted. The lists of words are in <code>config/config.yml</code>.</li>
+      <li><strong>Still an approximation.</strong> The strict rule removes most papers that merely mention both ideas, but not all of the unrelated ones. Counts also miss papers whose abstract is not available (about 5% of all records).</li>
+      <li><strong>Share of the literature.</strong> Papers that meet the strict definition divided by all papers that mention the same animal group in the same year, with no condition on sentience or welfare. It corrects for the overall growth of publishing.</li>
       <li id="m-partial"></li>
     </ul>
   </section>

@@ -38,6 +38,21 @@ build_site_data <- function(counts, run_date) {
   )
 }
 
+# Site data from the strict (core) counts: blocks and ANY come from the records, and NONE (all papers
+# on the taxon group, with no state term) comes from the OpenAlex counts of script 01.
+build_site_data_core <- function(core, api, run_date) {
+  lab <- site_labels()
+  stopifnot(all(core$taxon_group %in% names(lab$taxa)), !anyNA(core$n), !anyNA(api$n))
+  blocks <- c(names(lab$states), "ANY")
+  rows <- rbind(core[core$state_block %in% blocks, c("taxon_group", "is_arthropod", "state_block", "year", "n", "partial_year")],
+                api[api$state_block == "NONE" & api$taxon_group %in% core$taxon_group, c("taxon_group", "is_arthropod", "state_block", "year", "n", "partial_year")])
+  rows$n_all_works <- api$n_all_works[match(rows$year, api$year)]
+  stopifnot(!anyNA(rows$n_all_works))
+  out <- build_site_data(rows, run_date)
+  out$meta$definition <- "core"
+  out
+}
+
 write_site_data <- function(x, path = "site/data.js") {
   dir.create(dirname(path), showWarnings = FALSE, recursive = TRUE)
   json <- jsonlite::toJSON(x, auto_unbox = TRUE, dataframe = "rows", null = "null", digits = NA)

@@ -203,7 +203,7 @@ function drawBars(host, o) {
       'aria-label': `${r.label}: ${fmt(r.value)} papers, ${r.share.toFixed(1)}% ${(o.shareLabel || 'of its literature').toLowerCase()}` }, svg);
     const on = () => { if (bar) bar.classList.add('hot');
       tip.show([h('p', { class: 'tip-head', text: r.label }),
-        h('div', { class: 'tip-row' }, h('span', { class: 'tip-name', text: o.valueLabel || 'Matching papers' }), h('span', { class: 'tip-val', text: fmt(r.value) })),
+        h('div', { class: 'tip-row' }, h('span', { class: 'tip-name', text: o.valueLabel || 'Papers' }), h('span', { class: 'tip-val', text: fmt(r.value) })),
         h('div', { class: 'tip-row' }, h('span', { class: 'tip-name', text: o.shareLabel || 'Share of its literature' }), h('span', { class: 'tip-val', text: r.share.toFixed(1) + '%' }))],
         m.l + len, y0, svg.getBoundingClientRect().width / W || 1); };
     const off = () => { if (bar) bar.classList.remove('hot'); tip.hide(); };
@@ -241,7 +241,7 @@ function render() {
 
   // hero
   const n0 = any(startY), n1 = any(endY);
-  $('hero-label').textContent = `Matching papers in ${endY}, ${tx.label.toLowerCase()}`;
+  $('hero-label').textContent = `Papers in ${endY}, ${tx.label.toLowerCase()}`;
   $('hero-value').textContent = fmt(n1);
   $('hero-delta').textContent = n0 > 0 && endY > startY
     ? `${sgn(n1 / n0 - 1)}${Math.abs((n1 / n0 - 1) * 100).toFixed(0)}% since ${startY} (${fmt(n0)} papers)` : '';
@@ -262,12 +262,12 @@ function render() {
   tile(`Largest theme in ${endY}`, top.x.label, `${fmt(top.n)} papers (themes overlap)`, yrsToEnd.map(y => val(st.taxon, top.x.key, y)));
 
   // trend chart
-  $('s-trend').textContent = `${tx.label}. Journal articles and reviews that match the search.` +
+  $('s-trend').textContent = `${tx.label}. Journal articles and reviews that meet the strict definition.` +
     (r.to === partial ? ` ${partial} is partial (counted on ${runDate}).` : '');
-  drawLines($('chart-trend'), { years, series: [{ label: 'Matching papers', slot: 1, values: counts }], partialYear: partial,
+  drawLines($('chart-trend'), { years, series: [{ label: 'Papers', slot: 1, values: counts }], partialYear: partial,
     fmtVal: fmt, animate: st.animate,
-    aria: `Line chart of matching papers per year for ${tx.label}, ${years[0]} to ${years[years.length - 1]}. From ${fmt(counts[0])} to ${fmt(n1)} in ${endY}.` });
-  $('table-trend').replaceChildren(table(['Year', 'Matching papers', 'All papers in group', 'Share'],
+    aria: `Line chart of papers per year for ${tx.label}, ${years[0]} to ${years[years.length - 1]}. From ${fmt(counts[0])} to ${fmt(n1)} in ${endY}.` });
+  $('table-trend').replaceChildren(table(['Year', 'Papers', 'All papers on the group', 'Share'],
     years.map(y => [y + (y === partial ? ' (partial)' : ''), fmt(any(y)), fmt(none(y)), none(y) ? (share(y)).toFixed(2) + '%' : ''])));
 
   // themes chart
@@ -303,18 +303,18 @@ function render() {
   });
 
   // groups (ranked bars, emphasis on arthropods)
-  $('s-groups').textContent = `Matching papers in ${endY}, by taxon group.`;
+  $('s-groups').textContent = `Papers in ${endY}, by taxon group.`;
   const groups = D.taxa.filter(t => !isAll(t.key)).map(t => ({
     key: t.key, label: t.label, short: t.label.replace(/ \([^)]*\.\.\.\)$/, ''), value: val(t.key, 'ANY', endY),
     share: val(t.key, 'NONE', endY) ? (val(t.key, 'ANY', endY) / val(t.key, 'NONE', endY)) * 100 : 0,
     arthropod: t.arthropod, color: t.arthropod ? 'var(--s1)' : 'var(--other)',
     dim: !isAll(st.taxon) ? t.key !== st.taxon : (st.taxon === 'ALL_ARTHROPODS' ? !t.arthropod : false)
   })).sort((a, b) => b.value - a.value);
-  drawBars($('chart-groups'), { rows: groups, aria: `Ranked bars of matching papers in ${endY} by taxon group.` });
+  drawBars($('chart-groups'), { rows: groups, aria: `Ranked bars of papers in ${endY} by taxon group.` });
   const lgg = $('legend-groups'); lgg.replaceChildren(
     h('li', {}, h('span', {}, h('span', { class: 'sw', style: '--c:var(--s1)' }), 'Arthropods')),
     h('li', {}, h('span', {}, h('span', { class: 'sw', style: '--c:var(--other)' }), 'Other invertebrates')));
-  $('table-groups').replaceChildren(table(['Group', 'Arthropod', 'Matching papers', 'All papers in group', 'Share'],
+  $('table-groups').replaceChildren(table(['Group', 'Arthropod', 'Papers', 'All papers on the group', 'Share'],
     groups.map(g => [g.label, g.arthropod ? 'yes' : 'no', fmt(g.value), fmt(val(g.key, 'NONE', endY)), pct1(g.share)])));
 
   renderJournals(years, tx);
