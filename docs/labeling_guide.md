@@ -18,6 +18,22 @@ Some rows have an empty `abstract`. Judge those
 from the title and open the `doi` link if the title is not enough; use `?` when you cannot
 tell. They are sampled separately so that their precision is reported on its own.
 
+## The question and the order of the decision
+
+> Is the paper about the **experience or welfare of an invertebrate animal**, or about whether it has any?
+> If a member of IWRS looked for research on invertebrate welfare or sentience, would they want to find this paper?
+
+Apply these questions in order, thinking of the whole paper and not of the word that made it appear:
+
+1. Is the subject an **invertebrate animal**? A person, a vertebrate, a plant, or an animal that only appears as background is **0**.
+2. Does the paper study or discuss the animal's **welfare, pain, emotions or affective states, consciousness or sentience, or how it should be treated** (farming, handling, slaughter, living conditions)? Then it is **2**. This includes papers that test whether the animal feels pain even if they never use the word welfare.
+3. Does it study something that **underlies** that, without framing it that way (mechanisms of nociception, neurobiology, learning and cognition, stress physiology, behaviour)? Then it is **1**.
+4. Otherwise it is **0**; give the reason in `reason_if_0`.
+
+When in doubt: between 2 and 1, choose 1 and say why in `notes`; between 1 and 0, if the only link is the name of the animal, choose 0. Use `?` only when the title and abstract do not allow a decision. Judge the topic, not the quality of the paper.
+
+Examples. **2**: best practice for farmed insect welfare; sentience in decapods; evidence that octopuses feel pain; humane slaughter of crustaceans. **1**: genetics of nociception in *Drosophila* larvae; learning in bees; stress hormones in crowded crickets without any welfare framing. **0**: a spider toxin that blocks a human pain channel (`venom_pharm`); consumers' disgust at edible insects or fear of spiders (`human_emotion`); farmers' economic welfare (`human_welfare`); insect damage to crops (`plant_damage`); welfare of salmon fed insect meal (`vertebrate`).
+
 ## `relevance`
 
 | Code | Meaning | Examples |
