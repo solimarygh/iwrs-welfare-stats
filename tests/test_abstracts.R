@@ -46,7 +46,7 @@ stopifnot(n1 > 0, length(calls) == n1)
 
 # --- fidelity and untagged-by-abstract ---------------------------------------
 tagged <- tag_records(data.frame(title = c("Pain in crabs", "Heart failure"),
-                                 abstract = c("Nociception in the crab", NA), stringsAsFactors = FALSE), cfg)
+                                 abstract = c("Nociception in the crab", NA), topic_field = NA_character_, stringsAsFactors = FALSE), cfg)
 counts <- data.frame(taxon_group = "crustaceans", state_block = "nociception_pain", n = c(1, 1), year = 2020:2021)
 f <- tagging_fidelity(tagged, counts, cfg)
 stopifnot(f$api[f$taxon_group == "crustaceans" & f$state_block == "nociception_pain"] == 2,
@@ -58,7 +58,7 @@ stopifnot(u["TRUE", "TRUE"] == 0, u["FALSE", "TRUE"] == 100)
 cfg2 <- cfg; cfg2$project$years <- c(2024, 2026)
 r <- tag_records(data.frame(
   year = c(2024, 2025, 2025, 2026), title = c("Insect welfare", "Pain in shrimp", "Human welfare", "Sentient octopuses"),
-  abstract = NA, stringsAsFactors = FALSE), cfg2)
+  abstract = NA, topic_field = NA_character_, stringsAsFactors = FALSE), cfg2)
 cc <- core_counts_by_year(r, cfg2, this_year = 2026)
 n_of <- function(g, b, y) cc$n[cc$taxon_group == g & cc$state_block == b & cc$year == y]
 stopifnot(n_of("ALL_INVERTEBRATES", "ANY", 2025) == 1, n_of("ALL_INVERTEBRATES", "BROAD", 2025) == 2)

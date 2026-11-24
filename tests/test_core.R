@@ -1,8 +1,8 @@
 # Offline tests for R/core.R.   Rscript tests/test_core.R
 source("R/queries.R"); source("R/openalex.R"); source("R/records.R"); source("R/tagging.R"); source("R/core.R")
 cfg <- read_config()
-core <- function(title, abstract = NA) {
-  r <- tag_core(data.frame(title = title, abstract = abstract, stringsAsFactors = FALSE), cfg)
+core <- function(title, abstract = NA, field = NA_character_) {
+  r <- tag_core(data.frame(title = title, abstract = abstract, topic_field = field, stringsAsFactors = FALSE), cfg)
   r[, grep("^core_", names(r))]
 }
 yes <- function(title, block = "welfare", ...) isTRUE(core(title, ...)[[paste0("core_", block)]])
@@ -26,11 +26,11 @@ stopifnot(!yes("Insectivorous plants and their welfare value"))
 stopifnot(!yes("Cricket welfare in the league"), yes("Crickets welfare in mass rearing"))
 
 # abstract counts; NA title or abstract are safe
-stopifnot(yes("A study", abstract = "We assess the welfare of lobsters in holding tanks."))
+stopifnot(yes("A study", abstract = "We assess the welfare of lobsters in holding tanks. Lobsters were held for a week."))
 stopifnot(!isTRUE(core(NA, NA)$core_any), !isTRUE(core("", "")$core_any))
 
 # core_any is the OR of the blocks
-r <- tag_core(data.frame(title = c("Insect welfare", "Pain in shrimp", "Human welfare"), abstract = NA, stringsAsFactors = FALSE), cfg)
+r <- tag_core(data.frame(title = c("Insect welfare", "Pain in shrimp", "Human welfare"), abstract = NA, topic_field = NA_character_, stringsAsFactors = FALSE), cfg)
 stopifnot(identical(r$core_any, c(TRUE, TRUE, FALSE)))
 
 # the core only finds what the broad search retrieved
@@ -39,6 +39,25 @@ bad <- cfg; bad$core$states$welfare <- c("welfare", "fairness")
 stopifnot(identical(core_uncovered_words(bad), "fairness"))
 
 # tag_records adds the core columns
-tr <- tag_records(data.frame(title = "Insect welfare", abstract = NA, stringsAsFactors = FALSE), cfg)
+tr <- tag_records(data.frame(title = "Insect welfare", abstract = NA, topic_field = NA_character_, stringsAsFactors = FALSE), cfg)
 stopifnot(all(c("core_welfare", "core_any", "taxon_insects", "is_arthropod") %in% names(tr)), tr$core_welfare)
+
+# --- filters ------------------------------------------------------------------
+# subject: a single mention in the abstract is not enough, the title or two mentions are
+one <- "We review the welfare of consumers. The crab is mentioned once."
+stopifnot(!yes("A study of people", abstract = one))
+stopifnot(yes("A study of people", abstract = "Welfare of crabs matters. Crabs are sold live."))
+stopifnot(yes("Crab welfare", abstract = "Nothing else."))                 # animal word in the title
+r <- core("A study of people", abstract = one)
+stopifnot(r$core_welfare == FALSE, tag_core(data.frame(title = "A study of people", abstract = one, topic_field = NA_character_,
+          stringsAsFactors = FALSE), cfg)$pattern_welfare)                 # the pattern still matches
+# field: excluded fields lose the core, others (and papers with no topic) keep it
+stopifnot(!yes("Octopus welfare", field = "Computer Science"), yes("Octopus welfare", field = "Agricultural and Biological Sciences"))
+stopifnot(yes("Octopus welfare", field = NA_character_), yes("Octopus welfare", field = "Medicine"))
+# without topic_field the field filter cannot run: say so
+err <- tryCatch(tag_core(data.frame(title = "Octopus welfare", abstract = NA, stringsAsFactors = FALSE), cfg), error = function(e) conditionMessage(e))
+stopifnot(grepl("02c_fetch_topics", err))
+# no filters configured: the pattern alone
+nf <- cfg; nf$core$filters <- NULL
+stopifnot(tag_core(data.frame(title = "A study of people", abstract = one, stringsAsFactors = FALSE), nf)$core_welfare)
 cat("test_core.R: all checks passed\n")

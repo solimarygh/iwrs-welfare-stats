@@ -29,7 +29,20 @@ core_join_phrases <- function(text, multi) {
   text
 }
 
-# Adds core_<block> (logical) for each block of cfg$core$states, and core_any.
+# Lower-case tokens of a text, with multi-word terms joined into one token.
+core_tokens <- function(text, multi) {
+  text <- core_join_phrases(tolower(enc2utf8(text)), multi)
+  strsplit(trimws(gsub("[^\\p{L}\\p{N}_]+", " ", text, perl = TRUE)), " ", fixed = TRUE)
+}
+
+# Adds, for each block of cfg$core$states:
+#   pattern_<block>  an animal word and a state word of the block within `proximity` words;
+#   core_<block>     the pattern AND the two filters of cfg$core$filters (when there are any):
+#     pass_subject   the animal word is in the title, or occurs at least `subject_min_mentions`
+#                    times in title + abstract (a passing mention does not make it the subject);
+#     pass_field     the paper's OpenAlex field (topic_field) is not in `exclude_fields`
+#                    (a paper with no topic is kept).
+# plus core_any, animal_mentions and animal_in_title.
 tag_core <- function(rec, cfg, proximity = cfg$core$proximity) {
   noun_m <- core_matcher(union_terms(cfg, names(cfg$taxa)))     # respects search.include_noisy
   excl_m <- core_matcher(cfg$core$noun_exclude)
@@ -39,10 +52,10 @@ tag_core <- function(rec, cfg, proximity = cfg$core$proximity) {
 
   title <- ifelse(is.na(rec$title), "", rec$title)
   abstract <- ifelse(is.na(rec$abstract), "", rec$abstract)
-  text <- core_join_phrases(tolower(enc2utf8(paste(title, abstract))), multi)
-  tokens <- strsplit(trimws(gsub("[^\\p{L}\\p{N}_]+", " ", text, perl = TRUE)), " ", fixed = TRUE)
+  tokens <- core_tokens(paste(title, abstract), multi)
+  title_tokens <- core_tokens(title, multi)
 
-  uniq <- unique(unlist(tokens))
+  uniq <- unique(c(unlist(tokens), unlist(title_tokens)))
   is_noun <- token_is(uniq, noun_m) & !token_is(uniq, excl_m)
   is_state <- lapply(st_m, function(m) token_is(uniq, m))
 
@@ -57,8 +70,24 @@ tag_core <- function(rec, cfg, proximity = cfg$core$proximity) {
       if (length(ps) && any(abs(outer(pn, ps, "-")) <= proximity)) out[i, b] <- TRUE
     }
   }
-  for (b in blocks) rec[[paste0("core_", b)]] <- out[, b]
-  rec$core_any <- rowSums(out) > 0
+  rec$animal_mentions <- vapply(tokens, function(t) sum(is_noun[match(t, uniq)]), numeric(1))
+  rec$animal_in_title <- vapply(title_tokens, function(t) any(is_noun[match(t, uniq)]), logical(1))
+
+  flt <- cfg$core$filters
+  rec$pass_subject <- if (is.null(flt$subject_min_mentions)) rep(TRUE, nrow(rec))
+                      else rec$animal_in_title | rec$animal_mentions >= flt$subject_min_mentions
+  rec$pass_field <- rep(TRUE, nrow(rec))
+  if (length(flt$exclude_fields)) {
+    if (is.null(rec$topic_field))
+      stop("core.filters.exclude_fields needs the column topic_field: run scripts/02c_fetch_topics.R.", call. = FALSE)
+    rec$pass_field <- is.na(rec$topic_field) | !(rec$topic_field %in% flt$exclude_fields)
+  }
+  keep <- rec$pass_subject & rec$pass_field
+  for (b in blocks) {
+    rec[[paste0("pattern_", b)]] <- out[, b]
+    rec[[paste0("core_", b)]] <- out[, b] & keep
+  }
+  rec$core_any <- rowSums(out & keep) > 0
   rec
 }
 

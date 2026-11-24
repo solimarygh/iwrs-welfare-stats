@@ -137,6 +137,30 @@ core:
     consciousness:    ["conscious*"]
     welfare:          ["welfare", "wellbeing", "well-being", "suffering"]
     nociception_pain: ["pain", "painful", "nocicept*"]
+  # Two filters on top of the word pattern (added 2026-11-24 after the first validation
+  # showed that most core papers that were not on topic use an animal word in another
+  # sense: metaphors, algorithms, clinical case reports).
+  filters:
+    # The animal word is in the title or occurs at least this many times in title + abstract.
+    subject_min_mentions: 2
+    # OpenAlex fields in which an invertebrate-welfare paper is not expected. Fixed before
+    # looking at the field of the labelled papers; Medicine, Arts and Humanities, Social
+    # Sciences, Psychology and Pharmacology are NOT excluded until a fresh sample can test it.
+    exclude_fields:
+      - "Computer Science"
+      - "Engineering"
+      - "Mathematics"
+      - "Business, Management and Accounting"
+      - "Economics, Econometrics and Finance"
+      - "Decision Sciences"
+      - "Energy"
+      - "Materials Science"
+      - "Chemical Engineering"
+      - "Chemistry"
+      - "Physics and Astronomy"
+      - "Dentistry"
+      - "Nursing"
+      - "Health Professions"
 
 # ---------------------------------------------------------------------------
 # Members map (script 06). The membership list holds personal data: it stays in

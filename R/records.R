@@ -4,7 +4,7 @@
 `%||%` <- function(a, b) if (is.null(a) || length(a) == 0) b else a
 
 oa_select_fields <- paste("id", "doi", "title", "publication_year", "type", "primary_location",
-                          "abstract_inverted_index", "cited_by_count", "language", sep = ",")
+                          "abstract_inverted_index", "cited_by_count", "language", "primary_topic", sep = ",")
 
 # OpenAlex ships abstracts as an inverted index {word: [positions]} (0-based).
 reconstruct_abstract <- function(idx) {
@@ -13,6 +13,15 @@ reconstruct_abstract <- function(idx) {
   words <- character(max(unlist(pos)) + 1L)
   for (w in names(pos)) words[pos[[w]] + 1L] <- w
   paste(words[nzchar(words)], collapse = " ")
+}
+
+# Field, subfield and domain of the paper's main OpenAlex topic (NA when it has none).
+parse_topic <- function(w) {
+  t <- w$primary_topic
+  data.frame(topic_field = t$field$display_name %||% NA_character_,
+             topic_subfield = t$subfield$display_name %||% NA_character_,
+             topic_domain = t$domain$display_name %||% NA_character_,
+             stringsAsFactors = FALSE)
 }
 
 parse_work <- function(w) {
@@ -29,8 +38,28 @@ parse_work <- function(w) {
     cited_by_count = as.integer(w$cited_by_count %||% NA),
     language = w$language %||% NA_character_,
     abstract = reconstruct_abstract(w$abstract_inverted_index),
+    parse_topic(w),
     stringsAsFactors = FALSE
   )
+}
+
+# Topic of each id, 100 ids per call (used to add topics to records downloaded before
+# the topic was part of the download). Returns data.frame(openalex_id, topic_*).
+fetch_topics <- function(cfg, ids, fetch = default_fetch, batch = 100, progress = TRUE) {
+  ids <- unique(ids[!is.na(ids)])
+  groups <- split(ids, ceiling(seq_along(ids) / batch))
+  out <- lapply(seq_along(groups), function(i) {
+    short <- sub("^https://openalex.org/", "", groups[[i]])
+    res <- fetch(paste0(cfg$openalex$base_url, "/works"),
+                 list(filter = paste0("openalex:", paste(short, collapse = "|")),
+                      select = "id,primary_topic", `per-page` = batch),
+                 oa_mailto(cfg))
+    if (progress && i %% 20 == 0) message(sprintf("topics: %d of %d calls", i, length(groups)))
+    if (length(res$results) == 0) return(NULL)
+    do.call(rbind, lapply(res$results, function(w) cbind(openalex_id = w$id %||% NA_character_, parse_topic(w),
+                                                          stringsAsFactors = FALSE)))
+  })
+  do.call(rbind, out)
 }
 
 # All works matching `filter`, 200 per call. The total OpenAlex reports for the

@@ -42,9 +42,27 @@ stopifnot(m("well-being", "animal well-being"), !m("pain", "painted walls"), m("
 stopifnot(m("sentien*", "Sentience in crabs"), !m("sentien*", "presentient"), m("conscious*", "consciousness"))
 stopifnot(!m("pain", NA), m("emotion*", "Émotions et emotion"))   # NA text is safe
 
+# --- topics ---------------------------------------------------------------------
+wt <- list(id = "https://openalex.org/W9", primary_topic = list(field = list(display_name = "Veterinary"),
+           subfield = list(display_name = "Small Animals"), domain = list(display_name = "Health Sciences")))
+stopifnot(parse_work(wt)$topic_field == "Veterinary", parse_work(wt)$topic_domain == "Health Sciences",
+          is.na(parse_work(list(id = "W1"))$topic_field))
+Sys.setenv(OPENALEX_MAILTO = "test@example.org")
+tcalls <- 0
+tmock <- function(url, query, mailto) {
+  tcalls <<- tcalls + 1
+  ids <- strsplit(sub("^openalex:", "", query$filter), "|", fixed = TRUE)[[1]]
+  stopifnot(grepl("^W", ids), length(ids) <= 3)
+  list(results = lapply(ids, function(i) list(id = paste0("https://openalex.org/", i),
+       primary_topic = list(field = list(display_name = "Medicine")))))
+}
+tp <- fetch_topics(cfg, paste0("https://openalex.org/W", 1:7), fetch = tmock, batch = 3, progress = FALSE)
+stopifnot(tcalls == 3, nrow(tp) == 7, all(tp$topic_field == "Medicine"), is.na(tp$topic_domain[1]))
+Sys.unsetenv("OPENALEX_MAILTO")
+
 # --- tagging records ---------------------------------------------------------
 rec <- data.frame(title = c("Pain in crabs", "Spider fear in humans", "Bee welfare"),
-                  abstract = c("Nociception in the crab", "emotion and spiders", NA), stringsAsFactors = FALSE)
+                  abstract = c("Nociception in the crab", "emotion and spiders", NA), topic_field = NA_character_, stringsAsFactors = FALSE)
 t <- tag_records(rec, cfg)
 stopifnot(t$taxon_crustaceans[1], t$state_nociception_pain[1], t$is_arthropod[1])
 stopifnot(t$taxon_other_arthropods[2], t$state_affect_emotion[2])
