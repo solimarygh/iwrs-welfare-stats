@@ -1,0 +1,101 @@
+openalex_id,relevance,reason_if_0,confidence,note
+https://openalex.org/W4408083929,2,,high,Emotion-like states in Drosophila tested directly.
+https://openalex.org/W4414281117,2,,high,Tests pain-like states in crickets.
+https://openalex.org/W4416666715,0,other,medium,Acoustic monitoring and AI classification; welfare only named as a general need.
+https://openalex.org/W7116918837,2,,medium,"Nociceptors in octopus framed by pain states and welfare protection; mechanism paper, could be 1."
+https://openalex.org/W7118000611,0,other,high,"Colony brood-rearing nutrition, colony well-being not individual welfare."
+https://openalex.org/W7118243856,0,other,high,"Microbiome of wild bees, bee health at population level."
+https://openalex.org/W7118611367,0,vertebrate,high,Welfare of broilers; the larvae are a feed.
+https://openalex.org/W7122614047,2,,high,Euthanasia and welfare of invertebrates.
+https://openalex.org/W7123771354,1,,medium,Molecular mechanism of thermo-nociception in C. elegans; no welfare framing.
+https://openalex.org/W7124901761,0,human_emotion,high,Human emotion regulation including spider fear.
+https://openalex.org/W7125135535,2,,high,Sentience in cephalopods.
+https://openalex.org/W7126216402,2,,medium,"Title only: nociception trade-offs in bees, the pain-in-insects debate."
+https://openalex.org/W7127974951,0,other,medium,"Bibliometrics of tryptophan and cannibalism in crayfish; stress and aggression, not welfare."
+https://openalex.org/W7128006564,0,human_emotion,high,Cockroach phobia treatment in a person.
+https://openalex.org/W7128066455,2,,high,Awareness and sentience in hermit crabs.
+https://openalex.org/W7128427173,0,other,high,Taste receptor; Painless is a gene name.
+https://openalex.org/W7128485702,1,,low,Meat quality by slaughter method with humane slaughter as motivation; mainly food quality.
+https://openalex.org/W7128807927,0,other,high,"Colony diet and strength, apiculture."
+https://openalex.org/W7130331366,0,other,medium,Aquaculture reproduction and water quality; health index only as condition.
+https://openalex.org/W7130825511,1,,medium,CNS anatomy of Norway lobster to support later study of cognition and sentience.
+https://openalex.org/W7131144189,1,,low,"Art study of firebugs that argues for their sentient, individual side; humanities, not welfare research."
+https://openalex.org/W7131642209,1,,low,Stress-response markers in farmed larvae under diet additives; no welfare framing.
+https://openalex.org/W7131842522,2,,high,Affective state transfer in bumblebees.
+https://openalex.org/W7133522181,0,plant_damage,high,Insect damage to cacao.
+https://openalex.org/W7133863760,0,other,high,Egyptology.
+https://openalex.org/W7134281899,2,,high,Emotional contagion in bumblebees.
+https://openalex.org/W7135030185,2,,medium,Mite infestation treated as a welfare issue of captive scorpions.
+https://openalex.org/W7136917002,0,venom_pharm,high,Human clinical case with leech therapy; pain in a person.
+https://openalex.org/W7136955892,1,,low,Legal barriers to insect rearing; welfare appears as one of several issues.
+https://openalex.org/W7138311360,0,other,high,Ecological roles of honeybees.
+https://openalex.org/W7139068947,0,venom_pharm,high,Pain in people stung by jellyfish.
+https://openalex.org/W7139119393,0,other,high,Human self-consciousness.
+https://openalex.org/W7140073744,0,other,high,Butterfly population monitoring.
+https://openalex.org/W7140116713,1,,low,Mussel mass mortality with a One Health-One Welfare analysis; mostly ecology and aquaculture.
+https://openalex.org/W7140229168,0,other,medium,Genome of a cold-adapted fly.
+https://openalex.org/W7143481027,0,other,high,"Pesticide residues in bee products, human health."
+https://openalex.org/W7147269658,0,other,high,Governance and trade of lobster aquaculture.
+https://openalex.org/W7148588255,1,,medium,Behavioural variation in octopus problem solving; welfare only as general motivation.
+https://openalex.org/W7153036601,0,venom_pharm,high,Title only: leech therapy for pain in people.
+https://openalex.org/W7153144034,0,other,low,"Echinoderms as alternative models in ecotoxicology; welfare-friendly in the 3Rs sense, not their welfare."
+https://openalex.org/W7154080450,2,,high,Analgesia and aversive states after a noxious stimulus in lobsters.
+https://openalex.org/W7154190354,2,,high,Welfare indicators during a crayfish translocation.
+https://openalex.org/W7154733255,2,,high,Thermal preference of shrimp framed as a welfare need.
+https://openalex.org/W7155065238,0,vertebrate,high,Welfare of laying hens; the mites are the parasite.
+https://openalex.org/W7155841811,2,,high,Consciousness and welfare of invertebrates.
+https://openalex.org/W7155901865,2,,high,Assessment of invertebrate pain and sentience.
+https://openalex.org/W7156043833,2,,high,Spider consciousness and welfare.
+https://openalex.org/W7157860542,1,,high,Mechanism of nociceptive sensitisation in Drosophila larvae.
+https://openalex.org/W7160231480,0,other,high,Climate science of coral reefs.
+https://openalex.org/W7160266270,2,,high,"Welfare of the honey bee, legal and biological."
+https://openalex.org/W7160756504,0,human_welfare,high,Title only: community welfare and coral reef health.
+https://openalex.org/W7160858575,2,,high,Anaesthesia and stress in crayfish framed by welfare standards.
+https://openalex.org/W7160873430,2,,high,Individual variation and welfare in farmed prawns.
+https://openalex.org/W7161130960,1,,high,Nociceptor sensitivity genetics in Drosophila.
+https://openalex.org/W7161634907,0,other,high,Literary study of insect imagery.
+https://openalex.org/W7161861944,0,other,high,Human intestinal mite infection case report.
+https://openalex.org/W7161992173,2,,low,"Welfare of feeder animals; covers fish, mice and invertebrates, so invertebrates are one of several subjects."
+https://openalex.org/W7162031806,0,other,medium,Toxic and physiological effects of lithium in bees; Pain is a cage model name.
+https://openalex.org/W7162117622,0,other,high,Larvicides against mosquitoes.
+https://openalex.org/W7162207855,2,,high,Tests central modulation of nocifensive behaviour as a criterion for insect pain.
+https://openalex.org/W7162285950,2,,high,Pain and welfare of decapods at slaughter.
+https://openalex.org/W7162469465,1,,low,Non-invasive identification of shrimp framed as welfare-friendly; method paper for aquaculture.
+https://openalex.org/W7162518773,1,,medium,"Thermal nociception protocols in larvae, with welfare of farming and slaughter as motivation."
+https://openalex.org/W7162540119,2,,high,Ethical reasoning about welfare and sentience of octopus paralarvae.
+https://openalex.org/W7162654301,1,,medium,"Peptide receptor system, linked to nociception and opioid-like signalling; mechanism."
+https://openalex.org/W7162659288,2,,medium,Title only: welfare of invertebrates in science.
+https://openalex.org/W7162765388,0,human_welfare,high,Economics of insect waste recycling.
+https://openalex.org/W7162879699,0,human_emotion,high,Fans of a media franchise.
+https://openalex.org/W7163077891,0,other,high,Mosquito repellent patch.
+https://openalex.org/W7163512110,2,,high,Insect sentience and ethics.
+https://openalex.org/W7163563378,2,,high,Insect sentience and rights.
+https://openalex.org/W7163575228,2,,high,Insect sentience and ethics.
+https://openalex.org/W7163589495,2,,high,Insect sentience and responsibility toward insects.
+https://openalex.org/W7163919213,2,,high,Anaesthesia and humane euthanasia in wax moth larvae.
+https://openalex.org/W7164021186,2,,high,Judgement bias as a measure of affective state in bees.
+https://openalex.org/W7164024414,0,human_welfare,high,Cattle parasites and farmers' welfare.
+https://openalex.org/W7164336414,2,,high,Welfare assessment of farmed shrimp at different densities.
+https://openalex.org/W7164819465,2,,high,Stress-induced negative affect in bumblebees and its effect on perception.
+https://openalex.org/W7164840478,1,,low,Physiological condition index of shrimp as a well-being indicator in farms; production and ecology focus.
+https://openalex.org/W7165001029,2,,high,Welfare impairment and stocking density in shrimp farms.
+https://openalex.org/W7165116491,0,venom_pharm,high,Leech therapy clinical case series in people.
+https://openalex.org/W7165398650,1,,medium,"Self-medication behaviour of insects with a view on their well-being; behaviour and health, not framed as welfare."
+https://openalex.org/W7165473449,2,,high,Judgement bias as an affective-state measure in honeybees.
+https://openalex.org/W7165657599,0,other,high,Ecotoxicology of a drug in mussels.
+https://openalex.org/W7165729651,0,other,high,Pathogen networks and colony productivity.
+https://openalex.org/W7165783919,2,,high,Consciousness in jumping spiders.
+https://openalex.org/W7166349474,2,,high,"Welfare beyond pain for invertebrates, sentience framework."
+https://openalex.org/W7166538979,0,vertebrate,low,Welfare programme of a research institute; cephalopods only listed among many research animals.
+https://openalex.org/W7167087051,0,other,high,Literary narratology.
+https://openalex.org/W7167218305,0,venom_pharm,high,Leech therapy for pain in a person.
+https://openalex.org/W7167259329,2,,high,Ethical review and welfare oversight of insect research.
+https://openalex.org/W7167268357,2,,high,Legal status of decapods in animal welfare law based on sentience.
+https://openalex.org/W7167286451,2,,high,Ethical oversight and welfare of invertebrates in research.
+https://openalex.org/W7167459142,1,,high,Genetic regulation of nociception in Drosophila larvae.
+https://openalex.org/W7167463798,0,human_emotion,high,Wellbeing of student-teachers.
+https://openalex.org/W7167470385,2,,high,Affective evaluation of tastes in bumblebees.
+https://openalex.org/W7167945521,0,plant_damage,high,Termite damage to timber trees.
+https://openalex.org/W7169869879,2,,high,Welfare of feeder insects in reptile husbandry.
+https://openalex.org/W7170068574,0,other,high,AI in apiculture and climate change.
+https://openalex.org/W7170133477,0,human_welfare,high,Bee gut probiotics for human health.
