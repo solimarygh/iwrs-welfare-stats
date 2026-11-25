@@ -61,6 +61,7 @@ R >= 4.3 with `yaml`, `httr2`, `jsonlite` and, for the members map, `readxl`.
 | `scripts/02c_fetch_topics.R` | Adds the OpenAlex field of each record and re-tags: the core now needs the animal word in the title or twice in title + abstract, and a field outside `core.filters.exclude_fields` | `data/raw/` (not tracked), `data/processed/records_meta.csv` |
 | `scripts/03_make_validation_sample.R` | Stratified sample for manual relevance labelling | `data/raw/validation_sample.csv` (not tracked), `data/validation/sample_ids.csv` |
 | `scripts/06_build_member_map_data.R` | Counts members per country from the membership list kept in `data/private/` (never committed) and writes `site/members.js` | `site/members.js` |
+| `scripts/03b_make_fresh_validation_sample.R` | Fresh sample drawn after the core filters were added: another seed, without the papers of round 1, same sizes. Read its labels with `Sys.setenv(VALIDATION_ROUND = "_2")` before step 4 | `data/raw/validation_sample_2.csv` (not tracked), `data/validation/sample_ids_2.csv` |
 | `scripts/04_read_labels.R` | Reads your labels of the validation sample; estimates, per block, the share of papers that are on topic (with intervals), what the core leaves out, and why papers were not relevant | `data/validation/labels.csv` (ids and labels only), `data/processed/validation_summary.csv` |
 | `scripts/04b_evaluate_core_rules.R` | Shows what the two core filters do to the labelled sample (papers kept, share on topic, on-topic papers lost) and the labelled papers by field | console only |
 | `scripts/07_journal_distribution.R` | Groups the core papers by journal (groups editable in the config) per year and taxon group | `data/processed/journals_by_year.csv`, `journals_top.csv`, `site/journals.js` |
@@ -101,6 +102,13 @@ static host (GitHub Pages, Netlify, an institutional server).
 Every number on the page comes from `site/data.js`, which is generated from
 `data/processed/counts_by_year.csv`; nothing is typed by hand. The page says it is
 preliminary until a validation sample drawn with the filters on has been labelled.
+
+### The events section before IWRS sends its list
+
+While `site/events.js` holds no data, the section shows the four panels with **invented** numbers,
+labelled as such: a notice that says "IN PREPARATION ... invented ... not real data", "Example data"
+in each panel subtitle, an EXAMPLE DATA watermark on each chart and a note in the chart descriptions.
+`scripts/08_build_events_data.R` replaces them with the entries IWRS reports; nothing else changes.
 
 ### Look and logo
 

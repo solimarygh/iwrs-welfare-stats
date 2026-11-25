@@ -58,3 +58,11 @@ make_validation_sample <- function(rec, cfg) {
   res <- do.call(rbind, out)
   res[sample.int(nrow(res)), , drop = FALSE]    # shuffle: the labeller should not see strata in order
 }
+
+# Records that were not drawn in an earlier round (ids in `ids_path`, the sample_ids.csv of that round).
+# A fresh sample has to leave them out: the filters were designed after reading their labels.
+exclude_sampled <- function(rec, ids_path) {
+  if (!file.exists(ids_path)) stop("Earlier sample not found: ", ids_path, call. = FALSE)
+  done <- utils::read.csv(ids_path, stringsAsFactors = FALSE)$openalex_id
+  rec[!rec$openalex_id %in% done, , drop = FALSE]
+}

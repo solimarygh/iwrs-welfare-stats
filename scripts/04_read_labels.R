@@ -6,9 +6,10 @@
 # data/processed/validation_summary.csv, and a summary in the console.
 source("R/queries.R"); source("R/records.R"); source("R/validation.R")
 cfg <- read_config()
+rnd <- Sys.getenv("VALIDATION_ROUND", unset = "")      # "" for round 1, "_2" for the fresh sample (Sys.setenv(VALIDATION_ROUND = "_2"))
 
-lab <- read_labels("data/raw/validation_sample.csv")
-ids <- utils::read.csv("data/validation/sample_ids.csv", stringsAsFactors = FALSE)
+lab <- read_labels(sprintf("data/raw/validation_sample%s.csv", rnd))
+ids <- utils::read.csv(sprintf("data/validation/sample_ids%s.csv", rnd), stringsAsFactors = FALSE)
 message(sprintf("%d rows: %d labelled, %d empty, %d with a value that is not 2, 1, 0 or ?",
                 nrow(lab), sum(lab$status == "ok"), sum(lab$status == "unlabeled"), sum(lab$status == "invalid")))
 if (any(lab$status == "invalid")) { message("Fix these values (row number in the file, header = 1):"); print(which(lab$status == "invalid") + 1) }
@@ -16,7 +17,7 @@ if (!any(lab$status == "ok")) stop("No labels yet: fill the column `relevance` o
 if (any(lab$status == "unlabeled")) message("Unlabelled rows are left out of the estimates (", sum(lab$status == "unlabeled"), ").")
 
 dir.create("data/validation", showWarnings = FALSE, recursive = TRUE)
-utils::write.csv(lab[lab$status == "ok", c("openalex_id", "relevance", "reason_if_0")], "data/validation/labels.csv", row.names = FALSE)
+utils::write.csv(lab[lab$status == "ok", c("openalex_id", "relevance", "reason_if_0")], sprintf("data/validation/labels%s.csv", rnd), row.names = FALSE)
 
 est <- estimate_precision(lab, ids)
 pct <- function(x) sprintf("%4.0f%%", 100 * x)
@@ -34,5 +35,5 @@ if (!is.na(sm$broad_only_papers))
               format(sm$broad_only_papers, big.mark = ","), format(round(sm$broad_only_on_topic), big.mark = ","), 100 * sm$recall_in_retrieved))
 rt <- reason_table(lab, ids)
 if (!is.null(rt)) { cat("\nWHY PAPERS WERE NOT RELEVANT (rows = stratum, columns = reason code)\n"); print(rt) }
-utils::write.csv(cbind(est, as.data.frame(sm)[rep(1, nrow(est)), ]), "data/processed/validation_summary.csv", row.names = FALSE)
-message("\nWrote data/validation/labels.csv and data/processed/validation_summary.csv")
+utils::write.csv(cbind(est, as.data.frame(sm)[rep(1, nrow(est)), ]), sprintf("data/processed/validation_summary%s.csv", rnd), row.names = FALSE)
+message(sprintf("\nWrote data/validation/labels%s.csv and data/processed/validation_summary%s.csv", rnd, rnd))

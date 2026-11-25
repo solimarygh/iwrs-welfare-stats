@@ -201,3 +201,10 @@ td { font-variant-numeric: tabular-nums; }
 
 @media (prefers-reduced-motion: reduce) { * { transition: none !important; animation: none !important; } }
 @media (forced-colors: active) { .line { stroke: CanvasText; } .bar { forced-color-adjust: none; } }
+
+/* Events section while it shows invented example numbers: dashed frame, bold notice, watermark on each chart */
+#events.example { border-style: dashed; box-shadow: none; }
+#events.example #s-events { font-weight: 700; color: var(--ink); }
+#events.example .chart { position: relative; }
+#events.example .chart::after { content: "EXAMPLE DATA"; position: absolute; inset: 0; display: grid; place-items: center; pointer-events: none;
+  font-size: 22px; font-weight: 800; letter-spacing: .12em; color: var(--ink); opacity: .1; transform: rotate(-12deg); }

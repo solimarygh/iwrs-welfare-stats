@@ -102,4 +102,16 @@ stopifnot(all(is.na(s1$abstract[s1$stratum_block == "no_abstract"])),
 # a core record is never sampled as broad_only
 stopifnot(!any(s1$stratum_block == "broad_only" & s1$openalex_id %in% sim$openalex_id[!is.na(prim)]))
 
+
+# --- a fresh sample leaves out the papers of an earlier one -------------------------------------
+tmp_ids <- tempfile(fileext = ".csv")
+utils::write.csv(s1[, c("openalex_id", "stratum_block")], tmp_ids, row.names = FALSE)
+left <- exclude_sampled(sim, tmp_ids)
+stopifnot(nrow(left) == nrow(sim) - nrow(s1), !any(left$openalex_id %in% s1$openalex_id))
+cfg_r2 <- cfg; cfg_r2$sampling$seed <- cfg$sampling_round2$seed
+s3 <- make_validation_sample(left, cfg_r2)
+stopifnot(!any(s3$openalex_id %in% s1$openalex_id), !identical(sort(s3$openalex_id), sort(s1$openalex_id)))
+stopifnot(identical(s3$openalex_id, make_validation_sample(left, cfg_r2)$openalex_id))     # still reproducible
+err <- tryCatch(exclude_sampled(sim, "no/such/file.csv"), error = function(e) conditionMessage(e))
+stopifnot(grepl("Earlier sample not found", err))
 cat("test_records.R: all checks passed\n")
