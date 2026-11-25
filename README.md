@@ -98,7 +98,7 @@ static host (GitHub Pages, Netlify, an institutional server).
 
 Every number on the page comes from `site/data.js`, which is generated from
 `data/processed/counts_by_year.csv`; nothing is typed by hand. The page says it is
-preliminary until the validation sample is labelled.
+preliminary until a validation sample drawn with the filters on has been labelled.
 
 ### Look and logo
 
