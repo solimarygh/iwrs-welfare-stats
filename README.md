@@ -104,9 +104,10 @@ preliminary until a validation sample drawn with the filters on has been labelle
 
 ### The events section before IWRS sends its list
 
-While `site/events.js` holds no data, the section shows the four panels empty (axes and legend, "Waiting
-for IWRS entries"). Opening the page with `?preview=events` fills them with invented numbers, labelled
-as example data, to see the finished layout. Nothing invented is shown without that address.
+While `site/events.js` holds no data, the section shows the four panels with **invented** numbers,
+labelled as such: a notice that says "IN PREPARATION ... invented ... not real data", "Example data"
+in each panel subtitle, an EXAMPLE DATA watermark on each chart and a note in the chart descriptions.
+`scripts/08_build_events_data.R` replaces them with the entries IWRS reports; nothing else changes.
 
 ### Look and logo
 
