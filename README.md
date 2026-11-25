@@ -80,7 +80,9 @@ the core leaves out.
 Since 2026-11-24 the core has two more conditions, added after the first validation (see
 `docs/decisions.md`): the animal word must be in the title or occur twice in title + abstract
 (`core.filters.subject_min_mentions`), and the paper's OpenAlex field must not be one of
-`core.filters.exclude_fields`. The word-pattern flags stay in the records as `pattern_<block>`.
+`core.filters.exclude_fields`. The subject filter is skipped for sentience and consciousness, and
+emotion papers with two or more words about people (patients, consumers, students...) are dropped
+(`core.filters.human_context`). The word-pattern flags stay in the records as `pattern_<block>`.
 
 The search is deliberately broad (high recall). Keyword matches are not the same as
 relevance: "welfare" also finds human economic welfare, "pain" finds venom pharmacology,

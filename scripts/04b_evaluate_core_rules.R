@@ -8,10 +8,10 @@ source("R/queries.R"); source("R/records.R"); source("R/validation.R")
 cfg <- read_config()
 files <- sort(list.files("data/raw", "^records_.*\\.rds$", full.names = TRUE))
 rec <- readRDS(files[length(files)])
-if (is.null(rec$pass_field)) stop("Run scripts/02c_fetch_topics.R first.", call. = FALSE)
+if (is.null(rec$pass_human)) stop("Run scripts/02c_fetch_topics.R first.", call. = FALSE)
 lab <- read_labels("data/raw/validation_sample.csv")
 ids <- utils::read.csv("data/validation/sample_ids.csv", stringsAsFactors = FALSE)
-ev <- evaluate_core_rules(rec, lab, ids, names(cfg$core$states))
+ev <- evaluate_core_rules(rec, lab, ids, names(cfg$core$states), cfg$core$filters)
 pct <- function(x) sprintf("%3.0f%%", 100 * x)
 b <- ev$by_block
 cat("\nPER VARIANT AND BLOCK (papers kept = estimated size of the block after the filter;\n  on topic = share of the kept papers that are on topic; on-topic kept = share of the on-topic papers of the unfiltered core still there)\n")
@@ -22,12 +22,16 @@ cat("\nLABELLED PAPERS BY OPENALEX FIELD (how many were on topic)\n"); print(ev$
 # The labelled papers that were on topic and that the filters remove, to read them one by one.
 raw <- utils::read.csv("data/raw/validation_sample.csv", stringsAsFactors = FALSE, encoding = "UTF-8", colClasses = "character")
 d <- merge(merge(lab[lab$status == "ok" & lab$relevance %in% c("1", "2"), c("openalex_id", "relevance")], ids[, c("openalex_id", "stratum_block")], by = "openalex_id"),
-           rec[, c("openalex_id", "pass_field", "pass_subject", "topic_field", "animal_mentions", "animal_in_title")], by = "openalex_id")
+           rec[, c("openalex_id", "pass_field", "pass_subject", "pass_human", "topic_field", "animal_mentions", "human_mentions", paste0("keep_", names(cfg$core$states)))], by = "openalex_id")
 d <- merge(d, raw[, c("openalex_id", "title")], by = "openalex_id")
 d <- d[d$stratum_block %in% names(cfg$core$states), ]     # broad_only and no_abstract papers were never in the core
-lost <- d[!(d$pass_field & d$pass_subject), ]
+d$kept <- mapply(function(b, i) d[[paste0("keep_", b)]][i], d$stratum_block, seq_len(nrow(d)))
+lost <- d[!d$kept, ]
 cat(sprintf("\nON-TOPIC LABELLED PAPERS OF THE CORE STRATA REMOVED BY THE FILTERS: %d of %d\n", nrow(lost), nrow(d)))
 if (nrow(lost)) print(data.frame(block = lost$stratum_block, mentions = lost$animal_mentions, label = lost$relevance,
-                                 removed_by = ifelse(!lost$pass_field & !lost$pass_subject, "field+subject", ifelse(!lost$pass_field, "field", "subject")),
+                                 removed_by = apply(cbind(field = !lost$pass_field, subject = !lost$pass_subject & !(lost$stratum_block %in% cfg$core$filters$subject_exempt_blocks),
+                                                         human = !lost$pass_human & lost$stratum_block %in% cfg$core$filters$human_context$blocks), 1,
+                                                   function(r) paste(names(r)[r], collapse = "+")),
+                                 human_mentions = lost$human_mentions,
                                  field = lost$topic_field,
                                  title = substr(lost$title, 1, 70)), row.names = FALSE, right = FALSE)

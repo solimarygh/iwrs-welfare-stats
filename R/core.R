@@ -37,12 +37,18 @@ core_tokens <- function(text, multi) {
 
 # Adds, for each block of cfg$core$states:
 #   pattern_<block>  an animal word and a state word of the block within `proximity` words;
-#   core_<block>     the pattern AND the two filters of cfg$core$filters (when there are any):
+#   core_<block>     the pattern AND the filters of cfg$core$filters (when there are any):
 #     pass_subject   the animal word is in the title, or occurs at least `subject_min_mentions`
-#                    times in title + abstract (a passing mention does not make it the subject);
+#                    times in title + abstract (a passing mention does not make it the subject).
+#                    Blocks in `subject_exempt_blocks` skip it: general papers on sentience or
+#                    consciousness mention an invertebrate once and are still on topic;
 #     pass_field     the paper's OpenAlex field (topic_field) is not in `exclude_fields`
-#                    (a paper with no topic is kept).
-# plus core_any, animal_mentions and animal_in_title.
+#                    (a paper with no topic is kept);
+#     pass_human     fewer than `human_context$min_mentions` words about people (patients,
+#                    consumers, students...) in title + abstract; applies only to the blocks in
+#                    `human_context$blocks` (emotion papers that are about people's emotions).
+# plus keep_<block> (the filters that apply to that block), core_any, animal_mentions,
+# animal_in_title and human_mentions.
 tag_core <- function(rec, cfg, proximity = cfg$core$proximity) {
   noun_m <- core_matcher(union_terms(cfg, names(cfg$taxa)))     # respects search.include_noisy
   excl_m <- core_matcher(cfg$core$noun_exclude)
@@ -82,12 +88,25 @@ tag_core <- function(rec, cfg, proximity = cfg$core$proximity) {
       stop("core.filters.exclude_fields needs the column topic_field: run scripts/02c_fetch_topics.R.", call. = FALSE)
     rec$pass_field <- is.na(rec$topic_field) | !(rec$topic_field %in% flt$exclude_fields)
   }
-  keep <- rec$pass_subject & rec$pass_field
+  hum <- flt$human_context
+  rec$human_mentions <- rep(0, nrow(rec)); rec$pass_human <- rep(TRUE, nrow(rec))
+  if (length(hum$terms)) {
+    hum_m <- core_matcher(hum$terms)
+    hum_u <- token_is(uniq, hum_m)
+    rec$human_mentions <- vapply(tokens, function(t) sum(hum_u[match(t, uniq)]), numeric(1))
+    rec$pass_human <- rec$human_mentions < (hum$min_mentions %||% 2)
+  }
+  keep_all <- matrix(TRUE, nrow(rec), length(blocks), dimnames = list(NULL, blocks))
   for (b in blocks) {
+    keep <- rec$pass_field
+    if (!b %in% flt$subject_exempt_blocks) keep <- keep & rec$pass_subject
+    if (b %in% hum$blocks) keep <- keep & rec$pass_human
+    keep_all[, b] <- keep
+    rec[[paste0("keep_", b)]] <- keep
     rec[[paste0("pattern_", b)]] <- out[, b]
     rec[[paste0("core_", b)]] <- out[, b] & keep
   }
-  rec$core_any <- rowSums(out & keep) > 0
+  rec$core_any <- rowSums(out & keep_all) > 0
   rec
 }
 

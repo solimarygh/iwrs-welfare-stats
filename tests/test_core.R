@@ -61,4 +61,16 @@ stopifnot(grepl("02c_fetch_topics", err))
 # no filters configured: the pattern alone
 nf <- cfg; nf$core$filters <- NULL
 stopifnot(tag_core(data.frame(title = "A study of people", abstract = one, stringsAsFactors = FALSE), nf)$core_welfare)
+
+# --- exempt blocks and human context -------------------------------------------
+one_mention <- "A note on consciousness. Insects are mentioned once."
+stopifnot(yes("A note", block = "consciousness", abstract = one_mention))     # consciousness skips the subject filter
+stopifnot(yes("Debate on sentience", block = "sentience", abstract = "Insects may be sentient."))
+stopifnot(!yes("A note", block = "welfare", abstract = "Welfare of insects is mentioned once."))   # welfare keeps it
+hum <- "Patients and students felt emotions about spiders. Participants rated spiders."
+stopifnot(!yes("Spider emotions", block = "affect_emotion", abstract = hum))
+stopifnot(yes("Spider emotions", block = "affect_emotion", abstract = "Do spiders feel emotions? We tested spiders; one participant was filmed."))  # one human word is not enough
+stopifnot(yes("Spider pain", block = "nociception_pain", abstract = hum))       # the rule only covers its blocks
+r <- tag_core(data.frame(title = "Spider emotions", abstract = hum, topic_field = NA_character_, stringsAsFactors = FALSE), cfg)
+stopifnot(r$pattern_affect_emotion, !r$keep_affect_emotion, r$human_mentions >= 3)
 cat("test_core.R: all checks passed\n")

@@ -38,7 +38,7 @@ ids <- data.frame(openalex_id=paste0("W",1:6), stratum_block=c("welfare","welfar
   primary_taxon="insects", stratum_N=c(40,40,40,40,20,20), stratum_n=4, weight=10)
 ids$stratum_n <- c(4,4,4,4,2,2); ids$weight <- ids$stratum_N/ids$stratum_n
 lab <- data.frame(openalex_id=paste0("W",1:6), relevance=c("2","0","0","1","0","2"), reason_if_0="", status="ok")
-rec <- data.frame(openalex_id=paste0("W",1:6), pass_field=c(T,F,T,T,T,T), pass_subject=c(T,T,F,T,F,T),
+rec <- data.frame(openalex_id=paste0("W",1:6), pass_field=c(T,F,T,T,T,T), pass_subject=c(T,T,F,T,F,T), pass_human=T,
   topic_field=c("Veterinary","Computer Science","Medicine","Neuroscience",NA,"Veterinary"))
 ev <- evaluate_core_rules(rec, lab, ids, c("welfare","affect_emotion"))
 b <- ev$by_block; w <- b[b$variant=="field and subject" & b$block=="welfare",]
