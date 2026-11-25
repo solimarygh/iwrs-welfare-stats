@@ -24,9 +24,10 @@ raw <- utils::read.csv("data/raw/validation_sample.csv", stringsAsFactors = FALS
 d <- merge(merge(lab[lab$status == "ok" & lab$relevance %in% c("1", "2"), c("openalex_id", "relevance")], ids[, c("openalex_id", "stratum_block")], by = "openalex_id"),
            rec[, c("openalex_id", "pass_field", "pass_subject", "topic_field", "animal_mentions", "animal_in_title")], by = "openalex_id")
 d <- merge(d, raw[, c("openalex_id", "title")], by = "openalex_id")
+d <- d[d$stratum_block %in% names(cfg$core$states), ]     # broad_only and no_abstract papers were never in the core
 lost <- d[!(d$pass_field & d$pass_subject), ]
-cat(sprintf("\nON-TOPIC LABELLED PAPERS REMOVED BY THE FILTERS: %d of %d\n", nrow(lost), nrow(d)))
-if (nrow(lost)) print(data.frame(block = lost$stratum_block, label = lost$relevance,
+cat(sprintf("\nON-TOPIC LABELLED PAPERS OF THE CORE STRATA REMOVED BY THE FILTERS: %d of %d\n", nrow(lost), nrow(d)))
+if (nrow(lost)) print(data.frame(block = lost$stratum_block, mentions = lost$animal_mentions, label = lost$relevance,
                                  removed_by = ifelse(!lost$pass_field & !lost$pass_subject, "field+subject", ifelse(!lost$pass_field, "field", "subject")),
-                                 field = lost$topic_field, animal_mentions = lost$animal_mentions,
-                                 title = substr(lost$title, 1, 90)), row.names = FALSE)
+                                 field = lost$topic_field,
+                                 title = substr(lost$title, 1, 70)), row.names = FALSE, right = FALSE)
