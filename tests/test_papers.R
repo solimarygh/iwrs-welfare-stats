@@ -41,4 +41,9 @@ stopifnot(site$items$authors[site$items$title == "Bees feel pain"] == "B B, C C,
 tmp <- tempfile(fileext = ".js"); write_papers_js(site, tmp)
 txt <- readLines(tmp, warn = FALSE)
 stopifnot(startsWith(txt[2], "window.IWRS_PAPERS = {"), grepl("\"items\":\\[", txt[2]))
+# review labels reach the page: final label per paper, "" when not reviewed or unresolved
+rv <- data.frame(openalex_id = c("https://openalex.org/W2", "https://openalex.org/W3"), final = c("2", NA), stringsAsFactors = FALSE)
+sr <- papers_site_data(tbl, 2026, "2026-11-21", review = rv)
+stopifnot(sr$reviewed, identical(sr$items$review[match(c("https://openalex.org/W2", "https://openalex.org/W3"), sr$items$id)], c("2", "")))
+stopifnot(!papers_site_data(tbl, 2026, "2026-11-21")$reviewed, is.null(papers_site_data(tbl, 2026, "2026-11-21")$items$review))
 cat("test_papers.R: all checks passed\n")

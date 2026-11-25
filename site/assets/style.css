@@ -222,3 +222,5 @@ input[type="search"] { font: inherit; font-size: 15px; padding: 8px 12px; border
 .papers-table a { color: var(--accent); }
 .downloads { list-style: none; margin: 12px 0 0; padding: 0; display: grid; gap: 8px; font-size: 14.5px; color: var(--ink-2); }
 .downloads a { color: var(--accent); font-weight: 600; margin-right: 8px; }
+.check { display: flex; align-items: center; gap: 8px; font-size: 14px; color: var(--ink-2); cursor: pointer; padding-bottom: 8px; }
+.check input { width: 16px; height: 16px; accent-color: var(--accent); }

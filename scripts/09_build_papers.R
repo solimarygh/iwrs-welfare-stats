@@ -2,7 +2,8 @@
 #   source("scripts/09_build_papers.R")
 # Needs the records of step 2 (data/raw/records_*.rds, with the filters of step 2c) and the OpenAlex API
 # (OPENALEX_MAILTO and OPENALEX_API_KEY): authors are not part of the downloaded records, so they are
-# fetched here, 100 papers per call (about 13 calls). Abstracts are NOT written anywhere: they are
+# fetched here, 100 papers per call (about 13 calls). If scripts/11_read_review.R has produced
+# data/validation/review_<year>_final.csv, the page also shows which papers were confirmed on topic by hand. Abstracts are NOT written anywhere: they are
 # publisher text. Each paper links to its source through the DOI.
 # Writes data/processed/core_papers.csv (tracked), site/papers.js (the papers of the latest year, for the page)
 # and site/downloads/*.csv (the files the page offers for download).
@@ -25,7 +26,10 @@ utils::write.csv(tbl, "data/processed/core_papers.csv", row.names = FALSE, na = 
 snaps <- sort(list.files("data/snapshots", "^queries_.*\\.json$", full.names = TRUE))
 run_date <- jsonlite::read_json(snaps[length(snaps)])$run_date
 latest <- max(tbl$year)
-write_papers_js(papers_site_data(tbl, latest, run_date))
+rv_path <- sprintf("data/validation/review_%s_final.csv", latest)
+review <- if (file.exists(rv_path)) utils::read.csv(rv_path, stringsAsFactors = FALSE, colClasses = "character") else NULL
+if (!is.null(review)) { review$final[review$final == ""] <- NA; message("Manual review of ", latest, " found: ", sum(!is.na(review$final)), " papers with a final label.") }
+write_papers_js(papers_site_data(tbl, latest, run_date, review = review))
 message("site/papers.js: ", sum(tbl$year == latest), " papers of ", latest)
 
 dir.create("site/downloads", showWarnings = FALSE, recursive = TRUE)

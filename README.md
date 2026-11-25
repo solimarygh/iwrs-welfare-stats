@@ -67,6 +67,8 @@ R >= 4.3 with `yaml`, `httr2`, `jsonlite` and, for the members map, `readxl`.
 | `scripts/07_journal_distribution.R` | Groups the core papers by journal (groups editable in the config) per year and taxon group | `data/processed/journals_by_year.csv`, `journals_top.csv`, `site/journals.js` |
 | `scripts/08_build_events_data.R` | Checks the template that IWRS fills in (talks, symposia, workshops, panels, events, theses), lists problems by row, and counts per year | `data/processed/events_by_year.csv`, `site/events.js` |
 | `scripts/09_build_papers.R` | Fetches the authors of the core papers and writes the list of papers (no abstracts: they are publisher text) and the CSV files the page offers for download | `data/processed/core_papers.csv`, `site/papers.js` (papers of the latest year), `site/downloads/*.csv` |
+| `scripts/10_make_review_sheet.R` | The sheet for reviewing by hand ALL the core papers of the latest year (shuffled, without the block that matched; title + abstract) | `data/raw/review_<year>.csv` (not tracked: abstracts) |
+| `scripts/11_read_review.R` | Reads one sheet per reviewer (`review_<year>_<name>.csv`), measures agreement (percent and kappa), lists disagreements to resolve and writes the final labels; step 9 then shows them on the page | `data/validation/review_<year>_final.csv` (ids and labels only) |
 | `scripts/05_build_site_data.R` | Exports the counts to `site/data.js`, the file the static site reads | `site/data.js` |
 
 **Two definitions.** The *broad* search counts every paper that mentions an animal name and a
@@ -112,6 +114,16 @@ years only. The section "Papers of 2026" lists the papers of the latest year wit
 DOI), authors, journal and themes; it follows the animal group chosen at the top and has a search box. Every
 table has a "Download as CSV" button, and the card "Download the data" offers the complete files. Abstracts
 are not published anywhere on the site: they belong to the publishers; the DOI leads to them.
+
+### Reviewing the papers of the latest year by hand
+
+The latest year is small enough to read in full. `scripts/10_make_review_sheet.R` writes one sheet with all its
+core papers; each reviewer (the author, and volunteers of IWRS) labels a copy with `docs/labeling_guide.md` and
+saves it as `data/raw/review_<year>_<name>.csv`. `scripts/11_read_review.R` reports how much they agree, writes the
+disagreements to `data/raw/review_<year>_to_resolve.csv`, and builds the final label of each paper (both on topic:
+the lower of the two codes; both 0: 0; anything else is decided in `review_<year>_resolved.csv`). After step 9 the
+page says how many of the papers the rule found were confirmed on topic, shows a "Manual review" column and lists
+only the confirmed ones unless the box is unticked. The earlier years stay estimates with an interval.
 
 ### The events section before IWRS sends its list
 

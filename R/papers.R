@@ -20,17 +20,23 @@ build_papers_table <- function(rec, authors, cfg) {
 }
 
 # What the page needs for the list: the papers of `year`, authors cut after `max_authors`.
-papers_site_data <- function(tbl, year, run_date, max_authors = 6) {
+# `review`: optional data.frame(openalex_id, final) from scripts/11_read_review.R (final label 0, 1 or 2 of the
+# papers reviewed by hand; NA while a disagreement is open). A paper without a label is "not reviewed".
+papers_site_data <- function(tbl, year, run_date, max_authors = 6, review = NULL) {
   x <- tbl[tbl$year == year, , drop = FALSE]
   cut <- function(a) vapply(a, function(z) {
     if (is.na(z) || !nzchar(z)) return("")
     v <- strsplit(z, "; ", fixed = TRUE)[[1]]
     if (length(v) > max_authors) paste0(paste(v[seq_len(max_authors)], collapse = ", "), ", et al.") else paste(v, collapse = ", ")
   }, "", USE.NAMES = FALSE)
-  list(year = year, as_of = run_date,
-       items = data.frame(title = x$title, authors = cut(x$authors), journal = ifelse(is.na(x$journal), "", x$journal),
-                          doi = ifelse(is.na(x$doi), "", x$doi), id = x$openalex_id,
-                          taxa = x$taxa, themes = x$themes, stringsAsFactors = FALSE))
+  items <- data.frame(title = x$title, authors = cut(x$authors), journal = ifelse(is.na(x$journal), "", x$journal),
+                      doi = ifelse(is.na(x$doi), "", x$doi), id = x$openalex_id,
+                      taxa = x$taxa, themes = x$themes, stringsAsFactors = FALSE)
+  if (!is.null(review)) {
+    lab <- review$final[match(items$id, review$openalex_id)]
+    items$review <- ifelse(is.na(lab), "", lab)
+  }
+  list(year = year, as_of = run_date, reviewed = !is.null(review) && any(items$review != ""), items = items)
 }
 
 write_papers_js <- function(data, path = "site/papers.js") {

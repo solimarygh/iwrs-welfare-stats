@@ -54,6 +54,14 @@ consciousness 44%, affect_emotion 25%, sentience 94%. Optimistic: the filters we
 - Next: a fresh sample (round 2, script 03b, seed 2027, without the papers of round 1) gives the
   figure to publish. Its estimate describes the papers not drawn in round 1.
 
+## 2026-11-25 The papers of the latest year are read in full
+- The page opens on the current year to date. Its list has about 150 papers, so all of them are read by hand
+  (scripts 10 and 11): by the author and, if they agree, by volunteers of IWRS, which gives the agreement between
+  reviewers and a list of disagreements to resolve. Earlier years stay estimates, measured with the fresh sample
+  (round 2). The two do not replace each other: the review gives the verified count of the year, the sample gives
+  the precision of the method for all years.
+- Abstracts are not published on the page or in the downloads (publisher text); the DOI leads to them.
+
 ## Open
 - Final list of excluded fields, after reading `04b`.
 - Result of rule C on the labelled sample.

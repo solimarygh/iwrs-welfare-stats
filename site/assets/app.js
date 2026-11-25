@@ -43,7 +43,7 @@ RANGES.push({ id: 'recent', label: 'Last 5 complete years', from: lastComplete -
 const runDate = new Date(D.meta.run_date + 'T00:00:00Z')
   .toLocaleDateString('en-GB', { day: 'numeric', month: 'long', year: 'numeric', timeZone: 'UTC' });
 
-const st = { taxon: 'ALL_INVERTEBRATES', range: partial ? 'partial' : 'complete', metric: 'counts', hidden: new Set(), animate: true, query: '', shown: 25 };
+const st = { taxon: 'ALL_INVERTEBRATES', range: partial ? 'partial' : 'complete', metric: 'counts', hidden: new Set(), animate: true, query: '', shown: 25, confirmedOnly: true };
 (function readHash() {
   const p = new URLSearchParams(location.hash.slice(1));
   if (taxon(p.get('taxon') || '')) st.taxon = p.get('taxon');
@@ -245,8 +245,9 @@ function render() {
   const n0 = any(startY), n1 = any(endY), nh = any(headY);
   $('hero-label').textContent = part ? `Papers in ${headY} so far (to ${runDate}), ${tx.label.toLowerCase()}` : `Papers in ${headY}, ${tx.label.toLowerCase()}`;
   $('hero-value').textContent = fmt(nh);
+  const verified = (P && P.reviewed && headY === P.year) ? P.items.filter(it => (st.taxon === 'ALL_INVERTEBRATES' || it.taxa.split(';').includes(st.taxon))) : null;
   $('hero-delta').textContent = part
-    ? `${endY}, full year: ${fmt(n1)} papers. ${startY}: ${fmt(n0)}.`
+    ? `${endY}, full year: ${fmt(n1)} papers. ${startY}: ${fmt(n0)}.` + (verified ? ` Read by hand: ${fmt(verified.filter(it => it.review === '1' || it.review === '2').length)} of the ${fmt(verified.length)} found in ${headY} are on topic.` : '')
     : (n0 > 0 && endY > startY ? `${sgn(n1 / n0 - 1)}${Math.abs((n1 / n0 - 1) * 100).toFixed(0)}% since ${startY} (${fmt(n0)} papers)` : '');
 
   // tiles
@@ -546,9 +547,12 @@ function addCsvButtons() {
 const P = window.IWRS_PAPERS;
 const themeLabel = Object.fromEntries(D.states.map(x => [x.key, x.label]));
 const safeUrl = u => (/^https:\/\//.test(u || '') ? u : '');
+const reviewLabel = { '2': 'Core', '1': 'Indirect', '0': 'Not on topic', '': 'Not reviewed' };
+const byTaxon = it => st.taxon === 'ALL_INVERTEBRATES' || it.taxa.split(';').includes(st.taxon);
 function paperRows() {
   const q = st.query.trim().toLowerCase();
-  return (P.items || []).filter(it => (st.taxon === 'ALL_INVERTEBRATES' || it.taxa.split(';').includes(st.taxon))
+  return (P.items || []).filter(it => byTaxon(it)
+    && (!(P.reviewed && st.confirmedOnly) || it.review === '1' || it.review === '2')
     && (!q || `${it.title} ${it.authors} ${it.journal}`.toLowerCase().includes(q)));
 }
 function renderPapers() {
@@ -557,14 +561,17 @@ function renderPapers() {
   sec.hidden = false;
   const rows = paperRows(), shown = rows.slice(0, st.shown), tx = taxon(st.taxon);
   $('p-year').textContent = P.year + (P.year === partial ? ' so far' : '');
-  $('s-papers').textContent = `${fmt(rows.length)} paper${rows.length === 1 ? '' : 's'} that meet the strict definition, ${tx.label.toLowerCase()}` +
-    (P.year === partial ? `. ${P.year} is incomplete: counted on ${runDate}.` : '.');
+  const found = P.items.filter(byTaxon), confirmed = found.filter(it => it.review === '1' || it.review === '2').length;
+  $('s-papers').textContent = P.reviewed
+    ? `${fmt(found.length)} papers found by the rule, ${tx.label.toLowerCase()}. Read by hand, ${fmt(confirmed)} were confirmed on topic.` + (P.year === partial ? ` ${P.year} is incomplete: counted on ${runDate}.` : '')
+    : `${fmt(rows.length)} paper${rows.length === 1 ? '' : 's'} that meet the strict definition, ${tx.label.toLowerCase()}` + (P.year === partial ? `. ${P.year} is incomplete: counted on ${runDate}.` : '.');
   const link = it => { const u = safeUrl(it.doi) || safeUrl(it.id); const a = h('a', { href: u || '#', rel: 'noopener', target: '_blank' }); a.textContent = it.title; return u ? a : it.title; };
   $('table-papers').replaceChildren(rows.length
     ? h('div', { class: 'scroll' }, h('table', { class: 'papers-table' },
-        h('thead', {}, h('tr', {}, ['Title', 'Authors', 'Journal', 'Themes'].map(x => h('th', { scope: 'col', text: x })))),
+        h('thead', {}, h('tr', {}, ['Title', 'Authors', 'Journal', 'Themes', ...(P.reviewed ? ['Manual review'] : [])].map(x => h('th', { scope: 'col', text: x })))),
         h('tbody', {}, shown.map(it => h('tr', {}, h('td', {}, link(it)), h('td', { text: it.authors }), h('td', { text: it.journal }),
-          h('td', { text: it.themes.split(';').filter(Boolean).map(k => themeLabel[k] || k).join(', ') }))))))
+          h('td', { text: it.themes.split(';').filter(Boolean).map(k => themeLabel[k] || k).join(', ') }),
+          ...(P.reviewed ? [h('td', { text: reviewLabel[it.review || ''] })] : []))))))
     : h('p', { class: 'empty', text: 'No papers match.' }));
   const more = $('p-more'); more.hidden = rows.length <= shown.length;
   more.textContent = `Show more (${fmt(rows.length - shown.length)} left)`;
@@ -595,9 +602,13 @@ function renderPapers() {
     $('p-search').addEventListener('input', e => { st.query = e.target.value; st.shown = 25; renderPapers(); });
     $('p-more').addEventListener('click', () => { st.shown += 50; renderPapers(); });
     $('p-download').addEventListener('click', () => saveCsv(`iwrs_papers_${P.year}_${st.taxon}.csv`.toLowerCase(),
-      [['title', 'authors', 'journal', 'themes', 'doi', 'openalex_id'], ...paperRows().map(it => [it.title, it.authors, it.journal,
-        it.themes.split(';').filter(Boolean).map(k => themeLabel[k] || k).join('; '), it.doi, it.id])]));
+      [['title', 'authors', 'journal', 'themes', ...(P.reviewed ? ['manual_review'] : []), 'doi', 'openalex_id'], ...paperRows().map(it => [it.title, it.authors, it.journal,
+        it.themes.split(';').filter(Boolean).map(k => themeLabel[k] || k).join('; '), ...(P.reviewed ? [reviewLabel[it.review || '']] : []), it.doi, it.id])]));
     $('dl-papers').hidden = false;
+    if (P.reviewed) {
+      $('p-confirm-field').hidden = false;
+      $('p-confirmed').addEventListener('change', e => { st.confirmedOnly = e.target.checked; st.shown = 25; renderPapers(); });
+    }
   }
   addCsvButtons();
   $('m-date').textContent = runDate; $('m-first').textContent = first;
