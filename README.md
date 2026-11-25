@@ -56,7 +56,7 @@ R >= 4.3 with `yaml`, `httr2`, `jsonlite` and, for the members map, `readxl`.
 |--------|--------------|--------|
 | `scripts/00_check_api.R` | Probes the query pieces against the live API (diagnostic) | console |
 | `scripts/01_publication_counts.R` | Counts per year, taxon group x state block (+ denominators) | `data/processed/counts_by_year.csv` |
-| `scripts/02_fetch_records.R` | Downloads every matching record with its abstract (one query per taxon group, de-duplicated) and tags taxon groups, state blocks and the strict core definition | `data/processed/records_meta.csv`, `core_counts_by_year.csv`, `tagging_fidelity.csv`; abstracts in `data/raw/` (not tracked) |
+| `scripts/02_fetch_records.R` | Downloads every matching record with its abstract (one query per taxon group, de-duplicated) and tags taxon groups, state blocks and the strict core definition (topic field comes with it; for records downloaded before, run 02c) | `data/processed/records_meta.csv`, `core_counts_by_year.csv`, `tagging_fidelity.csv`; abstracts in `data/raw/` (not tracked) |
 | `scripts/02b_recover_abstracts.R` | OpenAlex searches abstracts it does not return (~11% of records); recovers them by DOI from Crossref and Europe PMC, re-tags, rewrites the tables | `data/raw/` (not tracked), `data/processed/records_meta.csv`, `tagging_fidelity.csv` |
 | `scripts/02c_fetch_topics.R` | Adds the OpenAlex field of each record and re-tags: the core now needs the animal word in the title or twice in title + abstract, and a field outside `core.filters.exclude_fields` | `data/raw/` (not tracked), `data/processed/records_meta.csv` |
 | `scripts/03_make_validation_sample.R` | Stratified sample for manual relevance labelling | `data/raw/validation_sample.csv` (not tracked), `data/validation/sample_ids.csv` |
@@ -76,6 +76,11 @@ animal word and a state word occur within a few words of each other ("insect wel
 window (`core.proximity`) can change without new queries. The validation sample measures
 the precision of the core and, through its `broad_only` stratum, how much on-topic work
 the core leaves out.
+
+Since 2026-11-24 the core has two more conditions, added after the first validation (see
+`docs/decisions.md`): the animal word must be in the title or occur twice in title + abstract
+(`core.filters.subject_min_mentions`), and the paper's OpenAlex field must not be one of
+`core.filters.exclude_fields`. The word-pattern flags stay in the records as `pattern_<block>`.
 
 The search is deliberately broad (high recall). Keyword matches are not the same as
 relevance: "welfare" also finds human economic welfare, "pain" finds venom pharmacology,
