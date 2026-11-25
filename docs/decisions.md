@@ -23,6 +23,15 @@ Dated notes on what was decided and why, so the report can say how the numbers w
 - The filters were designed looking at the 460 labelled papers, so `04b` is optimistic. The
   figure to publish comes from a fresh sample (another `sampling.seed`) drawn with the filters on.
 
+## 2026-11-25 Filters A and B on the labelled sample (script 04b)
+- Both filters: share on topic in the core 31% -> 37%, 97% of the on-topic papers kept. The subject
+  filter does most of it; the field filter adds about two points.
+- By field (labelled papers on topic): Medicine 2 of 29, Pharmacology 0 of 11, Immunology and
+  Microbiology 1 of 9, Biochemistry 0 of 5; Arts and Humanities 21 of 46, Social Sciences 22 of 43.
+- Decision: also exclude Medicine, Pharmacology, Immunology and Microbiology, Biochemistry (3 of 54
+  labelled papers on topic; about a third of the labelled papers that were not on topic are in these
+  four fields). Chosen after reading the labels, so the fresh sample has to test it.
+
 ## Open
 - Final list of excluded fields, after reading `04b`.
 - Rule C.

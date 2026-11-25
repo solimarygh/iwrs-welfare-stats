@@ -144,8 +144,11 @@ core:
     # The animal word is in the title or occurs at least this many times in title + abstract.
     subject_min_mentions: 2
     # OpenAlex fields in which an invertebrate-welfare paper is not expected. Fixed before
-    # looking at the field of the labelled papers; Medicine, Arts and Humanities, Social
-    # Sciences, Psychology and Pharmacology are NOT excluded until a fresh sample can test it.
+    # looking at the field of the labelled papers. Arts and Humanities, Social Sciences and
+    # Psychology stay in: about half of the labelled papers of the first two were on topic
+    # (the philosophy of sentience sits there). The last four fields were added on 2026-11-25
+    # after reading the labelled sample (3 of 54 labelled papers on topic); a fresh sample
+    # has to confirm that they lose almost nothing.
     exclude_fields:
       - "Computer Science"
       - "Engineering"
@@ -161,6 +164,10 @@ core:
       - "Dentistry"
       - "Nursing"
       - "Health Professions"
+      - "Medicine"
+      - "Pharmacology, Toxicology and Pharmaceutics"
+      - "Immunology and Microbiology"
+      - "Biochemistry, Genetics and Molecular Biology"
 
 # ---------------------------------------------------------------------------
 # Members map (script 06). The membership list holds personal data: it stays in
