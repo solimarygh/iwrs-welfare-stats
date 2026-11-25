@@ -62,6 +62,18 @@ consciousness 44%, affect_emotion 25%, sentience 94%. Optimistic: the filters we
   the precision of the method for all years.
 - Abstracts are not published on the page or in the downloads (publisher text); the DOI leads to them.
 
+## 2026-11-25 A language model reads the core papers (scripts 12 and 13)
+- Idea of the author: instead of labelling a sample to estimate precision and leaving the core as it is, have a model read
+  title and abstract of every core paper (about 1,200, 97% with abstract) and label it 2, 1, 0 or ?; papers labelled 0 leave
+  the core, 1 and 2 stay, and a person reads only the doubtful ones (? or low confidence).
+- The labels of the model are trusted only as far as they agree with the author's: the fresh sample (round 2) is labelled by
+  hand and script 12 compares. It reports agreement, kappa and, for the part the model decides alone, how many on-topic papers
+  it would drop and how much noise it would keep. The sample is therefore still needed: it is the measure of the model.
+- The model can only remove papers from the core. What the core misses (papers in the broad set that it leaves out) is still
+  estimated from the sample.
+- The page will have to say how the number was made (a model with the labelling guide, checked against N labels, agreement X).
+- Scripts were tested offline against a mock; the first real call (LLM_LIMIT=5) is the test of the request.
+
 ## Open
 - Final list of excluded fields, after reading `04b`.
 - Result of rule C on the labelled sample.

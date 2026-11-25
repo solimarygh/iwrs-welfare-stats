@@ -263,3 +263,20 @@ journals:
 # ---------------------------------------------------------------------------
 events:
   file: "data/curated/IWRS_events_and_theses.xlsx"
+
+# ---------------------------------------------------------------------------
+# Reading the core papers with a language model (scripts 12 and 13). The model reads title and abstract and
+# applies docs/labeling_guide.md: 2 core, 1 indirect, 0 not relevant, ? cannot decide. It can only remove papers
+# from the core, never add them. Its agreement with the author's labels is measured on the fresh sample before the
+# labels are used (script 12). Needs ANTHROPIC_API_KEY in ~/.Renviron; it is billed by token, so the scripts print
+# an estimate and ask before they call the API.
+# ---------------------------------------------------------------------------
+llm:
+  model: "claude-opus-5-5"
+  effort: "low"             # thinking depth: low, medium, high; raise it if agreement with the author is too low
+  max_tokens: 2000
+  fallbacks: true           # server-side fallback if a safety classifier declines a request (none expected here)
+  guide: "docs/labeling_guide.md"
+  doubtful_confidence: ["low"]   # papers labelled ? or with this confidence go to a person
+  cache: "data/raw/llm_labels_cache.rds"
+  price_per_mtok: {input: 4, output: 20, cache_read: 0.2, cache_write: 5}   # for the estimate only: check the current prices
