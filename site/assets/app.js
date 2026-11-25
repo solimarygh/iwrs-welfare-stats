@@ -459,9 +459,25 @@ function drawColumns(host, o) {
   });
 }
 
+// Layout preview while IWRS has not sent its list. By default the panels are empty (axes and
+// legend only, no numbers). Opening the page with ?preview=events fills them with invented
+// numbers, labelled as such, to show how the finished section will look.
+function previewEvents(years, withNumbers) {
+  const rows = keys => withNumbers ? keys.flatMap((key, k) => years.map((year, i) => ({ key, year, n: Math.max(0, ((i * 3 + k * 5) % 7) - 2) + (i > 6 ? 1 : 0) }))) : [];
+  return { years, as_of: runDate, items: [],
+    talks: rows(['ESA annual meeting', 'International Congress of Entomology', 'Insects as Food and Feed (IAFF)', 'Other major conference']),
+    sessions: rows(['Symposium', 'Workshop', 'Panel']), events: rows(['Symposium', 'Workshop', 'Panel', 'Other event']),
+    theses: rows(['PhD', "Master's"]) };
+}
+
 function renderEvents() {
-  const E = window.IWRS_EVENTS, sec = $('events');
-  if (!E || !E.years) return;
+  let E = window.IWRS_EVENTS, mode = 'real';
+  const sec = $('events');
+  if (!E || !E.years) {
+    const yrs = []; for (let y = first; y <= lastComplete; y++) yrs.push(y);
+    mode = new URLSearchParams(location.search).get('preview') === 'events' ? 'example' : 'empty';
+    E = previewEvents(yrs, mode === 'example');
+  }
   sec.hidden = false;
   const panels = [
     { title: 'Talks at major conferences', data: E.talks, keys: ['ESA annual meeting', 'International Congress of Entomology', 'Insects as Food and Feed (IAFF)', 'Other major conference', 'Not applicable'], rename: { 'Not applicable': 'Series not stated' } },
@@ -472,16 +488,27 @@ function renderEvents() {
   const jobs = [];
   panels.forEach((p, k) => {
     const series = p.keys.map((key, i) => ({ label: (p.rename || {})[key] || key, slot: i + 1,
-      values: E.years.map(y => p.data.filter(r => r.key === key && r.year === y).reduce((a, r) => a + r.n, 0)) })).filter(se => se.values.some(v => v > 0));
+      values: E.years.map(y => p.data.filter(r => r.key === key && r.year === y).reduce((a, r) => a + r.n, 0)) })).filter(se => mode === 'empty' || se.values.some(v => v > 0));
     const total = series.reduce((a, se) => a + se.values.reduce((x, y) => x + y, 0), 0);
     const host = h('div', { class: 'chart' }), legend = h('ul', { class: 'legend' });
     series.forEach(se => legend.append(h('li', {}, h('span', {}, h('span', { class: 'sw', style: `--c:var(--s${se.slot})` }), se.label))));
     grid.append(h('div', { class: 'panel' }, h('h3', { text: p.title }),
-      h('p', { class: 'sub', text: `${fmt(total)} in ${E.years[0]}\u2013${E.years[E.years.length - 1]}` }), series.length > 1 ? legend : '',
-      total ? host : h('p', { class: 'empty', text: 'No entries yet.' })));
-    if (total) jobs.push(() => drawColumns(host, { years: E.years, series, aria: `${p.title} per year: ${fmt(total)} in total.` }));
+      h('p', { class: 'sub', text: mode === 'empty' ? 'Waiting for IWRS entries' : `${mode === 'example' ? 'Example: ' : ''}${fmt(total)} in ${E.years[0]}\u2013${E.years[E.years.length - 1]}` }), series.length > 1 ? legend : '',
+      total || mode === 'empty' ? host : h('p', { class: 'empty', text: 'No entries yet.' })));
+    if (total || mode === 'empty') jobs.push(() => drawColumns(host, { years: E.years, series, aria: `${p.title} per year: ${fmt(total)} in total.` }));
   });
   jobs.forEach(f => f());                       // measured now, when the grid has its final columns
+  sec.classList.toggle('preview', mode !== 'real');
+  sec.classList.toggle('example', mode === 'example');
+  if (mode !== 'real') {
+    $('s-events').textContent = mode === 'example'
+      ? 'EXAMPLE DATA: the numbers below are invented to show the layout. They are not real.'
+      : 'IWRS is compiling the list of talks, symposia, workshops, events and theses. These panels show what will be drawn from it; there are no numbers yet.';
+    $('note-events').textContent = mode === 'example' ? 'Example only. Remove ?preview=events from the address to see the real state of the section.' : '';
+    document.querySelector('#events .table-view').hidden = true;
+    return;
+  }
+  document.querySelector('#events .table-view').hidden = false;
   const asOf = new Date(E.as_of + 'T00:00:00Z').toLocaleDateString('en-GB', { day: 'numeric', month: 'long', year: 'numeric', timeZone: 'UTC' });
   $('s-events').textContent = `Entries compiled by IWRS, as of ${asOf}. Only items on invertebrate welfare or sentience are counted. This section does not change with the filters above.`;
   $('note-events').textContent = 'These numbers come from a curated list, not from a database: they are a minimum, because items that nobody reported are missing.';

@@ -102,6 +102,12 @@ Every number on the page comes from `site/data.js`, which is generated from
 `data/processed/counts_by_year.csv`; nothing is typed by hand. The page says it is
 preliminary until a validation sample drawn with the filters on has been labelled.
 
+### The events section before IWRS sends its list
+
+While `site/events.js` holds no data, the section shows the four panels empty (axes and legend, "Waiting
+for IWRS entries"). Opening the page with `?preview=events` fills them with invented numbers, labelled
+as example data, to see the finished layout. Nothing invented is shown without that address.
+
 ### Look and logo
 
 `site/assets/logo-white.png` is the Insect Welfare Research Society logo (white, on a

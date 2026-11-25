@@ -201,3 +201,7 @@ td { font-variant-numeric: tabular-nums; }
 
 @media (prefers-reduced-motion: reduce) { * { transition: none !important; animation: none !important; } }
 @media (forced-colors: active) { .line { stroke: CanvasText; } .bar { forced-color-adjust: none; } }
+
+/* Events section while it waits for data: dashed frame, like the other placeholders */
+#events.preview { border-style: dashed; box-shadow: none; }
+#events.example #s-events { font-weight: 700; color: var(--ink); }
