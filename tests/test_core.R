@@ -53,7 +53,8 @@ stopifnot(r$core_welfare == FALSE, tag_core(data.frame(title = "A study of peopl
           stringsAsFactors = FALSE), cfg)$pattern_welfare)                 # the pattern still matches
 # field: excluded fields lose the core, others (and papers with no topic) keep it
 stopifnot(!yes("Octopus welfare", field = "Computer Science"), yes("Octopus welfare", field = "Agricultural and Biological Sciences"))
-stopifnot(yes("Octopus welfare", field = NA_character_), yes("Octopus welfare", field = "Medicine"))
+stopifnot(yes("Octopus welfare", field = NA_character_), yes("Octopus welfare", field = "Social Sciences"))
+stopifnot(!yes("Octopus welfare", field = "Medicine"), !yes("Leech pain", field = "Pharmacology, Toxicology and Pharmaceutics"))
 # without topic_field the field filter cannot run: say so
 err <- tryCatch(tag_core(data.frame(title = "Octopus welfare", abstract = NA, stringsAsFactors = FALSE), cfg), error = function(e) conditionMessage(e))
 stopifnot(grepl("02c_fetch_topics", err))
