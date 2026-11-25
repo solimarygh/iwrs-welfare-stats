@@ -74,6 +74,14 @@ consciousness 44%, affect_emotion 25%, sentience 94%. Optimistic: the filters we
 - The page will have to say how the number was made (a model with the labelling guide, checked against N labels, agreement X).
 - Scripts were tested offline against a mock; the first real call (LLM_LIMIT=5) is the test of the request.
 
+## 2026-11-25 The reading is done in a conversation first
+- No API key for now. Claude reads the papers in batches of 100 that the author attaches to the conversation (script 14),
+  and writes the labels to the repository (`data/validation/claude_labels_core.csv`, ids and labels only); script 15 checks
+  them and builds the same outputs as the API path (steps 12 and 13). The sample is read blind: its files carry none of the
+  author's labels. When the pipeline works and IWRS sees the result, IWRS can pay for the API so that next year's rerun does
+  not need a conversation.
+- The labels are Claude's and the report must say so. The doubtful ones (? or low confidence) are read by people.
+
 ## Open
 - Final list of excluded fields, after reading `04b`.
 - Result of rule C on the labelled sample.

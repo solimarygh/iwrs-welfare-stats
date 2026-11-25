@@ -26,20 +26,4 @@ confirm_spend(estimate_label_cost(llm, sys, papers))
 lab <- label_papers(llm, papers, sys, call = default_claude_call)
 spent <- spent_usd(llm, lab); message(sprintf("Spent: about US$ %.2f", spent))
 
-cmp <- compare_labels(papers$human, lab, llm)
-cat("\nYOUR LABEL (rows) AGAINST THE MODEL'S (columns)\n"); print(cmp$table)
-cat(sprintf("\nAGREEMENT ON 'ON TOPIC' (1 or 2 against 0), papers the model decided: %.0f%%, kappa %.2f\n", 100 * cmp$agree_on_topic, cmp$kappa))
-cat(sprintf("THE MODEL FLAGS %d of %d papers for a person (label ? or low confidence): %.0f%%\n", cmp$flagged, cmp$n, 100 * cmp$share_flagged))
-cat(sprintf("THE AUTOMATIC PART (%d papers): agrees with you on %.0f%%; drops %d of the %d on-topic papers of the sample; keeps %d papers you labelled 0 among the %d it keeps.\n",
-            cmp$auto_n, 100 * cmp$auto_agree, cmp$dropped_on_topic, cmp$on_topic_total, cmp$kept_noise, cmp$kept_total))
-cat("\nAGREEMENT BY CONFIDENCE\n")
-print(sapply(split(seq_len(nrow(lab)), lab$confidence), function(i) c(papers = length(i), agree_on_topic = round(mean((papers$human[i] != "0") == (lab$relevance[i] %in% c("1", "2"))), 2))))
-
-dir.create("data/validation", showWarnings = FALSE, recursive = TRUE)
-out <- lab[, c("openalex_id", "relevance", "reason_if_0", "confidence", "note")]
-utils::write.csv(out, sprintf("data/validation/llm_labels_sample%s.csv", rnd), row.names = FALSE)
-mm <- (papers$human != "0") != (lab$relevance %in% c("1", "2")) | papers$human != lab$relevance
-mism <- data.frame(openalex_id = papers$openalex_id, journal = papers$journal, title = papers$title, you = papers$human,
-                   model = lab$relevance, model_confidence = lab$confidence, model_reason = lab$reason_if_0, model_note = lab$note, abstract = papers$abstract)[mm, ]
-utils::write.csv(mism, "data/raw/llm_vs_human_mismatches.csv", row.names = FALSE, fileEncoding = "UTF-8")
-message(sprintf("Wrote data/validation/llm_labels_sample%s.csv; %d papers where the two differ are in data/raw/llm_vs_human_mismatches.csv.", rnd, nrow(mism)))
+report_llm_vs_human(papers, lab, llm, rnd)

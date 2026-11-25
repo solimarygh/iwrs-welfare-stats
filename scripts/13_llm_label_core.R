@@ -23,21 +23,4 @@ sys <- label_system_text(llm$guide)
 confirm_spend(estimate_label_cost(llm, sys, papers))
 lab <- label_papers(llm, papers, sys, call = default_claude_call)
 message(sprintf("Spent: about US$ %.2f (answers that came from the cache count as 0).", spent_usd(llm, lab)))
-lab$doubtful <- llm_doubtful(lab, llm)
-
-cat("\nLABELS OF THE MODEL\n"); print(table(relevance = lab$relevance, confidence = lab$confidence))
-cat(sprintf("\n%d papers for a person (%.0f%%). Of the rest: %d on topic (1 or 2), %d not (0).\n", sum(lab$doubtful), 100 * mean(lab$doubtful),
-            sum(!lab$doubtful & lab$relevance %in% c("1", "2")), sum(!lab$doubtful & lab$relevance == "0")))
-cat("\nREASONS FOR 0 (not doubtful)\n"); print(sort(table(lab$reason_if_0[!lab$doubtful & lab$relevance == "0"]), decreasing = TRUE))
-
-dir.create("data/validation", showWarnings = FALSE, recursive = TRUE)
-utils::write.csv(lab[, c("openalex_id", "relevance", "reason_if_0", "confidence", "note", "doubtful")], "data/validation/llm_labels_core.csv", row.names = FALSE)
-d <- papers[lab$doubtful, ]
-d <- cbind(d, lab[lab$doubtful, c("relevance", "confidence", "note")]); names(d)[names(d) == "relevance"] <- "model_label"
-d$relevance <- ""; d$reason_if_0 <- ""; d$notes <- ""
-utils::write.csv(d, "data/raw/llm_doubtful.csv", row.names = FALSE, na = "", fileEncoding = "UTF-8")
-latest <- max(papers$year)
-cl <- lab[papers$year == latest, ]
-utils::write.csv(data.frame(openalex_id = cl$openalex_id, relevance = cl$relevance, reason_if_0 = cl$reason_if_0, notes = cl$note),
-                 sprintf("data/raw/review_%s_claude.csv", latest), row.names = FALSE, fileEncoding = "UTF-8")
-message(sprintf("Wrote data/validation/llm_labels_core.csv, data/raw/llm_doubtful.csv (%d papers) and data/raw/review_%s_claude.csv.", nrow(d), latest))
+write_core_label_outputs(papers, lab, llm)

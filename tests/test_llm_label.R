@@ -75,4 +75,27 @@ err <- tryCatch(compare_labels("?", data.frame(relevance = "0", confidence = "hi
 est2 <- estimate_label_cost(llm, sys, papers)
 err <- tryCatch(confirm_spend(est2), error = function(e) conditionMessage(e)); stopifnot(grepl("Not sent", err))        # no console, no LLM_CONFIRM: nothing is sent
 Sys.setenv(LLM_CONFIRM = "yes"); invisible(capture.output(res <- confirm_spend(est2))); stopifnot(isTRUE(res)); Sys.unsetenv("LLM_CONFIRM")
+# ---- reading in a conversation: batches, checked labels, outputs ----
+pp <- data.frame(openalex_id = paste0("W", 1:5), year = c(2026, 2026, 2025, 2025, 2024), journal = "J", title = paste("T", 1:5),
+                 abstract = c("a", NA, "c", "d", "e"), stringsAsFactors = FALSE)
+td <- tempfile(); fs <- write_reading_batches(pp, td, "core", size = 2)
+stopifnot(length(fs) == 3, basename(fs[1]) == "core_001.csv", nrow(utils::read.csv(fs[3])) == 1)
+b1 <- utils::read.csv(fs[1], colClasses = "character"); stopifnot(identical(names(b1), c("openalex_id", "year", "journal", "title", "abstract")), !"relevance" %in% names(b1))
+good <- data.frame(openalex_id = paste0("W", c(3, 1, 2, 4, 5)), relevance = c("2", "0", "?", "1", "0"), reason_if_0 = c("", "vertebrate", "", "other", "other"),
+                   confidence = c("high", "high", "low", "medium", "high"), note = "n", stringsAsFactors = FALSE)
+rl <- read_claude_labels(good, pp)
+stopifnot(identical(rl$openalex_id, pp$openalex_id), rl$reason_if_0[4] == "", rl$reason_if_0[1] == "vertebrate")        # sorted like the papers; a reason only with 0
+chk <- function(x, ...) tryCatch(read_claude_labels(x, pp, ...), error = function(e) conditionMessage(e))
+stopifnot(grepl("Repeated ids", chk(rbind(good, good[1, ]))), grepl("without a label", chk(good[1:4, ])), grepl("not in the papers", chk(rbind(good, transform(good[1, ], openalex_id = "W99")))))
+stopifnot(grepl("relevance must be", chk(transform(good, relevance = replace(relevance, 1, "3")))), grepl("confidence must be", chk(transform(good, confidence = replace(confidence, 1, "sure")))),
+          grepl("reason_if_0 must be", chk(transform(good, reason_if_0 = replace(reason_if_0, 2, "boring")))), grepl("Missing column", chk(good[, -5])))
+stopifnot(nrow(read_claude_labels(rbind(good, transform(good[1, ], openalex_id = "W99")), pp, allow_extra = TRUE)) == 5)
+vd <- tempfile(); rd <- tempfile()
+invisible(capture.output(o <- write_core_label_outputs(pp, rl, llm, vd, rd)))
+cl <- utils::read.csv(file.path(vd, "llm_labels_core.csv"), colClasses = "character")
+stopifnot(nrow(cl) == 5, cl$doubtful[2] == "TRUE", cl$doubtful[1] == "FALSE", !"abstract" %in% names(cl))                  # '?' and low confidence go to a person; no text in the tracked file
+dd <- utils::read.csv(file.path(rd, "llm_doubtful.csv"), colClasses = "character"); stopifnot(nrow(dd) == sum(rl$relevance == "?" | rl$confidence == "low"), "abstract" %in% names(dd))
+rc <- utils::read.csv(file.path(rd, "review_2026_claude.csv"), colClasses = "character"); stopifnot(nrow(rc) == 2, identical(names(rc), c("openalex_id", "relevance", "reason_if_0", "notes")))
+hp <- pp; hp$human <- c("2", "0", "1", "1", "0")
+invisible(capture.output(cmp <- report_llm_vs_human(hp, rl, llm, "_9", vd, rd))); stopifnot(cmp$n == 5, file.exists(file.path(vd, "llm_labels_sample_9.csv")), file.exists(file.path(rd, "llm_vs_human_mismatches.csv")))
 cat("test_llm_label.R: all checks passed\n")

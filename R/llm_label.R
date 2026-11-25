@@ -162,3 +162,76 @@ compare_labels <- function(human, llm, llm_cfg) {
        dropped_on_topic = sum(auto & yh & !ym), on_topic_total = sum(yh),
        kept_noise = sum(auto & !yh & ym), kept_total = sum(auto & ym))
 }
+
+
+# ---- the same labels, made by reading in a conversation (no API): files in, files out -----------------------
+
+# Splits papers into files of `size` rows for reading in a conversation. Only identifying columns, title, journal,
+# year and abstract go in: nothing says which block matched, and nothing carries a human label.
+write_reading_batches <- function(papers, dir, prefix, size = 100) {
+  dir.create(dir, showWarnings = FALSE, recursive = TRUE)
+  cols <- intersect(c("openalex_id", "year", "journal", "title", "abstract"), names(papers))
+  idx <- split(seq_len(nrow(papers)), ceiling(seq_len(nrow(papers)) / size))
+  files <- vapply(seq_along(idx), function(k) {
+    f <- file.path(dir, sprintf("%s_%03d.csv", prefix, k))
+    utils::write.csv(papers[idx[[k]], cols, drop = FALSE], f, row.names = FALSE, na = "", fileEncoding = "UTF-8"); f
+  }, "")
+  files
+}
+
+# Reads a file of labels made in a conversation and checks it against the papers: every id present once, codes valid,
+# confidence valid, a reason only with relevance 0. Returns the labels in the order of `papers`.
+read_claude_labels <- function(path, papers, allow_extra = FALSE) {
+  x <- if (is.data.frame(path)) path else utils::read.csv(path, stringsAsFactors = FALSE, encoding = "UTF-8", colClasses = "character")
+  need <- c("openalex_id", "relevance", "reason_if_0", "confidence", "note")
+  if (length(miss <- setdiff(need, names(x)))) stop("Missing column(s): ", paste(miss, collapse = ", "), call. = FALSE)
+  if (anyDuplicated(x$openalex_id)) stop("Repeated ids: ", paste(unique(x$openalex_id[duplicated(x$openalex_id)]), collapse = ", "), call. = FALSE)
+  if (allow_extra) x <- x[x$openalex_id %in% papers$openalex_id, , drop = FALSE]
+  if (length(extra <- setdiff(x$openalex_id, papers$openalex_id))) stop(length(extra), " ids that are not in the papers, for example ", extra[1], call. = FALSE)
+  if (length(lost <- setdiff(papers$openalex_id, x$openalex_id))) stop(length(lost), " papers without a label, for example ", lost[1], call. = FALSE)
+  if (!all(x$relevance %in% c("2", "1", "0", "?"))) stop("relevance must be 2, 1, 0 or ?", call. = FALSE)
+  if (!all(x$confidence %in% c("high", "medium", "low"))) stop("confidence must be high, medium or low", call. = FALSE)
+  if (!all(x$reason_if_0 %in% c("", REASONS))) stop("reason_if_0 must be empty or one of: ", paste(REASONS, collapse = ", "), call. = FALSE)
+  x$reason_if_0[x$relevance != "0"] <- ""
+  x[match(papers$openalex_id, x$openalex_id), need]
+}
+
+# What both ways of labelling (API and conversation) do next with the core labels: summary, doubtful list,
+# and the latest year in the format of step 11. `lab` has openalex_id, relevance, reason_if_0, confidence, note.
+write_core_label_outputs <- function(papers, lab, llm, validation_dir = "data/validation", raw_dir = "data/raw") {
+  lab$doubtful <- llm_doubtful(lab, llm)
+  cat("\nLABELS\n"); print(table(relevance = lab$relevance, confidence = lab$confidence))
+  cat(sprintf("\n%d papers for a person (%.0f%%). Of the rest: %d on topic (1 or 2), %d not (0).\n", sum(lab$doubtful), 100 * mean(lab$doubtful),
+              sum(!lab$doubtful & lab$relevance %in% c("1", "2")), sum(!lab$doubtful & lab$relevance == "0")))
+  cat("\nREASONS FOR 0 (not doubtful)\n"); print(sort(table(lab$reason_if_0[!lab$doubtful & lab$relevance == "0"]), decreasing = TRUE))
+  dir.create(validation_dir, showWarnings = FALSE, recursive = TRUE); dir.create(raw_dir, showWarnings = FALSE, recursive = TRUE)
+  utils::write.csv(lab[, c("openalex_id", "relevance", "reason_if_0", "confidence", "note", "doubtful")], file.path(validation_dir, "llm_labels_core.csv"), row.names = FALSE)
+  d <- cbind(papers[lab$doubtful, ], lab[lab$doubtful, c("relevance", "confidence", "note")]); names(d)[names(d) == "relevance"] <- "model_label"
+  d$relevance <- ""; d$reason_if_0 <- ""; d$notes <- ""
+  utils::write.csv(d, file.path(raw_dir, "llm_doubtful.csv"), row.names = FALSE, na = "", fileEncoding = "UTF-8")
+  latest <- max(papers$year); cl <- lab[papers$year == latest, ]
+  utils::write.csv(data.frame(openalex_id = cl$openalex_id, relevance = cl$relevance, reason_if_0 = cl$reason_if_0, notes = cl$note),
+                   file.path(raw_dir, sprintf("review_%s_claude.csv", latest)), row.names = FALSE, fileEncoding = "UTF-8")
+  invisible(list(labels = lab, doubtful = d, latest = latest))
+}
+
+# The model against the author on the labelled sample: report and files. `papers` has openalex_id, journal, title, abstract
+# and human (0, 1, 2); `lab` the labels of the model in the same order.
+report_llm_vs_human <- function(papers, lab, llm, rnd = "_2", validation_dir = "data/validation", raw_dir = "data/raw") {
+  cmp <- compare_labels(papers$human, lab, llm)
+  cat("\nYOUR LABEL (rows) AGAINST THE MODEL'S (columns)\n"); print(cmp$table)
+  cat(sprintf("\nAGREEMENT ON 'ON TOPIC' (1 or 2 against 0), papers the model decided: %.0f%%, kappa %.2f\n", 100 * cmp$agree_on_topic, cmp$kappa))
+  cat(sprintf("THE MODEL FLAGS %d of %d papers for a person (label ? or low confidence): %.0f%%\n", cmp$flagged, cmp$n, 100 * cmp$share_flagged))
+  cat(sprintf("THE AUTOMATIC PART (%d papers): agrees with you on %.0f%%; drops %d of the %d on-topic papers of the sample; keeps %d papers you labelled 0 among the %d it keeps.\n",
+              cmp$auto_n, 100 * cmp$auto_agree, cmp$dropped_on_topic, cmp$on_topic_total, cmp$kept_noise, cmp$kept_total))
+  cat("\nAGREEMENT BY CONFIDENCE\n")
+  print(sapply(split(seq_len(nrow(lab)), lab$confidence), function(i) c(papers = length(i), agree_on_topic = round(mean((papers$human[i] != "0") == (lab$relevance[i] %in% c("1", "2"))), 2))))
+  dir.create(validation_dir, showWarnings = FALSE, recursive = TRUE); dir.create(raw_dir, showWarnings = FALSE, recursive = TRUE)
+  utils::write.csv(lab[, c("openalex_id", "relevance", "reason_if_0", "confidence", "note")], file.path(validation_dir, sprintf("llm_labels_sample%s.csv", rnd)), row.names = FALSE)
+  mm <- (papers$human != "0") != (lab$relevance %in% c("1", "2")) | papers$human != lab$relevance
+  mism <- data.frame(openalex_id = papers$openalex_id, journal = papers$journal, title = papers$title, you = papers$human, model = lab$relevance,
+                     model_confidence = lab$confidence, model_reason = lab$reason_if_0, model_note = lab$note, abstract = papers$abstract)[mm, ]
+  utils::write.csv(mism, file.path(raw_dir, "llm_vs_human_mismatches.csv"), row.names = FALSE, fileEncoding = "UTF-8")
+  message(sprintf("Wrote llm_labels_sample%s.csv; %d papers where the two differ are in %s.", rnd, nrow(mism), file.path(raw_dir, "llm_vs_human_mismatches.csv")))
+  invisible(cmp)
+}
