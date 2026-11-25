@@ -564,7 +564,7 @@ function renderPapers() {
   const found = P.items.filter(byTaxon), confirmed = found.filter(it => it.review === '1' || it.review === '2').length;
   $('s-papers').textContent = P.reviewed
     ? `${fmt(found.length)} papers found by the rule, ${tx.label.toLowerCase()}. Read by hand, ${fmt(confirmed)} were confirmed on topic.` + (P.year === partial ? ` ${P.year} is incomplete: counted on ${runDate}.` : '')
-    : `${fmt(rows.length)} paper${rows.length === 1 ? '' : 's'} that meet the strict definition, ${tx.label.toLowerCase()}` + (P.year === partial ? `. ${P.year} is incomplete: counted on ${runDate}.` : '.');
+    : `${fmt(rows.length)} paper${rows.length === 1 ? '' : 's'} found by the rule, ${tx.label.toLowerCase()}. This list has not been read yet: it comes from the automatic rule and includes papers that are not about the animals' welfare (for example case reports or uses of an animal name in another sense). It will be reviewed by hand.` + (P.year === partial ? ` ${P.year} is incomplete: counted on ${runDate}.` : '');
   const link = it => { const u = safeUrl(it.doi) || safeUrl(it.id); const a = h('a', { href: u || '#', rel: 'noopener', target: '_blank' }); a.textContent = it.title; return u ? a : it.title; };
   $('table-papers').replaceChildren(rows.length
     ? h('div', { class: 'scroll' }, h('table', { class: 'papers-table' },
