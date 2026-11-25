@@ -116,6 +116,14 @@ sampling:
   taxon_priority: ["cephalopods", "other_molluscs", "other_invertebrates", "crustaceans",
                    "other_arthropods", "arthropods_general", "invertebrates_general", "insects"]
 
+# Second round (script 03b): a fresh sample drawn after the filters of core.filters were added,
+# with another seed and without the papers of round 1. Same sizes as round 1.
+sampling_round2:
+  seed: 2027
+  exclude_ids: "data/validation/sample_ids.csv"
+  suffix: "_2"
+
+
 # ---------------------------------------------------------------------------
 # CORE definition (strict), applied LOCALLY to the downloaded titles and abstracts.
 # The broad search above counts any paper that mentions a taxon term and a state term

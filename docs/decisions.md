@@ -47,6 +47,13 @@ consciousness 44%, affect_emotion 25%, sentience 94%. Optimistic: the filters we
   at least 2 words about people (patients, consumers, students, participants...). The word list was
   written before measuring it; first test is 04b ("all rules") on the labelled sample.
 
+## 2026-11-25 All rules on the labelled sample (round 1)
+- Share on topic in the core 31% -> 56%, 97% of the on-topic papers kept. By block: sentience 92%,
+  nociception_pain 59%, welfare 49%, affect_emotion 48% (88% of its on-topic papers kept),
+  consciousness 42%. Core after step 02c: 1,225 papers (2,361 match the word pattern).
+- Next: a fresh sample (round 2, script 03b, seed 2027, without the papers of round 1) gives the
+  figure to publish. Its estimate describes the papers not drawn in round 1.
+
 ## Open
 - Final list of excluded fields, after reading `04b`.
 - Result of rule C on the labelled sample.
