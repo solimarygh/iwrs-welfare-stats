@@ -32,6 +32,10 @@ Dated notes on what was decided and why, so the report can say how the numbers w
   labelled papers on topic; about a third of the labelled papers that were not on topic are in these
   four fields). Chosen after reading the labels, so the fresh sample has to test it.
 
+Result with the 18 excluded fields (04b, same labelled sample): share on topic in the core 31% -> 52%,
+96% of the on-topic papers kept; core 2,361 -> 1,302 papers. By block: welfare 49%, nociception_pain 59%,
+consciousness 44%, affect_emotion 25%, sentience 94%. Optimistic: the filters were designed on these labels.
+
 ## Open
 - Final list of excluded fields, after reading `04b`.
 - Rule C.
