@@ -86,3 +86,25 @@ fetch_records <- function(cfg, filter, fetch = default_fetch, per_page = 200,
   attr(out, "api_count") <- api_count
   out
 }
+
+# Authors of each id (display names joined by "; "), 100 ids per call. Used for the list of papers on the site.
+fetch_authors <- function(cfg, ids, fetch = default_fetch, batch = 100, progress = TRUE) {
+  ids <- unique(ids[!is.na(ids)])
+  groups <- split(ids, ceiling(seq_along(ids) / batch))
+  out <- lapply(seq_along(groups), function(i) {
+    short <- sub("^https://openalex.org/", "", groups[[i]])
+    res <- fetch(paste0(cfg$openalex$base_url, "/works"),
+                 list(filter = paste0("openalex:", paste(short, collapse = "|")),
+                      select = "id,authorships", `per-page` = batch),
+                 oa_mailto(cfg))
+    if (progress) message(sprintf("authors: call %d of %d", i, length(groups)))
+    if (length(res$results) == 0) return(NULL)
+    do.call(rbind, lapply(res$results, function(w) {
+      nm <- vapply(w$authorships %||% list(), function(a) a$author$display_name %||% NA_character_, character(1))
+      nm <- nm[!is.na(nm) & nzchar(nm)]
+      data.frame(openalex_id = w$id %||% NA_character_, authors = paste(nm, collapse = "; "),
+                 n_authors = length(nm), stringsAsFactors = FALSE)
+    }))
+  })
+  do.call(rbind, out)
+}

@@ -61,7 +61,7 @@
     <div class="tiles" id="tiles"></div>
   </section>
 
-  <section class="card chart-card" aria-labelledby="t-trend">
+  <section class="card chart-card" id="sec-trend" aria-labelledby="t-trend">
     <header class="card-head">
       <div>
         <h2 id="t-trend">Papers per year</h2>
@@ -72,7 +72,7 @@
     <details class="table-view"><summary>View as table</summary><div id="table-trend"></div></details>
   </section>
 
-  <section class="card chart-card" aria-labelledby="t-themes">
+  <section class="card chart-card" id="sec-themes" aria-labelledby="t-themes">
     <header class="card-head">
       <div>
         <h2 id="t-themes">By theme</h2>
@@ -86,7 +86,7 @@
     <details class="table-view"><summary>View as table</summary><div id="table-themes"></div></details>
   </section>
 
-  <section class="card chart-card" aria-labelledby="t-groups">
+  <section class="card chart-card" id="sec-groups" aria-labelledby="t-groups">
     <header class="card-head">
       <div>
         <h2 id="t-groups">Which groups of animals</h2>
@@ -97,6 +97,22 @@
     <div class="chart" id="chart-groups"></div>
     <p class="note">A paper can mention several groups, so the bars add up to more than the total.</p>
     <details class="table-view"><summary>View as table</summary><div id="table-groups"></div></details>
+  </section>
+
+  <section class="card chart-card" id="papers" aria-labelledby="t-papers" hidden>
+    <header class="card-head">
+      <div>
+        <h2 id="t-papers">Papers of <span id="p-year"></span></h2>
+        <p class="sub" id="s-papers"></p>
+      </div>
+    </header>
+    <div class="papers-tools">
+      <label class="field"><span class="field-label">Search title, author or journal</span><input type="search" id="p-search" autocomplete="off"></label>
+      <button type="button" class="dl" id="p-download">Download the list as CSV</button>
+    </div>
+    <div id="table-papers"></div>
+    <button type="button" class="more" id="p-more" hidden>Show more</button>
+    <p class="note" id="note-papers">The list follows the animal group chosen above. Each title links to the paper through its DOI. Abstracts are not reproduced here: they belong to the publishers.</p>
   </section>
 
   <section class="card chart-card" id="journals" aria-labelledby="t-journals" hidden>
@@ -143,6 +159,17 @@
     <details class="table-view"><summary>View as table</summary><div id="table-members"></div></details>
   </section>
 
+  <section class="card" id="downloads" aria-labelledby="t-downloads">
+    <h2 id="t-downloads">Download the data</h2>
+    <p class="sub">Aggregated counts and the list of papers, as CSV files. Abstracts are not included: they belong to the publishers. Each table on this page also has its own download button.</p>
+    <ul class="downloads">
+      <li><a href="downloads/core_counts_by_year.csv" download>core_counts_by_year.csv</a> Papers per year by animal group and theme.</li>
+      <li><a href="downloads/journals_by_year.csv" download>journals_by_year.csv</a> Papers per year by type of journal.</li>
+      <li><a href="downloads/journals_top.csv" download>journals_top.csv</a> The most frequent journals.</li>
+      <li id="dl-papers" hidden><a href="downloads/core_papers.csv" download>core_papers.csv</a> Every paper that meets the definition, with title, authors, journal, DOI, animal groups and themes.</li>
+    </ul>
+  </section>
+
   <section class="card method" aria-labelledby="t-method">
     <h2 id="t-method">How the numbers are made</h2>
     <ul>
@@ -166,6 +193,7 @@
 <script src="members.js"></script>
 <script src="journals.js"></script>
 <script src="events.js"></script>
+<script src="papers.js"></script>
 <script src="assets/app.js"></script>
 </body>
 </html>

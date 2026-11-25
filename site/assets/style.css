@@ -208,3 +208,17 @@ td { font-variant-numeric: tabular-nums; }
 #events.example .chart { position: relative; }
 #events.example .chart::after { content: "EXAMPLE DATA"; position: absolute; inset: 0; display: grid; place-items: center; pointer-events: none;
   font-size: 22px; font-weight: 800; letter-spacing: .12em; color: var(--ink); opacity: .1; transform: rotate(-12deg); }
+
+/* Papers list and downloads */
+.papers-tools { display: flex; flex-wrap: wrap; align-items: flex-end; gap: 14px 20px; margin: 4px 0 12px; }
+.papers-tools .field { flex: 1 1 260px; max-width: 420px; }
+input[type="search"] { font: inherit; font-size: 15px; padding: 8px 12px; border-radius: 10px; border: 1px solid var(--border); background: var(--surface); color: var(--ink); width: 100%; }
+.dl, .more { font: inherit; font-size: 14px; padding: 7px 14px; border-radius: 10px; border: 1px solid var(--border); background: var(--surface); color: var(--ink); cursor: pointer; }
+.dl:hover, .more:hover { background: var(--band); }
+.table-view .dl { margin: 10px 0 0; display: block; }
+.more { margin-top: 12px; }
+.papers-table th, .papers-table td { white-space: normal; text-align: left; vertical-align: top; min-width: 120px; }
+.papers-table td:first-child { min-width: 240px; }
+.papers-table a { color: var(--accent); }
+.downloads { list-style: none; margin: 12px 0 0; padding: 0; display: grid; gap: 8px; font-size: 14.5px; color: var(--ink-2); }
+.downloads a { color: var(--accent); font-weight: 600; margin-right: 8px; }

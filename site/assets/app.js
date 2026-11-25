@@ -36,13 +36,14 @@ const lastComplete = partial ? partial - 1 : D.meta.last_year;
 const isAll = k => k.startsWith('ALL_');
 const taxon = k => D.taxa.find(t => t.key === k);
 const stateSlot = Object.fromEntries(D.states.map((x, i) => [x.key, i + 1]));
-const RANGES = [{ id: 'complete', label: `${first}–${lastComplete}`, from: first, to: lastComplete },
-                { id: 'recent', label: 'Last 5 years', from: lastComplete - 4, to: lastComplete }];
-if (partial) RANGES.push({ id: 'partial', label: `Include ${partial} (partial)`, from: first, to: partial });
+const RANGES = [];
+if (partial) RANGES.push({ id: 'partial', label: `${first}–${partial} (to date)`, from: first, to: partial });
+RANGES.push({ id: 'complete', label: `${first}–${lastComplete} (complete years)`, from: first, to: lastComplete });
+RANGES.push({ id: 'recent', label: 'Last 5 complete years', from: lastComplete - 4, to: lastComplete });
 const runDate = new Date(D.meta.run_date + 'T00:00:00Z')
   .toLocaleDateString('en-GB', { day: 'numeric', month: 'long', year: 'numeric', timeZone: 'UTC' });
 
-const st = { taxon: 'ALL_INVERTEBRATES', range: 'complete', metric: 'counts', hidden: new Set(), animate: true };
+const st = { taxon: 'ALL_INVERTEBRATES', range: partial ? 'partial' : 'complete', metric: 'counts', hidden: new Set(), animate: true, query: '', shown: 25 };
 (function readHash() {
   const p = new URLSearchParams(location.hash.slice(1));
   if (taxon(p.get('taxon') || '')) st.taxon = p.get('taxon');
@@ -53,7 +54,7 @@ const st = { taxon: 'ALL_INVERTEBRATES', range: 'complete', metric: 'counts', hi
 function selection() {
   const r = RANGES.find(x => x.id === st.range);
   const years = []; for (let y = r.from; y <= r.to; y++) years.push(y);
-  return { r, years, startY: r.from, endY: Math.min(r.to, lastComplete) };
+  return { r, years, startY: r.from, endY: Math.min(r.to, lastComplete), headY: r.to };
 }
 
 /* ---------- scales ---------- */
@@ -232,7 +233,8 @@ const sgn = x => (x >= 0 ? '+' : '−');
 
 /* ---------- render ---------- */
 function render() {
-  const { r, years, startY, endY } = selection();
+  const { r, years, startY, endY, headY } = selection();
+  const part = !!partial && headY === partial;
   const tx = taxon(st.taxon), any = y => val(st.taxon, 'ANY', y), none = y => val(st.taxon, 'NONE', y);
   const share = y => none(y) ? (any(y) / none(y)) * 100 : 0;
   const counts = years.map(any);
@@ -240,11 +242,12 @@ function render() {
   $('scope').textContent = `${tx.label}, ${years[0]}–${years[years.length - 1]}`;
 
   // hero
-  const n0 = any(startY), n1 = any(endY);
-  $('hero-label').textContent = `Papers in ${endY}, ${tx.label.toLowerCase()}`;
-  $('hero-value').textContent = fmt(n1);
-  $('hero-delta').textContent = n0 > 0 && endY > startY
-    ? `${sgn(n1 / n0 - 1)}${Math.abs((n1 / n0 - 1) * 100).toFixed(0)}% since ${startY} (${fmt(n0)} papers)` : '';
+  const n0 = any(startY), n1 = any(endY), nh = any(headY);
+  $('hero-label').textContent = part ? `Papers in ${headY} so far (to ${runDate}), ${tx.label.toLowerCase()}` : `Papers in ${headY}, ${tx.label.toLowerCase()}`;
+  $('hero-value').textContent = fmt(nh);
+  $('hero-delta').textContent = part
+    ? `${endY}, full year: ${fmt(n1)} papers. ${startY}: ${fmt(n0)}.`
+    : (n0 > 0 && endY > startY ? `${sgn(n1 / n0 - 1)}${Math.abs((n1 / n0 - 1) * 100).toFixed(0)}% since ${startY} (${fmt(n0)} papers)` : '');
 
   // tiles
   const tiles = $('tiles'); tiles.replaceChildren();
@@ -253,13 +256,14 @@ function render() {
     h('p', { class: 'tile-label', text: label }), h('p', { class: 'tile-value', text: value }),
     h('p', { class: 'tile-delta', text: delta }), vals ? sparkline(vals, vals.length - 1) : ''));
   const d = share(endY) - share(startY);
-  tile(`Share of ${tx.label.toLowerCase()} literature`, share(endY).toFixed(2) + '%',
-    endY > startY ? `${sgn(d)}${Math.abs(d).toFixed(2)} points since ${startY}` : '', yrsToEnd.map(share));
+  tile(part ? `Share of ${tx.label.toLowerCase()} literature, ${headY} so far` : `Share of ${tx.label.toLowerCase()} literature`, share(headY).toFixed(2) + '%',
+    part ? `${share(endY).toFixed(2)}% in ${endY}, full year` : (endY > startY ? `${sgn(d)}${Math.abs(d).toFixed(2)} points since ${startY}` : ''),
+    years.filter(y => y <= headY).map(share));
   const yearsSpan = endY - startY;
   tile('Growth per year', n0 > 0 && yearsSpan > 0 ? `${sgn(Math.pow(n1 / n0, 1 / yearsSpan) - 1)}${Math.abs((Math.pow(n1 / n0, 1 / yearsSpan) - 1) * 100).toFixed(1)}%` : 'n/a',
-    yearsSpan > 0 ? `compound rate, ${startY}–${endY}` : '', yrsToEnd.map(any));
-  const top = D.states.map(x => ({ x, n: val(st.taxon, x.key, endY) })).sort((a, b) => b.n - a.n)[0];
-  tile(`Largest theme in ${endY}`, top.x.label, `${fmt(top.n)} papers (themes overlap)`, yrsToEnd.map(y => val(st.taxon, top.x.key, y)));
+    yearsSpan > 0 ? `compound rate, ${startY}–${endY}${part ? ' (complete years)' : ''}` : '', yrsToEnd.map(any));
+  const top = D.states.map(x => ({ x, n: val(st.taxon, x.key, headY) })).sort((a, b) => b.n - a.n)[0];
+  tile(`Largest theme in ${headY}${part ? ' so far' : ''}`, top.x.label, `${fmt(top.n)} papers (themes overlap)`, yrsToEnd.map(y => val(st.taxon, top.x.key, y)));
 
   // trend chart
   $('s-trend').textContent = `${tx.label}. Journal articles and reviews that meet the strict definition.` +
@@ -303,21 +307,22 @@ function render() {
   });
 
   // groups (ranked bars, emphasis on arthropods)
-  $('s-groups').textContent = `Papers in ${endY}, by taxon group.`;
+  $('s-groups').textContent = `Papers in ${headY}${part ? ' so far' : ''}, by taxon group.`;
   const groups = D.taxa.filter(t => !isAll(t.key)).map(t => ({
-    key: t.key, label: t.label, short: t.label.replace(/ \([^)]*\.\.\.\)$/, ''), value: val(t.key, 'ANY', endY),
-    share: val(t.key, 'NONE', endY) ? (val(t.key, 'ANY', endY) / val(t.key, 'NONE', endY)) * 100 : 0,
+    key: t.key, label: t.label, short: t.label.replace(/ \([^)]*\.\.\.\)$/, ''), value: val(t.key, 'ANY', headY),
+    share: val(t.key, 'NONE', headY) ? (val(t.key, 'ANY', headY) / val(t.key, 'NONE', headY)) * 100 : 0,
     arthropod: t.arthropod, color: t.arthropod ? 'var(--s1)' : 'var(--other)',
     dim: !isAll(st.taxon) ? t.key !== st.taxon : (st.taxon === 'ALL_ARTHROPODS' ? !t.arthropod : false)
   })).sort((a, b) => b.value - a.value);
-  drawBars($('chart-groups'), { rows: groups, aria: `Ranked bars of papers in ${endY} by taxon group.` });
+  drawBars($('chart-groups'), { rows: groups, aria: `Ranked bars of papers in ${headY} by taxon group.` });
   const lgg = $('legend-groups'); lgg.replaceChildren(
     h('li', {}, h('span', {}, h('span', { class: 'sw', style: '--c:var(--s1)' }), 'Arthropods')),
     h('li', {}, h('span', {}, h('span', { class: 'sw', style: '--c:var(--other)' }), 'Other invertebrates')));
   $('table-groups').replaceChildren(table(['Group', 'Arthropod', 'Papers', 'All papers on the group', 'Share'],
-    groups.map(g => [g.label, g.arthropod ? 'yes' : 'no', fmt(g.value), fmt(val(g.key, 'NONE', endY)), pct1(g.share)])));
+    groups.map(g => [g.label, g.arthropod ? 'yes' : 'no', fmt(g.value), fmt(val(g.key, 'NONE', headY)), pct1(g.share)])));
 
   renderJournals(years, tx);
+  renderPapers();
 
   // controls state
   [...$('range').children].forEach(b => b.setAttribute('aria-checked', String(b.dataset.id === st.range)));
@@ -516,6 +521,55 @@ function renderEvents() {
     if (u && /^https?:\/\//.test(u)) { const td = tr.lastElementChild, a = h('a', { href: u, rel: 'noopener', target: '_blank' }); a.textContent = td.textContent; td.replaceChildren(a); } });
 }
 
+/* ---------- csv downloads ---------- */
+const csvCell = v => { const t = String(v == null ? '' : v); return /[",\n\r]/.test(t) ? '"' + t.replace(/"/g, '""') + '"' : t; };
+function saveCsv(name, rows) {
+  const blob = new Blob(['\ufeff' + rows.map(r => r.map(csvCell).join(',')).join('\r\n') + '\r\n'], { type: 'text/csv;charset=utf-8' });
+  const a = h('a', { href: URL.createObjectURL(blob), download: name }); document.body.append(a); a.click(); a.remove();
+  setTimeout(() => URL.revokeObjectURL(a.href), 1000);
+}
+// what a table shows, as rows of text; "1,225" becomes 1225 so that a spreadsheet reads it as a number
+const tableRows = t => [...t.querySelectorAll('tr')].map(tr => [...tr.children].map(c => c.textContent.trim().replace(/^(\d{1,3}(,\d{3})+)$/, m => m.replace(/,/g, ''))));
+function addCsvButtons() {
+  document.querySelectorAll('details.table-view').forEach(d => {
+    if (d.querySelector('.dl')) return;
+    const b = h('button', { type: 'button', class: 'dl', text: 'Download as CSV' });
+    b.addEventListener('click', () => {
+      const rows = []; d.querySelectorAll('table').forEach((t, i) => { if (i) rows.push([]); rows.push(...tableRows(t)); });
+      saveCsv(`iwrs_${((d.closest('section') || {}).id || 'table').replace(/^sec-/, '')}_${st.taxon}.csv`.toLowerCase(), rows);
+    });
+    d.querySelector('summary').after(b);
+  });
+}
+
+/* ---------- papers of the latest year ---------- */
+const P = window.IWRS_PAPERS;
+const themeLabel = Object.fromEntries(D.states.map(x => [x.key, x.label]));
+const safeUrl = u => (/^https:\/\//.test(u || '') ? u : '');
+function paperRows() {
+  const q = st.query.trim().toLowerCase();
+  return (P.items || []).filter(it => (st.taxon === 'ALL_INVERTEBRATES' || it.taxa.split(';').includes(st.taxon))
+    && (!q || `${it.title} ${it.authors} ${it.journal}`.toLowerCase().includes(q)));
+}
+function renderPapers() {
+  const sec = $('papers');
+  if (!P || !P.items) return;
+  sec.hidden = false;
+  const rows = paperRows(), shown = rows.slice(0, st.shown), tx = taxon(st.taxon);
+  $('p-year').textContent = P.year + (P.year === partial ? ' so far' : '');
+  $('s-papers').textContent = `${fmt(rows.length)} paper${rows.length === 1 ? '' : 's'} that meet the strict definition, ${tx.label.toLowerCase()}` +
+    (P.year === partial ? `. ${P.year} is incomplete: counted on ${runDate}.` : '.');
+  const link = it => { const u = safeUrl(it.doi) || safeUrl(it.id); const a = h('a', { href: u || '#', rel: 'noopener', target: '_blank' }); a.textContent = it.title; return u ? a : it.title; };
+  $('table-papers').replaceChildren(rows.length
+    ? h('div', { class: 'scroll' }, h('table', { class: 'papers-table' },
+        h('thead', {}, h('tr', {}, ['Title', 'Authors', 'Journal', 'Themes'].map(x => h('th', { scope: 'col', text: x })))),
+        h('tbody', {}, shown.map(it => h('tr', {}, h('td', {}, link(it)), h('td', { text: it.authors }), h('td', { text: it.journal }),
+          h('td', { text: it.themes.split(';').filter(Boolean).map(k => themeLabel[k] || k).join(', ') }))))))
+    : h('p', { class: 'empty', text: 'No papers match.' }));
+  const more = $('p-more'); more.hidden = rows.length <= shown.length;
+  more.textContent = `Show more (${fmt(rows.length - shown.length)} left)`;
+}
+
 /* ---------- controls ---------- */
 (function init() {
   const sel = $('taxon');
@@ -523,7 +577,7 @@ function renderEvents() {
   grp('Overall', D.taxa.filter(t => isAll(t.key)));
   grp('Arthropods', D.taxa.filter(t => !isAll(t.key) && t.arthropod));
   grp('Other invertebrates', D.taxa.filter(t => !isAll(t.key) && !t.arthropod));
-  sel.addEventListener('change', () => { st.taxon = sel.value; render(); });
+  sel.addEventListener('change', () => { st.taxon = sel.value; st.shown = 25; render(); });
 
   const rg = $('range');
   RANGES.forEach(r => {
@@ -537,9 +591,18 @@ function renderEvents() {
     st.range = RANGES[j].id; render(); rg.children[j].focus();
   });
 
+  if (P && P.items) {
+    $('p-search').addEventListener('input', e => { st.query = e.target.value; st.shown = 25; renderPapers(); });
+    $('p-more').addEventListener('click', () => { st.shown += 50; renderPapers(); });
+    $('p-download').addEventListener('click', () => saveCsv(`iwrs_papers_${P.year}_${st.taxon}.csv`.toLowerCase(),
+      [['title', 'authors', 'journal', 'themes', 'doi', 'openalex_id'], ...paperRows().map(it => [it.title, it.authors, it.journal,
+        it.themes.split(';').filter(Boolean).map(k => themeLabel[k] || k).join('; '), it.doi, it.id])]));
+    $('dl-papers').hidden = false;
+  }
+  addCsvButtons();
   $('m-date').textContent = runDate; $('m-first').textContent = first;
   $('m-partial').textContent = partial
-    ? `${partial} is incomplete: it covers papers indexed up to ${runDate}. It appears only when you choose to include it, and the headline figures use the last complete year.`
+    ? `${partial} is incomplete: it covers papers indexed up to ${runDate}, and the figures marked "so far" will grow until the year ends. The report is rerun at the end of the year. The growth rate uses complete years only.`
     : 'All years shown are complete.';
 
   // theme: auto / light / dark
