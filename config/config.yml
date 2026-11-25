@@ -143,6 +143,20 @@ core:
   filters:
     # The animal word is in the title or occurs at least this many times in title + abstract.
     subject_min_mentions: 2
+    # Blocks that skip the subject filter (2026-11-25): in sentience the share on topic was 90%
+    # without it and the filter removed general papers on animal sentience that mention
+    # invertebrates once ("Animal sentience", "The sentience shift in animal research");
+    # in consciousness it added two points and removed on-topic papers of the same kind.
+    subject_exempt_blocks: ["sentience", "consciousness"]
+    # Emotion papers about people (consumers, patients, students...) are not about invertebrates.
+    # A paper of these blocks fails when title + abstract hold at least min_mentions of these
+    # words. Fixed before measuring it (first test: 04b on the labelled sample).
+    human_context:
+      blocks: ["affect_emotion"]
+      min_mentions: 2
+      terms: ["patient*", "child", "children", "consumer*", "student*", "participant*",
+              "respondent*", "customer*", "nurse*", "adolescen*", "women", "people", "humans",
+              "survey*", "questionnaire*", "psychological", "mental"]
     # OpenAlex fields in which an invertebrate-welfare paper is not expected. Fixed before
     # looking at the field of the labelled papers. Arts and Humanities, Social Sciences and
     # Psychology stay in: about half of the labelled papers of the first two were on topic

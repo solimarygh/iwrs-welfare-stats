@@ -36,9 +36,20 @@ Result with the 18 excluded fields (04b, same labelled sample): share on topic i
 96% of the on-topic papers kept; core 2,361 -> 1,302 papers. By block: welfare 49%, nociception_pain 59%,
 consciousness 44%, affect_emotion 25%, sentience 94%. Optimistic: the filters were designed on these labels.
 
+## 2026-11-25 Subject filter exempt for sentience and consciousness; rule C for affect_emotion
+- The 13 on-topic labelled papers lost in the core strata were mostly general papers on animal
+  sentience that mention an invertebrate once ("Animal sentience", "The sentience shift in animal
+  research", "Precis of The Edge of Sentience"), removed by the subject filter, plus a few in
+  Medicine, Immunology, Engineering and Nursing removed by the field filter.
+- Decision: the subject filter no longer applies to sentience (90% on topic without it) nor to
+  consciousness (33% -> 35% with it). `core.filters.subject_exempt_blocks`.
+- Rule C (`core.filters.human_context`): in affect_emotion a paper fails when title + abstract hold
+  at least 2 words about people (patients, consumers, students, participants...). The word list was
+  written before measuring it; first test is 04b ("all rules") on the labelled sample.
+
 ## Open
 - Final list of excluded fields, after reading `04b`.
-- Rule C.
+- Result of rule C on the labelled sample.
 - Fresh validation sample.
 - IWRS to fill in the events and theses template.
 - Study-type ratio (conceptual vs empirical) is deferred.

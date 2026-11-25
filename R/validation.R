@@ -56,22 +56,29 @@ reason_table <- function(lab, ids) {
   as.data.frame.matrix(table(d$stratum_block, d$reason_if_0))
 }
 
-# How the two core filters (R/core.R) would have changed the labelled sample. `rec` is the
-# re-tagged records (columns pass_subject, pass_field, topic_field). For the labelled papers of
-# the core strata, and for each variant (no filter, field only, subject only, both): the
-# estimated number of papers kept, the share of them that is on topic, and the share of the
-# on-topic papers of the unfiltered core that is still there. Weights are stratum size over
-# the rows labelled in each taxon stratum, as in estimate_precision().
-evaluate_core_rules <- function(rec, lab, ids, core_blocks) {
+# How the core filters (R/core.R) would have changed the labelled sample. `rec` is the re-tagged
+# records (columns pass_field, pass_subject, pass_human, keep_<block>, topic_field); `filters` is
+# cfg$core$filters. For the labelled papers of the core strata, and for each variant (no filter,
+# field only, subject only, field and subject, all rules): the estimated number of papers kept,
+# the share of them that is on topic, and the share of the on-topic papers of the unfiltered core
+# that is still there. The subject filter applies only to blocks outside subject_exempt_blocks and
+# the human-context filter only to its blocks, as in the core. Weights are stratum size over the
+# rows labelled in each taxon stratum, as in estimate_precision().
+evaluate_core_rules <- function(rec, lab, ids, core_blocks, filters = list()) {
   d <- merge(lab[lab$status == "ok" & lab$relevance != "?", ], ids, by = "openalex_id")
   d <- d[d$stratum_block %in% core_blocks, ]
-  d <- merge(d, rec[, c("openalex_id", "pass_field", "pass_subject", "topic_field")], by = "openalex_id", all.x = TRUE)
+  keepcols <- paste0("keep_", core_blocks)
+  d <- merge(d, rec[, c("openalex_id", "pass_field", "pass_subject", "pass_human", "topic_field", intersect(keepcols, names(rec)))],
+             by = "openalex_id", all.x = TRUE)
   d$on_topic <- d$relevance %in% c("1", "2")
   d$N <- as.numeric(d$stratum_N)
   cell <- paste(d$stratum_block, d$primary_taxon)
   d$w <- d$N / as.numeric(table(cell)[cell])
-  variants <- list(`no filter` = rep(TRUE, nrow(d)), `field only` = d$pass_field,
-                   `subject only` = d$pass_subject, `field and subject` = d$pass_field & d$pass_subject)
+  subj <- d$pass_subject | d$stratum_block %in% filters$subject_exempt_blocks
+  hum <- d$pass_human | !(d$stratum_block %in% filters$human_context$blocks)
+  allr <- d$pass_field & subj & hum
+  variants <- list(`no filter` = rep(TRUE, nrow(d)), `field only` = d$pass_field, `subject only` = subj,
+                   `field and subject` = d$pass_field & subj, `all rules` = allr)
   one <- function(x, keep) {
     data.frame(papers_kept = sum(x$w[keep]),
                share_on_topic = if (any(keep)) sum(x$w[keep & x$on_topic]) / sum(x$w[keep]) else NA,
